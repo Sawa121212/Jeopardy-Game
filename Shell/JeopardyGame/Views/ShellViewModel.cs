@@ -47,7 +47,7 @@ namespace JeopardyGame.Views
 
         private void OnChangeCulture(LanguagesEnum languagesEnum)
         {
-            var lang = languagesEnum.ToString();
+            string? lang = languagesEnum.ToString();
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(lang);
             _localizer.EditLn(lang);
         }
