@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <LangVersion>preview</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+        <None Remove=".gitignore" />
+        <Resource Include="Settings\TelegramToken.tmp">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Resource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.0.5" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.5" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.5" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.5" />
+        <PackageReference Include="Material.Avalonia" Version="3.1.1" />
+        <PackageReference Include="Prism.Avalonia" Version="8.1.97.11000" />
+        <PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11000" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Common\Common.Core\Common.Core.csproj" />
+      <ProjectReference Include="..\..\Modules\ModuleA\ModuleA.csproj" />
+      <ProjectReference Include="..\..\Modules\ModuleB\ModuleB.csproj" />
+      <ProjectReference Include="..\..\Modules\ModuleC\TelegramAPI.Test.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Properties\Language.Designer.cs">
+        <DependentUpon>Language.resx</DependentUpon>
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Language.resx">
+        <LastGenOutput>Language.Designer.cs</LastGenOutput>
+        <Generator>PublicResXFileCodeGenerator</Generator>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Settings\TelegramToken.tmp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+</Project>
