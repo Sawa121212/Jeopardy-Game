@@ -22,6 +22,10 @@
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.5" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.5" />
         <PackageReference Include="Material.Avalonia" Version="3.1.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.17">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Prism.Avalonia" Version="8.1.97.11000" />
         <PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11000" />
     </ItemGroup>
@@ -31,6 +35,8 @@
       <ProjectReference Include="..\..\Modules\ModuleA\ModuleA.csproj" />
       <ProjectReference Include="..\..\Modules\ModuleB\ModuleB.csproj" />
       <ProjectReference Include="..\..\Modules\ModuleC\TelegramAPI.Test.csproj" />
+      <ProjectReference Include="..\..\Modules\TopicsDB\TopicDb.Module\TopicDb.Module.csproj" />
+      <ProjectReference Include="..\..\Modules\TopicsDB\TopicsDB.Domain\TopicDb.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
