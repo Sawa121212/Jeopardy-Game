@@ -14,6 +14,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using TelegramAPI;
 using TelegramAPI.Test;
+using TopicDb.Module;
 using IResourceProvider = Common.Core.Localization.IResourceProvider;
 
 namespace JeopardyGame
@@ -25,7 +26,6 @@ namespace JeopardyGame
             AvaloniaXamlLoader.Load(this);
             base.Initialize(); // <-- Required
         }
-
 
         protected override Window CreateShell()
         {
@@ -59,6 +59,7 @@ namespace JeopardyGame
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog
+                .AddModule<TopicDbModule>()
                 .AddModule<ModuleAModule>()
                 .AddModule<ModuleBModule>()
                 .AddModule<TelegramApiTestModule>();
@@ -76,8 +77,7 @@ namespace JeopardyGame
         //}
 
         /// <summary>
-        /// ViewModel Locator. Мы работаем с View, а не с ViewModel!
-        /// Ищем ViewModel для View в той же папке, где и View лежит.
+        /// ViewModel Locator
         /// </summary>
         protected override void ConfigureViewModelLocator()
         {
