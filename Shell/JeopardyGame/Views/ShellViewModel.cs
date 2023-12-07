@@ -13,56 +13,48 @@ namespace JeopardyGame.Views
     public class ShellViewModel : BindableBase
     {
         private readonly ILocalizer _localizer;
-        private LanguagesEnum _currentAppCultureInfo;
-        private LanguagesEnum _appCultureInfo;
-        private bool _initialized;
+        private bool _drawDirtyRects;
+        private bool _drawFps = true;
+        private bool _drawLayoutTimeGraph;
+        private bool _drawRenderTimeGraph;
 
         public ShellViewModel(ILocalizer localizer)
         {
             _localizer = localizer;
-            ChangeLanguageCommand = new DelegateCommand(async () => await OnChangeLanguage());
-            AppCultureInfo = CultureInfo.CurrentUICulture.ToString().ToEnum<LanguagesEnum>();
 
-            // Change the resource language forcibly during initialization
-            // Изменим язык ресурсов принудительно при инициализации
-            OnChangeLanguage();
-            _initialized = true;
+            ToggleDrawDirtyRects = new DelegateCommand(() => DrawDirtyRects = !DrawDirtyRects);
+            ToggleDrawFps = new DelegateCommand(() => DrawFps = !DrawFps);
+            ToggleDrawLayoutTimeGraph = new DelegateCommand(() => DrawLayoutTimeGraph = !DrawLayoutTimeGraph);
+            ToggleDrawRenderTimeGraph = new DelegateCommand(() => DrawRenderTimeGraph = !DrawRenderTimeGraph);
         }
 
-
-        /// <summary>
-        /// Поменять язык
-        /// </summary>
-        private async Task OnChangeLanguage()
+        public bool DrawDirtyRects
         {
-            if (!_currentAppCultureInfo.Equals(_appCultureInfo) || !_initialized)
-            {
-                // lang
-                await Dispatcher.UIThread.InvokeAsync(
-                    () => { OnChangeCulture(AppCultureInfo); },
-                    DispatcherPriority.SystemIdle);
-                _currentAppCultureInfo = _appCultureInfo;
-            }
+            get => _drawDirtyRects;
+            set => SetProperty(ref _drawDirtyRects, value);
         }
 
-        private void OnChangeCulture(LanguagesEnum languagesEnum)
+        public bool DrawFps
         {
-            string? lang = languagesEnum.ToString();
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(lang);
-            _localizer.EditLn(lang);
+            get => _drawFps;
+            set => SetProperty(ref _drawFps, value);
         }
 
-        /// <summary>
-        /// Application Language / Язык приложения
-        /// </summary>
-        public LanguagesEnum AppCultureInfo
+        public bool DrawLayoutTimeGraph
         {
-            get => _appCultureInfo;
-            set => SetProperty(ref _appCultureInfo, value);
+            get => _drawLayoutTimeGraph;
+            set => SetProperty(ref _drawLayoutTimeGraph, value);
         }
 
-        public string Title => "Avalonia+Prism Application";
+        public bool DrawRenderTimeGraph
+        {
+            get => _drawRenderTimeGraph;
+            set => SetProperty(ref _drawRenderTimeGraph, value);
+        }
 
-        public ICommand ChangeLanguageCommand { get; }
+        public ICommand ToggleDrawDirtyRects { get; }
+        public ICommand ToggleDrawFps { get; }
+        public ICommand ToggleDrawLayoutTimeGraph { get; }
+        public ICommand ToggleDrawRenderTimeGraph { get; }
     }
 }

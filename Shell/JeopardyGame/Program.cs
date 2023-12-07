@@ -23,7 +23,10 @@ namespace JeopardyGame
                     EnableMultiTouch = true,
                     UseDBusMenu = true
                 })
-                .With(new Win32PlatformOptions())
+                .With(new Win32PlatformOptions
+                {
+                    OverlayPopups = true,
+                })
                 .UseSkia()
                 .UseReactiveUI()
                 .UseManagedSystemDialogs()
