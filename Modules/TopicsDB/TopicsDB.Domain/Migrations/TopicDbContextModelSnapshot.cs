@@ -30,6 +30,9 @@ namespace TopicDb.Domain.Migrations
                     b.Property<string>("PictureUrl")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Price")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 

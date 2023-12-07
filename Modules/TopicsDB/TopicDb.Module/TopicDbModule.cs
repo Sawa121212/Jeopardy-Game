@@ -6,7 +6,9 @@ using Prism.Regions;
 using TopicDb.Domain;
 using TopicDb.Module.Properties;
 using TopicsDB.Infrastructure;
-using TopicsDB.Infrastructure.Interfaces;
+using TopicsDB.Infrastructure.Services;
+using TopicsDB.Infrastructure.Services.Interfaces;
+using TopicsDB.Infrastructure.Views;
 
 namespace TopicDb.Module
 {
@@ -33,7 +35,7 @@ namespace TopicDb.Module
                 .RegisterSingleton<IQuestionService, QuestionService>();
 
             // регистрируем View для навигации по Регионам
-            //containerRegistry.RegisterForNavigation<TabAView>();
+            containerRegistry.RegisterForNavigation<TopicListView>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
@@ -42,7 +44,7 @@ namespace TopicDb.Module
             containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
 
             // Зарегистрировать View к региону. Теперь при запуске ПО View будет показано
-            //_regionManager.RegisterViewWithRegion("RegionA", typeof(TabAView));
+            _regionManager.RegisterViewWithRegion("TopicListControlRegion", typeof(TopicListView));
         }
     }
 }

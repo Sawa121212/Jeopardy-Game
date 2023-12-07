@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TopicDb.Domain.Models;
 
-namespace TopicsDB.Infrastructure.Interfaces
+namespace TopicsDB.Infrastructure.Services.Interfaces
 {
     /// <summary>
     /// для управления вопросами

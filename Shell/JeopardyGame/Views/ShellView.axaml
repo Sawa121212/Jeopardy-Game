@@ -6,6 +6,7 @@
         xmlns:converters="clr-namespace:JeopardyGame.Converters"
         xmlns:viewModel="clr-namespace:JeopardyGame.Views"
         xmlns:controls="clr-namespace:Common.Resources.HamburgerMenus;assembly=Common.Resources"
+        xmlns:views="clr-namespace:TopicsDB.Infrastructure.Views;assembly=TopicsDB.Infrastructure"
         prism:ViewModelLocator.AutoWireViewModel="True"
         x:Class="JeopardyGame.Views.ShellView"
         WindowStartupLocation="CenterScreen"
@@ -56,12 +57,15 @@
         </FlyoutBase.AttachedFlyout>
 
         <TabItem Header="Играть">
+            Тут пока пусто
         </TabItem>
         <TabItem Header="Темы и вопросы">
+            <ContentControl prism:RegionManager.RegionName="TopicListControlRegion" />
         </TabItem>
-        <TabItem Header="Настройки">
+        <TabItem Header="TelegramTest">
+            <ContentControl prism:RegionManager.RegionName="RegionC" />
         </TabItem>
-        <TabItem Header="Выход">
-        </TabItem>
+        <!--<TabItem Header="Выход">
+        </TabItem>-->
     </controls:HamburgerMenu>
 </Window>

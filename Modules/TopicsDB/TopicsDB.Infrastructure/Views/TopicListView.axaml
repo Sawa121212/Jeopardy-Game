@@ -1,0 +1,231 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:viewModels="clr-namespace:TopicsDB.Infrastructure.Views"
+             xmlns:textBoxes="clr-namespace:Common.Ui.Behaviors.TextBoxes;assembly=Common.Ui"
+             xmlns:models="clr-namespace:TopicDb.Domain.Models;assembly=TopicDb.Domain"
+             x:Class="TopicsDB.Infrastructure.Views.TopicListView"
+             mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             x:Name="TopicListControl"
+             x:DataType="viewModels:TopicListViewModel"
+             d:DesignWidth="800" d:DesignHeight="450">
+
+    <Design.DataContext>
+        <viewModels:TopicListViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,*"
+          Margin="3">
+        <!-- Поиск -->
+        <Grid Grid.Row="0" RowDefinitions="*,*">
+            <Panel Grid.Row="0" 
+                   VerticalAlignment="Center"
+                   Height="32">
+                <controls:Card VerticalAlignment="Center"
+                               Padding="0">
+                    <Grid ColumnDefinitions="Auto, *">
+                        <ToggleButton Grid.Column="0" x:Name="VisibleFilter"
+                                      Content="{materialIcons:MaterialIconExt Filter}"
+                                      ClickMode="Press"
+                                      ToolTip.Tip="Фильтр" />
+                        <TextBox Grid.Column="1"
+                                 Classes="Solo"
+                                 HorizontalAlignment="Stretch"
+                                 Margin="0"
+                                 Watermark="Поиск"
+                                 Text="{Binding FilterText, Mode=TwoWay}">
+                            <TextBox.Styles>
+                                <Style Selector="TextBox.Solo /template/ Grid#PART_InnerRoot">
+                                    <Setter Property="Margin" Value="8,4" />
+                                </Style>
+                            </TextBox.Styles>
+                            <TextBox.InnerRightContent>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Classes="Flat"
+                                            Width="{Binding $self.Bounds.Height}"
+                                            Padding="4"
+                                            Content="{materialIcons:MaterialIconExt CloseThick, Size=16}"
+                                            Command="{Binding ClearFoundElementsCommand}" />
+                                    <Button Classes="Flat"
+                                            Width="{Binding $self.Bounds.Height}"
+                                            Padding="4"
+                                            Content="{materialIcons:MaterialIconExt Search, Size=24}"
+                                            Command="{Binding FindTopicsCommand, Mode=OneWay}" />
+                                </StackPanel>
+                            </TextBox.InnerRightContent>
+                            <Interaction.Behaviors>
+                                <textBoxes:TextBoxTextChangedBehavior Command="{Binding FindTopicCommand}" />
+                            </Interaction.Behaviors>
+                        </TextBox>
+                    </Grid>
+                </controls:Card>
+            </Panel>
+            <Panel Grid.Row="1">
+                <WrapPanel IsVisible="{Binding ElementName=VisibleFilter, Path= IsChecked}"
+                           VerticalAlignment="Center" Margin="0,5">
+                    <CheckBox IsChecked="{Binding ByName}" Margin="5,3">Поиск по имени владельца лицензии</CheckBox>
+                    <CheckBox IsChecked="{Binding ByLicenseType}" Margin="5,3">Поиск по типу лицензии</CheckBox>
+                    <CheckBox IsChecked="{Binding ByOrganization}" Margin="5,3">Поиск по организации</CheckBox>
+                    <CheckBox IsChecked="{Binding ByMachineCode}" Margin="5,3">Поиск по аппаратным данным</CheckBox>
+                </WrapPanel>
+            </Panel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Button Classes="Flat"
+                    Content="Создать новую тему"
+                    HorizontalAlignment="Right"
+                    Command="{Binding FindTopicsCommand, Mode=OneWay}"
+                    Margin="3" />
+        </Grid>
+        <!-- Список -->
+        <controls:Card Grid.Row="2" Padding="1">
+            <Panel>
+                <ListBox ItemsSource="{Binding Topics, Mode=OneWay}"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         assists:ShadowAssist.ShadowDepth="Depth1"
+                         assists:ShadowAssist.Darken="True"
+                         IsVisible="{Binding !!Topics.Count}"
+                         Margin="0,3,5,3">
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:Topic}">
+                            <controls:Card assists:ShadowAssist.ShadowDepth="Depth1"
+                                           Margin="0, 3,5,3">
+                                <Grid RowDefinitions="Auto, Auto">
+
+                                    <!-- Информация о теме -->
+                                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+
+                                        <materialIcons:MaterialIcon Grid.Column="0"
+                                                                    Kind="Library"
+                                                                    Height="32" Width="32"
+                                                                    Margin="0,0,3,0" />
+
+                                        <TextBlock Grid.Column="1"
+                                                   Classes="Headline6"
+                                                   Text="{Binding Name, Mode=OneWay}"
+                                                   Margin="3,0" />
+
+                                        <!-- Опции -->
+                                        <Menu Grid.Column="2" Height="32" Padding="0" Margin="0">
+                                            <MenuItem Height="32" Width="32"
+                                                      Header="{materialIcons:MaterialIconExt Add, Size=24}">
+                                                <MenuItem Header="Добавить вопрос"
+                                                          Command="{Binding DataContext.EditTopicCommand, ElementName=TopicListControl}"
+                                                          CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <materialIcons:MaterialIcon Kind="Edit"
+                                                            Width="16" Height="16" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Редактировать имя темы"
+                                                          Command="{Binding DataContext.EditTopicCommand, ElementName=TopicListControl}"
+                                                          CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <materialIcons:MaterialIcon Kind="Edit"
+                                                            Width="16" Height="16" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Удалить"
+                                                          Command="{Binding DataContext.DeleteCommand, ElementName=TopicListControl}"
+                                                          CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <materialIcons:MaterialIcon Kind="Delete"
+                                                            Width="16" Height="16" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </MenuItem>
+                                        </Menu>
+                                    </Grid>
+
+                                    <!-- Вопросы (Expander)-->
+                                    <Expander Grid.Row="1" Margin="3">
+                                        <Expander.Header>
+                                            <Grid>
+                                                <StackPanel Orientation="Horizontal"
+                                                            HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                    <materialIcons:MaterialIcon Kind="QuestionAnswer" Width="25"
+                                                        Height="25" />
+                                                    <TextBlock Classes="Subtitle1"
+                                                               Text="Вопросы"
+                                                               Margin="3,0" />
+                                                    <TextBlock Classes="Subtitle1"
+                                                               Text="{Binding StringFormat=({0}), Path=Questions.Count}"
+                                                               Margin="3,0" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Expander.Header>
+
+                                        <!-- Вопросы -->
+                                        <Grid Margin="0,5,0,7">
+                                            <!-- Сообщение о отсутствии вопросов -->
+                                            <StackPanel Orientation="Horizontal" IsVisible="{Binding !Questions.Count}"
+                                                        Margin="10, 5">
+                                                <materialIcons:MaterialIcon Kind="AlertCircle" Foreground="Red" />
+                                                <TextBlock Classes="Subtitle1"
+                                                           Text="Вопросы не найдены"
+                                                           Foreground="Red"
+                                                           Margin="3" />
+                                            </StackPanel>
+
+                                            <!-- Вопросы -->
+                                            <ListBox ItemsSource="{Binding Questions, Mode=OneWay}"
+                                                     ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                     IsVisible="{Binding !!Questions.Count}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type models:Question}">
+                                                        <Expander Margin="10,3,10,3"
+                                                                  assists:ShadowAssist.ShadowDepth="Depth1">
+                                                            <Expander.Header>
+                                                                <Grid ColumnDefinitions="Auto,*">
+                                                                    <StackPanel Grid.Column="0"
+                                                                        Orientation="Horizontal"
+                                                                        HorizontalAlignment="Left"
+                                                                        VerticalAlignment="Center">
+                                                                        <materialIcons:MaterialIcon Kind="Key"
+                                                                            Width="18"
+                                                                            Height="18" />
+                                                                        <TextBlock Classes="Subtitle2"
+                                                                            Text="{Binding Text}"
+                                                                            HorizontalAlignment="Stretch"
+                                                                            Margin="5,0" />
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                            </Expander.Header>
+                                                        </Expander>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </Grid>
+
+                                    </Expander>
+                                </Grid>
+                            </controls:Card>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Сообщение о отсутствии вопросов -->
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            IsVisible="{Binding !Topics.Count}"
+                            Margin="10, 5">
+                    <materialIcons:MaterialIcon Kind="AlertCircle" Foreground="Red" />
+                    <TextBlock Classes="Subtitle1"
+                               Text="Темы не найдены"
+                               Margin="3" />
+                </StackPanel>
+            </Panel>
+        </controls:Card>
+    </Grid>
+</UserControl>

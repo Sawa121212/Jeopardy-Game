@@ -12,6 +12,7 @@ namespace TopicDb.Domain.Models
         public string PictureUrl { get; set; }
         public string MusicUrl { get; set; }
         public string CorrectAnswer { get; set; }
+        public int Price { get; set; }
 
         [ForeignKey("TopicId")] 
         public Topic Topic { get; set; }

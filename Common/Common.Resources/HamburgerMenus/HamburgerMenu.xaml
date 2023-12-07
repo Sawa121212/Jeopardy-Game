@@ -22,12 +22,12 @@
     </Design.PreviewWith>
 
     <ResourceDictionary.ThemeDictionaries>
-        <ResourceDictionary x:Key="Dark">
+        <!--<ResourceDictionary x:Key="Dark">
             <Color x:Key="HamburgerBaseHighColor">#99FFFFFF</Color>
             <Color x:Key="HamburgerChromeMediumColor">#FF1F1F1F</Color>
             <Color x:Key="HamburgerAltHighColor">#FF000000</Color>
             <Color x:Key="HamburgerChromeLowColor">#FF171717</Color>
-        </ResourceDictionary>
+        </ResourceDictionary>-->
         <ResourceDictionary x:Key="Default">
             <Color x:Key="HamburgerBaseHighColor">#99000000</Color>
             <Color x:Key="HamburgerChromeMediumColor">#FFE6E6E6</Color>
@@ -52,6 +52,7 @@
     <system:TimeSpan x:Key="SplitViewPaneAnimationOpenDuration">00:00:00.2</system:TimeSpan>
     <system:TimeSpan x:Key="SplitViewPaneAnimationCloseDuration">00:00:00.1</system:TimeSpan>
     <Easing x:Key="SplitViewPaneAnimationEasing">0.1,0.9,0.2,1.0</Easing>
+
 
 
     <ControlTheme x:Key="NavigationButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">

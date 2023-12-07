@@ -2,9 +2,9 @@
 using System.Linq;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
-using TopicsDB.Infrastructure.Interfaces;
+using TopicsDB.Infrastructure.Services.Interfaces;
 
-namespace TopicsDB.Infrastructure
+namespace TopicsDB.Infrastructure.Services
 {
     public class QuestionService : IQuestionService
     {
