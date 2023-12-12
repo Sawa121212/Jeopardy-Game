@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
+using Common.Ui.Extensions;
 
 namespace Common.Ui.Behaviors.ListViews
 {
@@ -56,7 +57,14 @@ namespace Common.Ui.Behaviors.ListViews
                 Command?.Invoke(CommandParameter);
             }
             else */
-            Command?.Execute(AssociatedObject?.SelectedItem);
+            if (AssociatedObject?.SelectedItem != null)
+            {
+                Command?.Invoke(AssociatedObject.SelectedItem);
+            }
+            else
+            {
+                Command?.Invoke();
+            }
         }
     }
 }

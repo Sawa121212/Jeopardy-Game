@@ -17,9 +17,9 @@ namespace Common.Ui.Behaviors.TreeViews
         }
         
         /// <inheritdoc />
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.MouseLeave += OnMouseLeave;
             AssociatedObject.PreviewDragLeave += OnDragLeave;
             AssociatedObject.PreviewDrop += OnPreviewDrop;
@@ -27,13 +27,13 @@ namespace Common.Ui.Behaviors.TreeViews
         }
 
         /// <inheritdoc />
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.MouseLeave -= OnMouseLeave;
             AssociatedObject.PreviewDragLeave -= OnDragLeave;
             AssociatedObject.PreviewDrop -= OnPreviewDrop;
             AssociatedObject.PreviewDragOver -= OnDragOver;
-            base.OnCleanup();
+            base.OnDetaching();
         }
         
         private void OnMouseLeave(object sender, MouseEventArgs e)

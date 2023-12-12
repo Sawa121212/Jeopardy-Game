@@ -21,15 +21,15 @@ namespace Common.Ui.Behaviors.TreeViews
         }
 
         /// <inheritdoc />
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
         }
 
         /// <inheritdoc />
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private static void FilterTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

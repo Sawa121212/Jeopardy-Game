@@ -17,17 +17,17 @@ namespace Common.Ui.Behaviors.TreeViews
         }
         
         /// <inheritdoc />
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.PreviewKeyUp +=OnPreviewKeyUp;    
         }
 
         /// <inheritdoc />
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.PreviewKeyUp -=OnPreviewKeyUp;    
-            base.OnCleanup();
+            base.OnDetaching();
         }
         
         private void OnPreviewKeyUp(object sender, KeyEventArgs e)

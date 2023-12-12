@@ -86,20 +86,20 @@ namespace Common.Ui.Behaviors.GridSplitters
             _monitor = new SimpleMonitor();
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.PreviewMouseDoubleClick += AssociatedObject_PreviewMouseDoubleClick;
             //AssociatedObject.DragDelta += OnDragDelta;
             if (ActivateOnSetup)
                 Proccess(IsCollapsed);
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.PreviewMouseDoubleClick -= AssociatedObject_PreviewMouseDoubleClick;
            // AssociatedObject.DragDelta -= OnDragDelta;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnDragDelta(object sender, DragDeltaEventArgs dragDeltaEventArgs)

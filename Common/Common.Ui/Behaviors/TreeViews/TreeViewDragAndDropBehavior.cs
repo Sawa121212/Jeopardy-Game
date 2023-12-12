@@ -107,9 +107,9 @@ namespace Common.Ui.Behaviors.TreeViews
         /// <inheritdoc />
         public bool IsAllowDrop { get; set; }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.PreviewMouseLeftButtonDown += AssociatedObjectOnMouseLeftButtonDown;
             AssociatedObject.MouseMove += AssociatedObjectOnMouseMove;
             AssociatedObject.DragOver += AssociatedObjectOnDragOver;
@@ -119,7 +119,7 @@ namespace Common.Ui.Behaviors.TreeViews
             AssociatedObject.GiveFeedback += AssociatedObjectOnGiveFeedback;
         }
         
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.PreviewMouseLeftButtonDown -= AssociatedObjectOnMouseLeftButtonDown;
             AssociatedObject.MouseMove -= AssociatedObjectOnMouseMove;
@@ -128,7 +128,7 @@ namespace Common.Ui.Behaviors.TreeViews
             AssociatedObject.DragLeave -= AssociatedObjectOnDragLeave;
             AssociatedObject.Drop -= AssociatedObjectOnDrop;
             AssociatedObject.GiveFeedback -= AssociatedObjectOnGiveFeedback;
-            base.OnCleanup();
+            base.OnDetaching();
         }
         
         private void AssociatedObjectOnDrop(object sender, DragEventArgs e)

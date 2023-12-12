@@ -16,16 +16,16 @@ namespace Common.Ui.Behaviors.FrameworkElements
             get => (bool) GetValue(BlockMenuOpeningProperty);
             set => SetValue(BlockMenuOpeningProperty, value);
         }
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.ContextMenuOpening += OnContextMenuOpening;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.ContextMenuOpening -= OnContextMenuOpening;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnContextMenuOpening(object sender, ContextMenuEventArgs e)

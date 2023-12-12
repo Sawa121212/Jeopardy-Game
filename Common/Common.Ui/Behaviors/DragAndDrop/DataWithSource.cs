@@ -1,5 +1,5 @@
-﻿/*
-using System;
+﻿using System;
+using Avalonia.Controls;
 
 namespace Common.Ui.Behaviors.DragAndDrop
 {
@@ -11,16 +11,16 @@ namespace Common.Ui.Behaviors.DragAndDrop
         /// <summary>
         /// Вспомогательный класс для перетаскивания элементов.
         /// </summary>
-        public DataWithSource(FrameworkElement dragSource, object data)
+        public DataWithSource(Control dragSource, object data)
         {
-            DragSource = new WeakReference<FrameworkElement>(dragSource);
+            DragSource = new WeakReference<Control>(dragSource);
             Data = new WeakReference<object>(data);
         }
 
         /// <summary>
         /// Слабая ссылка на источник.
         /// </summary>
-        public WeakReference<FrameworkElement> DragSource { get; private set; }
+        public WeakReference<Control> DragSource { get; private set; }
 
         /// <summary>
         /// Слабая ссылка на перемещаемые данные.
@@ -40,4 +40,3 @@ namespace Common.Ui.Behaviors.DragAndDrop
         }
     }
 }
-*/

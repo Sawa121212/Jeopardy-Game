@@ -17,16 +17,16 @@ namespace Common.Ui.Behaviors.TreeViews
             set => SetValue(DeleteItemCommandProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.PreviewKeyDown += OnPreviewKeyDown;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.PreviewKeyDown -= OnPreviewKeyDown;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)

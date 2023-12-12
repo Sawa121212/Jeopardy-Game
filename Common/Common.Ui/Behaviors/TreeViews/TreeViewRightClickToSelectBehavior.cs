@@ -6,16 +6,16 @@ namespace Common.Ui.Behaviors.TreeViews
 {
     public class TreeViewRightClickToSelectBehavior : Behavior<TreeView>
     {
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.PreviewMouseRightButtonDown += OnMouseRightButtonDown;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.PreviewMouseRightButtonDown -= OnMouseRightButtonDown;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
 

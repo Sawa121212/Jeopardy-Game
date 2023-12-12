@@ -1,12 +1,16 @@
 ﻿/*
 using System;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
+using Common.Core.Entities.DataBase;
+using Common.Core.Interfaces;
 using Common.Ui.Behaviors.DragAndDrop;
 using Common.Ui.DragAndDrop;
 using Common.Ui.Exceptions;
+using Common.Ui.ScreenHelper;
 using ReactiveUI;
 
 namespace Common.Ui.Behaviors.TreeViews
@@ -19,37 +23,48 @@ namespace Common.Ui.Behaviors.TreeViews
 
         private volatile bool _isDragging;
         private Point _startPosition;
-        private NodeElement _startElement;
+        private IDataModel _startElement;
 
         /// <summary>
         /// Разрешение копирования элементов дерева. По умолчанию true.
         /// </summary>
-        public static readonly DependencyProperty AllowCopyProperty = DependencyProperty.Register(
-            nameof(AllowCopy), typeof(bool), typeof(TreeViewNodeElementDragAndDropBehavior), new PropertyMetadata(default(bool)));
+        public static readonly StyledProperty<bool> AllowCopyProperty =
+            AvaloniaProperty.Register<TreeViewNodeElementDragAndDropBehavior, bool>(nameof(AllowCopy));
 
         /// <summary>
         /// Разрешение перемещения элементов дерева. По умолчанию true.
         /// </summary>
-        public static readonly DependencyProperty AllowMoveProperty = DependencyProperty.Register(
-            nameof(AllowMove), typeof(bool), typeof(TreeViewNodeElementDragAndDropBehavior), new PropertyMetadata(default(bool)));
+        // public static readonly DependencyProperty AllowMoveProperty = DependencyProperty.Register(
+        //     nameof(AllowMove), typeof(bool), typeof(TreeViewNodeElementDragAndDropBehavior), new PropertyMetadata(default(bool)));
+
+        public static readonly StyledProperty<bool> AllowMoveProperty =
+            AvaloniaProperty.Register<TreeViewNodeElementDragAndDropBehavior, bool>(nameof(AllowMove));
 
         /// <summary>
         /// Фабрика стратегий перемещения элементов.
         /// </summary>
-        public static readonly DependencyProperty DragAndDropStrategyFactoryProperty = DependencyProperty.Register(
-            nameof(DragAndDropStrategyFactory), typeof(INodeElementDragAndDropStrategyFactory), typeof(TreeViewNodeElementDragAndDropBehavior), new PropertyMetadata(default(INodeElementDragAndDropStrategyFactory)));
+        // public static readonly DependencyProperty DragAndDropStrategyFactoryProperty = DependencyProperty.Register(
+        //     nameof(DragAndDropStrategyFactory), typeof(IDataModelDragAndDropStrategyFactory), typeof(TreeViewNodeElementDragAndDropBehavior), new PropertyMetadata(default(IDataModelDragAndDropStrategyFactory)));
+
+        // TODO: Не ясно что использовать в AvaloniaPropertyMetadata в качестве аргумента
+        // public static readonly StyledProperty<IDataModelDragAndDropStrategyFactory>
+        //     DragAndDropStrategyFactoryProperty =
+        //         AvaloniaProperty
+        //             .Register<TreeViewNodeElementDragAndDropBehavior, IDataModelDragAndDropStrategyFactory>(
+        //                 nameof(DragAndDropStrategyFactory),
+        //                 new AvaloniaPropertyMetadata(default(IDataModelDragAndDropStrategyFactory));
 
         /// <summary>
         /// Разрешить перетаскивание из других источников.
         /// </summary>
-        public static readonly DependencyProperty AllowOtherSourceProperty = DependencyProperty.Register(
-            nameof(AllowOtherSource), typeof(bool), typeof(TreeViewNodeElementDragAndDropBehavior), new PropertyMetadata(default(bool)));
+        public static readonly StyledProperty<bool> AllowOtherSourceProperty =
+            AvaloniaProperty.Register<TreeViewNodeElementDragAndDropBehavior, bool>(nameof(AllowOtherSource));
 
         /// <summary>
         /// При перетаскивании из других источников использовать режим копирования вместо перемещения.
         /// </summary>
-        public static readonly DependencyProperty IsCopyOnlyFromOtherSourceProperty = DependencyProperty.Register(
-            nameof(IsCopyOnlyFromOtherSource), typeof(bool), typeof(TreeViewNodeElementDragAndDropBehavior), new PropertyMetadata(default(bool)));
+        public static readonly StyledProperty<bool> IsCopyOnlyFromOtherSourceProperty =
+            AvaloniaProperty.Register<TreeViewNodeElementDragAndDropBehavior, bool>(nameof(IsCopyOnlyFromOtherSource));
 
         /// <summary>
         /// Разрешение копирования элементов дерева. По умолчанию true.
@@ -69,9 +84,9 @@ namespace Common.Ui.Behaviors.TreeViews
             set => SetValue(AllowMoveProperty, value);
         }
 
-        public INodeElementDragAndDropStrategyFactory DragAndDropStrategyFactory
+        public IDataModelDragAndDropStrategyFactory DragAndDropStrategyFactory
         {
-            get => (INodeElementDragAndDropStrategyFactory)GetValue(DragAndDropStrategyFactoryProperty);
+            get => (IDataModelDragAndDropStrategyFactory)GetValue(DragAndDropStrategyFactoryProperty);
             set => SetValue(DragAndDropStrategyFactoryProperty, value);
         }
 
@@ -103,35 +118,38 @@ namespace Common.Ui.Behaviors.TreeViews
         /// <inheritdoc />
         public bool IsAllowDrop { get; set; }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
-            AssociatedObject.PreviewMouseLeftButtonDown += AssociatedObjectOnMouseLeftButtonDown;
-            AssociatedObject.MouseMove += AssociatedObjectOnMouseMove;
-            AssociatedObject.DragOver += AssociatedObjectOnDragOver;
-            AssociatedObject.DragEnter += AssociatedObjectOnDragEnter;
-            AssociatedObject.DragLeave += AssociatedObjectOnDragLeave;
-            AssociatedObject.Drop += AssociatedObjectOnDrop;
-            AssociatedObject.GiveFeedback += AssociatedObjectOnGiveFeedback;
+            base.OnAttached();
+            AssociatedObject.PointerPressed += AssociatedObjectOnMouseLeftButtonDown;
+            AssociatedObject.PointerMoved += AssociatedObjectOnMouseMove;
+            // AssociatedObject.DragOver += AssociatedObjectOnDragOver;
+            AssociatedObject.PointerEnter += AssociatedObjectOnDragEnter;
+            AssociatedObject.PointerLeave += AssociatedObjectOnDragLeave;
+            AssociatedObject.PointerReleased += AssociatedObjectOnDrop;
+            // AssociatedObject.GiveFeedback += AssociatedObjectOnGiveFeedback;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
-            AssociatedObject.PreviewMouseLeftButtonDown -= AssociatedObjectOnMouseLeftButtonDown;
-            AssociatedObject.MouseMove -= AssociatedObjectOnMouseMove;
-            AssociatedObject.DragOver -= AssociatedObjectOnDragOver;
-            AssociatedObject.DragEnter -= AssociatedObjectOnDragEnter;
-            AssociatedObject.DragLeave -= AssociatedObjectOnDragLeave;
-            AssociatedObject.Drop -= AssociatedObjectOnDrop;
-            AssociatedObject.GiveFeedback -= AssociatedObjectOnGiveFeedback;
-            base.OnCleanup();
+            AssociatedObject.PointerPressed -= AssociatedObjectOnMouseLeftButtonDown;
+            AssociatedObject.PointerMoved -= AssociatedObjectOnMouseMove;
+            // AssociatedObject.DragOver -= AssociatedObjectOnDragOver;
+            AssociatedObject.PointerEnter -= AssociatedObjectOnDragEnter;
+            AssociatedObject.PointerLeave -= AssociatedObjectOnDragLeave;
+            AssociatedObject.PointerReleased -= AssociatedObjectOnDrop;
+            // AssociatedObject.GiveFeedback -= AssociatedObjectOnGiveFeedback;
+            base.OnDetaching();
         }
-
-       
         
-        private void AssociatedObjectOnDrop(object sender, DragEventArgs e)
+        
+        
+        private void AssociatedObjectOnDrop(object sender, PointerEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(DataWithSource).ToString(), false))
+            // var point = e.GetCurrentPoint(null).Properties.IsLeftButtonPressed;
+            // var 
+
+            if (e.Data.GetData(typeof(DataWithSource).ToString(), false))
             {
                 if (e.Data.GetData(typeof(DataWithSource)) is DataWithSource dataWithSource)
                 {
@@ -140,13 +158,13 @@ namespace Common.Ui.Behaviors.TreeViews
                         var sameDragSource = sourceTarget.Equals(AssociatedObject);
                         if (sameDragSource || AllowOtherSource)
                         {
-                            var copyMode = e.KeyStates == DragDropKeyStates.ControlKey || IsCopyOnlyFromOtherSource && !sameDragSource;
+                            var copyMode = e.KeyModifiers == KeyModifiers.Control || IsCopyOnlyFromOtherSource && !sameDragSource;
 
-                            if (e.OriginalSource is FrameworkElement element)
+                            if (e.Source is Control element)
                             {
-                                if (element.DataContext is NodeElement destinationElement)
+                                if (element.DataContext is IDataModel destinationElement)
                                 {
-                                    if (dataWithSource.Data.TryGetTarget(out var someObject) && someObject is NodeElement nodeElement)
+                                    if (dataWithSource.Data.TryGetTarget(out var someObject) && someObject is IDataModel nodeElement)
                                     {
                                         var strategy = DragAndDropStrategyFactory?.CreateStrategy(destinationElement);
                                         if (strategy != null)
@@ -194,7 +212,7 @@ namespace Common.Ui.Behaviors.TreeViews
             }
         }
 
-        private void AssociatedObjectOnGiveFeedback(object sender, GiveFeedbackEventArgs e)
+        /*private void AssociatedObjectOnGiveFeedback(object sender, GiveFeedbackEventArgs e)
         {
             if (!IsAllowDrop)
             {
@@ -206,9 +224,9 @@ namespace Common.Ui.Behaviors.TreeViews
                 e.UseDefaultCursors = true;
             }
             e.Handled = true;
-        }
+        }#1#
         
-        private void AssociatedObjectOnDragOver(object sender, DragEventArgs e)
+        /*private void AssociatedObjectOnDragOver(object sender, PointerEventArgs e)
         {
             var control = sender as ItemsControl;
             var scrollViewer = control?.FindVisualChildren<ScrollViewer>().FirstOrDefault(viewer => viewer.Name.IsEquals("ScrollViewer_Content"));
@@ -224,29 +242,30 @@ namespace Common.Ui.Behaviors.TreeViews
                     scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + ScrollOffset);
                 }
             }
-        }
+        }#1#
 
-        private void AssociatedObjectOnDragEnter(object sender, DragEventArgs e)
+        private void AssociatedObjectOnDragEnter(object sender, PointerEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(DataWithSource).ToString(), false))
+            // if (e.Data.GetDataPresent(typeof(DataWithSource).ToString(), false))
+            if (e.)
             {
                 if (e.Data.GetData(typeof(DataWithSource)) is DataWithSource dataWithSource)
                 {
                     if (dataWithSource.DragSource.TryGetTarget(out var sourceTarget))
                     {
-                        var sourceBehavior = Interaction<,>.GetBehaviors(sourceTarget).OfType<IDragAndDropBehavior>().FirstOrDefault();
+                        var sourceBehavior = Interaction.GetBehaviors(sourceTarget).OfType<IDragAndDropBehavior>().FirstOrDefault();
                         if (sourceBehavior != null)
                         {
                             var sameDragSource = sourceTarget.Equals(AssociatedObject);
                             if (sameDragSource || AllowOtherSource)
                             {
-                                var copyMode = e.KeyStates == DragDropKeyStates.ControlKey || IsCopyOnlyFromOtherSource && !sameDragSource;
+                                var copyMode = e.KeyModifiers == KeyModifiers.Control || IsCopyOnlyFromOtherSource && !sameDragSource;
 
-                                if (e.OriginalSource is FrameworkElement element)
+                                if (e.Source is Control element)
                                 {
-                                    if (element.DataContext is NodeElement destinationItem)
+                                    if (element.DataContext is IDataModel destinationItem)
                                     {
-                                        if (dataWithSource.Data.TryGetTarget(out var someObject) && someObject is NodeElement nodeElement)
+                                        if (dataWithSource.Data.TryGetTarget(out var someObject) && someObject is IDataModel nodeElement)
                                         {
                                             var strategy = DragAndDropStrategyFactory?.CreateStrategy(destinationItem);
                                             if (strategy != null)
@@ -265,7 +284,7 @@ namespace Common.Ui.Behaviors.TreeViews
             }
         }
 
-        private void AssociatedObjectOnDragLeave(object sender, DragEventArgs e)
+        private void AssociatedObjectOnDragLeave(object sender, PointerEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(DataWithSource).ToString(), false))
             {
@@ -283,11 +302,11 @@ namespace Common.Ui.Behaviors.TreeViews
             }
         }
 
-        private void AssociatedObjectOnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void AssociatedObjectOnMouseLeftButtonDown(object sender, PointerEventArgs e)
         {
-            if (e.OriginalSource is FrameworkElement frameworkElement)
+            if (e.Source is Control frameworkElement)
             {
-                _startElement = frameworkElement.DataContext as NodeElement;
+                _startElement = frameworkElement.DataContext as IDataModel;
                 _startPosition = e.GetPosition(null);
             }
             else
@@ -296,14 +315,15 @@ namespace Common.Ui.Behaviors.TreeViews
             }
         }
 
-        private void AssociatedObjectOnMouseMove(object sender, MouseEventArgs e)
+        private void AssociatedObjectOnMouseMove(object sender, PointerEventArgs e)
         {
-            if (e.OriginalSource is UIElement element)
+            if (e.Source is Control element)
             {
-                var item = element.TryFindParent<TreeViewItem>();
-                if (item != null && item.IsMouseOver && item.DataContext != null)
+                // TODO: Нет аналогов TryFindParent и IsMouseOver
+                // var item = element.TryFindParent<TreeViewItem>();
+                if (element != null && /*element.IsMouseOver &&#1# element.DataContext != null)
                 {
-                    if (item.DataContext.Equals(AssociatedObject.SelectedItem))
+                    if (element.DataContext.Equals(AssociatedObject.SelectedItem))
                     {
                         MouseMove(sender, e);
                     }
@@ -311,16 +331,19 @@ namespace Common.Ui.Behaviors.TreeViews
             }
         }
 
-        private void MouseMove(object sender, MouseEventArgs e)
+        private void MouseMove(object sender, PointerEventArgs e)
         {
             if (_startElement == null)
                 return;
             
-            if (e.LeftButton == MouseButtonState.Pressed && !_isDragging && IsDragStart(e.GetPosition(null)))
+            //if (e.LeftButton == MouseButtonState.Pressed && !_isDragging && IsDragStart(e.GetPosition(null)))
+            if (e.GetCurrentPoint(null).Properties.IsLeftButtonPressed == true
+                 && !_isDragging 
+                 && IsDragStart(e.GetPosition(null)))
             {
-                if (e.OriginalSource is FrameworkElement frameworkElement)
+                if (e.Source is Control frameworkElement)
                 {
-                    if (frameworkElement.DataContext is NodeElement nodeElement)
+                    if (frameworkElement.DataContext is IDataModel nodeElement)
                     {
                         if (nodeElement.Equals(_startElement))
                         {
@@ -337,11 +360,11 @@ namespace Common.Ui.Behaviors.TreeViews
         /// Процедура перетаскивания элемента.
         /// </summary>
         /// <param name="element"></param>
-        protected virtual void DragDropProccess(NodeElement element)
+        protected virtual void DragDropProccess(IDataModel element)
         {
             var data = new DataObject();
             var dataWithSource = new DataWithSource(AssociatedObject, element);
-            data.SetData(typeof(DataWithSource), dataWithSource);
+            data.Set(typeof(DataWithSource).ToString(), dataWithSource);
 
             var effects = DragDropEffects.None;
             if (AllowCopy) effects |= DragDropEffects.Copy;
@@ -350,7 +373,9 @@ namespace Common.Ui.Behaviors.TreeViews
             IsAllowDrop = false;
             try
             {
-                DragDrop.DoDragDrop(AssociatedObject, data, effects);
+                // TODO: нужен triger event
+                // DragDrop.DoDragDrop(AssociatedObject, data, effects);
+                DragDrop.DoDragDrop(e/*triger event#1#, data, effects);
             }
             catch (DragAndDropCancelException)
             {
@@ -368,8 +393,11 @@ namespace Common.Ui.Behaviors.TreeViews
 
         private bool IsDragStart(Point position)
         {
-            return Math.Abs(position.X - _startPosition.X) > SystemParameters.MinimumHorizontalDragDistance + DragStartOffset ||
-                   Math.Abs(position.Y - _startPosition.Y) > SystemParameters.MinimumVerticalDragDistance + DragStartOffset;
+            return Math.Abs(position.X - _startPosition.X) > Screen.PrimaryScreen.WorkingArea.X + DragStartOffset ||
+                   Math.Abs(position.Y - _startPosition.Y) > Screen.PrimaryScreen.WorkingArea.Y + DragStartOffset;
+            
+            // return Math.Abs(position.X - _startPosition.X) > SystemParameters.MinimumHorizontalDragDistance + DragStartOffset ||
+            //        Math.Abs(position.Y - _startPosition.Y) > SystemParameters.MinimumVerticalDragDistance + DragStartOffset;
         }
     }
 }

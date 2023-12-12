@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using TopicDb.Domain.Models;

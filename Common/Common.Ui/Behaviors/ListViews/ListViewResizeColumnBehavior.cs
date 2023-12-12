@@ -18,18 +18,18 @@ namespace Common.Ui.Behaviors.ListViews
             set => SetValue(StretchColumnIndexProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.SizeChanged += OnSizeChanged;
             AssociatedObject.Loaded += OnLoaded;
         }
         
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.SizeChanged -= OnSizeChanged;
             AssociatedObject.Loaded -= OnLoaded;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)

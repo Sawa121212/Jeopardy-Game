@@ -1,10 +1,5 @@
-﻿using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Avalonia.Threading;
+﻿using System.Windows.Input;
 using Common.Core.Localization;
-using JeopardyGame.Extensions;
 using Prism.Commands;
 using Prism.Mvvm;
 

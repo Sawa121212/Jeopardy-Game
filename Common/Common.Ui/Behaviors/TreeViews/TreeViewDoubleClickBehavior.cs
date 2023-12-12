@@ -26,17 +26,17 @@ namespace Common.Ui.Behaviors.TreeViews
         }
         
         /// <inheritdoc />
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.PreviewMouseDoubleClick += OnPreviewMouseDoubleClick;
         }
 
         /// <inheritdoc />
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.PreviewMouseDoubleClick -= OnPreviewMouseDoubleClick;
-            base.OnCleanup();
+            base.OnDetaching();
         }
         
         private void OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)

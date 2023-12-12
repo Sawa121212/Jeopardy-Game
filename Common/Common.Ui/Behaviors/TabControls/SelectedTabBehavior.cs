@@ -17,16 +17,16 @@ namespace Common.Ui.Behaviors.TabControls
             set => SetValue(SelectedCommandProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.SelectionChanged += OnSelectionChanged;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.SelectionChanged -= OnSelectionChanged;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)

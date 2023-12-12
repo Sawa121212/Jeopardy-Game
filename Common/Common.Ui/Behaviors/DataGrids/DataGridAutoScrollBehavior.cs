@@ -21,9 +21,9 @@ namespace Common.Ui.Behaviors.DataGrids
             set => SetValue(AutoScrollToEndProperty, value);
         }
         
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             var propertyDescriptor = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, typeof(DataGrid));
             propertyDescriptor?.AddValueChanged(AssociatedObject, ItemSourceChanged);
 
@@ -34,7 +34,7 @@ namespace Common.Ui.Behaviors.DataGrids
             }
         }
         
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             var propertyDescriptor = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, typeof(DataGrid));
             propertyDescriptor?.RemoveValueChanged(AssociatedObject, ItemSourceChanged);
@@ -42,7 +42,7 @@ namespace Common.Ui.Behaviors.DataGrids
             if (AssociatedObject.ItemsSource is INotifyCollectionChanged collection)
                 collection.CollectionChanged -= CollectionChanged;
 
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void ItemSourceChanged(object sender, EventArgs e)

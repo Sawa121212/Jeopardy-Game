@@ -11,9 +11,9 @@ namespace Common.Ui.Behaviors.Windows
     /// </summary>
     public class DisableClosingWindowBehavior : Behavior<Window>
     {
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.KeyDown += OnKeyDown;
         }
 
@@ -25,10 +25,10 @@ namespace Common.Ui.Behaviors.Windows
             }
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.KeyDown -= OnKeyDown;
-            base.OnCleanup();
+            base.OnDetaching();
         }
     }
 }
