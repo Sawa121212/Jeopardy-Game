@@ -1,0 +1,106 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:i="using:Avalonia.Xaml.Interactivity"
+        xmlns:mvvm="http://prismlibrary.com/"
+        xmlns:treeViews="clr-namespace:Common.Ui.Behaviors.TreeViews;assembly=Common.Ui"
+        xmlns:listViews="clr-namespace:Common.Ui.Behaviors.ListViews;assembly=Common.Ui"
+        xmlns:windows="clr-namespace:Common.Ui.Behaviors.Windows;assembly=Common.Ui"
+        xmlns:services="clr-namespace:Infrastructure.Module.Services"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:entities="clr-namespace:Common.Core.Entities;assembly=Common.Core"
+        mvvm:ViewModelLocator.AutoWireViewModel="True"
+        x:Class="Infrastructure.Module.Views.SettingsView"
+        x:Name="ThisWindow"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d" Width="800" Height="650"
+        Title="Настройки">
+
+    <i:Interaction.Behaviors>
+        <windows:HideSignalWindowBehavior Result="{Binding NeedCloseSignal}" />
+        <windows:HideWindowOnEscKeyBehavior />
+    </i:Interaction.Behaviors>
+
+    <Grid RowDefinitions="*, Auto">
+
+        <!-- Список групп -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,2.5*">
+            <controls:Card Grid.Column="0" Padding="0" CornerRadius="0">
+                <TreeView Name="NodesTreeView"
+                          ItemsSource="{Binding MenuElements}">
+                    <TreeView.DataTemplates>
+                        <TreeDataTemplate DataType="entities:NodeElementExpanse"
+                                          ItemsSource="{Binding Children}">
+                            <Grid ColumnDefinitions="Auto, 8, *">
+                                <avalonia:MaterialIcon Grid.Column="0"
+                                                       Kind="{Binding Icon}"
+                                                       IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <TextBlock Grid.Column="2" Text="{Binding Name}" />
+                            </Grid>
+                        </TreeDataTemplate>
+                    </TreeView.DataTemplates>
+                    <i:Interaction.Behaviors>
+                        <treeViews:TreeViewSingleSelectionCommandBehavior
+                            Command="{Binding MenuElementChangedCommand}"
+                            CommandParameter="{Binding Path=SelectedItem, ElementName=NodesTreeView}" />
+                    </i:Interaction.Behaviors>
+                </TreeView>
+            </controls:Card>
+
+            <!-- Список страниц -->
+            <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="5">
+                <ListBox Grid.Row="0"
+                         ItemsSource="{Binding ExtraMenuElements}"
+                         SelectedItem="{Binding SelectedGroupNode, Mode=TwoWay}"
+                         IsVisible="{Binding SelectedView, Converter={x:Static ObjectConverters.IsNull}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="4" Padding="4">
+                                <Grid ColumnDefinitions="Auto, 8, *">
+                                    <avalonia:MaterialIcon Grid.Column="0"
+                                                           Kind="ChevronRight"
+                                                           IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                    <TextBlock Grid.Column="2" Text="{Binding Name}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <i:Interaction.Behaviors>
+                        <listViews:ListBoxSelectedItemsBehavior
+                            Command="{Binding MenuElementChangedCommand}"
+                            CommandParameter="{Binding SelectedGroupNode}" />
+                    </i:Interaction.Behaviors>
+                </ListBox>
+
+                <!-- Content -->
+                <ContentControl Grid.Row="1"
+                                x:Name="SettingsContent"
+                                IsVisible="{Binding SelectedView, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                mvvm:RegionManager.RegionManager="{Binding Region}"
+                                mvvm:RegionManager.RegionName="{x:Static services:RegionNameService.SettingsContentRegionName}"
+                                Margin="5" />
+            </Grid>
+        </Grid>
+
+        <controls:ColorZone Grid.Row="1"
+                            BorderBrush="{DynamicResource MaterialDesignCardBackground}"
+                            BorderThickness="0 1 0 0"
+                            CornerRadius="0,0,4,4">
+            <Grid ColumnDefinitions="*,Auto">
+                <Button Grid.Column="0" Classes="Flat ToolStyle"
+                        Content="{avalonia:MaterialIconExt Information, Size=24}"
+                        HorizontalAlignment="Left"
+                        ToolTip.Tip="Информация" />
+                <Button Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Content="Ok" Height="24" Width="120"
+                        Padding="0"
+                        Command="{Binding CloseWindowCommand}" Margin="5,3" />
+            </Grid>
+        </controls:ColorZone>
+    </Grid>
+</Window>

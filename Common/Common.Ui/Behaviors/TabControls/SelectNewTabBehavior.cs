@@ -11,9 +11,9 @@ namespace Common.Ui.Behaviors.TabControls
     /// </summary>
     public class SelectNewTabBehavior : Behavior<TabControl>
     {
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             var propertyDescriptor = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, typeof(TabControl));
             propertyDescriptor?.AddValueChanged(AssociatedObject, ItemSourceChanged);
 
@@ -22,14 +22,14 @@ namespace Common.Ui.Behaviors.TabControls
            
         }
         
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             if (AssociatedObject.Items is INotifyCollectionChanged observable)
                 observable.CollectionChanged -= OnCollectionChanged;
            
             var propertyDescriptor = DependencyPropertyDescriptor.FromProperty(ItemsControl.ItemsSourceProperty, typeof(TabControl));
             propertyDescriptor?.RemoveValueChanged(AssociatedObject, ItemSourceChanged);
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void ItemSourceChanged(object sender, EventArgs e)

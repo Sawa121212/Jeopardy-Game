@@ -49,7 +49,7 @@ namespace Common.Resources.HamburgerMenus
 
             if (change.Property == BoundsProperty && _splitView is not null)
             {
-                var (oldBounds, newBounds) = change.GetOldAndNewValue<Rect>();
+                (Rect oldBounds, Rect newBounds) = change.GetOldAndNewValue<Rect>();
                 EnsureSplitViewMode(oldBounds, newBounds);
             }
 
@@ -66,7 +66,7 @@ namespace Common.Resources.HamburgerMenus
         {
             if (_splitView is not null)
             {
-                var threshold = ExpandedModeThresholdWidth;
+                int threshold = ExpandedModeThresholdWidth;
 
                 if (newBounds.Width >= threshold)
                 {

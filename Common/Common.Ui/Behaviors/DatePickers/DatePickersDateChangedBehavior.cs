@@ -48,7 +48,14 @@ namespace Common.Ui.Behaviors.DatePickers
 
         private void OnSelectedDateChanged(object sender, DatePickerSelectedValueChangedEventArgs datePickerSelectedValueChangedEventArgs)
         {
-            Command?.Execute(CommandParameter ?? null);
+            if (CommandParameter != null)
+            {
+                Command?.Execute(CommandParameter);
+            }
+            else
+            {
+                Command?.Execute(null);
+            }
         }
     }
 }

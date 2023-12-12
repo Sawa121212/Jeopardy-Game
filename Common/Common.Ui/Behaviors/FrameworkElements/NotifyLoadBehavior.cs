@@ -18,17 +18,17 @@ namespace Common.Ui.Behaviors.FrameworkElements
             set => SetValue(LoadCommandProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.Loaded += OnLoaded;
             AssociatedObject.Unloaded += OnUnloaded;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.Loaded -= OnLoaded;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)

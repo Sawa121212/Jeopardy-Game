@@ -13,21 +13,21 @@ namespace Common.Ui.Behaviors.TreeViews
         private ScrollViewer _headerScrollViewer;
         private ScrollViewer _contentScrollViewer;
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.Loaded += OnLoaded;
 
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.Loaded -= OnLoaded;
 
             if (_contentScrollViewer != null)
                 _contentScrollViewer.ScrollChanged -= OnContentScrollChanged;
 
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)

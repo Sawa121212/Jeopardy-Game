@@ -12,7 +12,7 @@ namespace Common.Ui.Behaviors.DataGrids
 
         public ICommand Command
         {
-            get => (ICommand) GetValue(CommandProperty);
+            get => (ICommand)GetValue(CommandProperty);
             set => SetValue(CommandProperty, value);
         }
 
@@ -27,7 +27,7 @@ namespace Common.Ui.Behaviors.DataGrids
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (AssociatedObject != null)
+            if (AssociatedObject != null) 
             {
                 Command?.Execute(AssociatedObject.SelectedItem);
             }

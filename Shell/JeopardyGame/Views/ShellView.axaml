@@ -3,10 +3,10 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
         xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
-        xmlns:converters="clr-namespace:JeopardyGame.Converters"
         xmlns:viewModel="clr-namespace:JeopardyGame.Views"
         xmlns:controls="clr-namespace:Common.Resources.HamburgerMenus;assembly=Common.Resources"
         xmlns:views="clr-namespace:TopicsDB.Infrastructure.Views;assembly=TopicsDB.Infrastructure"
+        xmlns:converters1="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
         prism:ViewModelLocator.AutoWireViewModel="True"
         x:Class="JeopardyGame.Views.ShellView"
         WindowStartupLocation="CenterScreen"
@@ -14,7 +14,7 @@
         x:DataType="viewModel:ShellViewModel">
 
     <Window.Resources>
-        <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+        <converters1:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
     </Window.Resources>
 
     <controls:HamburgerMenu ExpandedModeThresholdWidth="760">
@@ -64,6 +64,12 @@
         </TabItem>
         <TabItem Header="TelegramTest">
             <ContentControl prism:RegionManager.RegionName="RegionC" />
+        </TabItem>
+        <TabItem Header="Notification Test">
+            <ContentControl prism:RegionManager.RegionName="NotificationTestControlRegion" />
+        </TabItem>
+        <TabItem Header="Confirmation Test">
+            <ContentControl prism:RegionManager.RegionName="ConfirmationTestControlRegion" />
         </TabItem>
         <!--<TabItem Header="Выход">
         </TabItem>-->

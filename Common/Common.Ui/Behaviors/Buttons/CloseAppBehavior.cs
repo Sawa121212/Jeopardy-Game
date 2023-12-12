@@ -24,16 +24,16 @@ namespace Common.Ui.Behaviors.Buttons
             set => SetValue(IsEnabledProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.Click += OnButtonClick;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.Click -= OnButtonClick;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnButtonClick(object sender, RoutedEventArgs e)

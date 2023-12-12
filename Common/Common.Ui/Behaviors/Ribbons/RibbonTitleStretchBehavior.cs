@@ -10,9 +10,9 @@ namespace Common.Ui.Behaviors.Ribbons
     /// </summary>
     public class RibbonTitleStretchBehavior : Behavior<Ribbon>
     {
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.SizeChanged += OnSizeChanged;
         }
 
@@ -33,10 +33,10 @@ namespace Common.Ui.Behaviors.Ribbons
             }
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.SizeChanged -= OnSizeChanged;
-            base.OnCleanup();
+            base.OnDetaching();
         }
     }
 }

@@ -16,16 +16,16 @@ namespace Common.Ui.Behaviors.UIElements
             get => (bool)GetValue(BlockSignalProperty);
             set => SetValue(BlockSignalProperty, value);
         }
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.PreviewMouseWheel += OnPreviewMouseWheel;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.PreviewMouseWheel -= OnPreviewMouseWheel;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)

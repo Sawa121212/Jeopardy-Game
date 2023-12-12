@@ -1,63 +1,72 @@
-﻿/*using System.Windows.Input;
+﻿using System.Windows.Input;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
 using Common.Ui.Extensions;
 
 namespace Common.Ui.Behaviors.TreeViews
 {
-    public class TreeViewSelectedCommandBehavior : Behavior<TreeView>
+    public class TreeViewSingleSelectionCommandBehavior : Behavior<TreeView>
     {
-        private object _pressedElement;
+        public static readonly StyledProperty<ICommand> CommandProperty =
+            AvaloniaProperty.Register<TreeViewSingleSelectionCommandBehavior, ICommand>(nameof(Command), default, true);
 
-        public static readonly DependencyProperty CommandProperty = DependencyProperty.Register(
-            nameof(Command), typeof(ICommand), typeof(TreeViewSelectedCommandBehavior), new PropertyMetadata(default(ICommand)));
+        public static readonly StyledProperty<object> CommandParameterProperty =
+            AvaloniaProperty.Register<TreeViewSingleSelectionCommandBehavior, object>(nameof(CommandParameter), default, true);
+
+        public object CommandParameter
+        {
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
+        }
 
         public ICommand Command
         {
-            get => (ICommand) GetValue(CommandProperty);
+            get => GetValue(CommandProperty);
             set => SetValue(CommandProperty, value);
         }
 
-        protected override void OnSetup()
+        /// <inheritdoc />
+        protected override void OnAttached()
         {
-            base.OnSetup();
-            AssociatedObject.PreviewMouseDown += OnMouseDown;
-            AssociatedObject.PreviewMouseUp += OnMouseUp;
-        }
-        
-        protected override void OnCleanup()
-        {
-            AssociatedObject.PreviewMouseDown -= OnMouseDown;
-            AssociatedObject.PreviewMouseUp -= OnMouseUp;
-            base.OnCleanup();
-        }
-
-        private void OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.OriginalSource != null)
+            base.OnAttached();
+            if (AssociatedObject != null)
             {
-                if (e.OriginalSource is FrameworkElement frameworkElement)
-                {
-                    _pressedElement = frameworkElement.DataContext;
-                }
+                AssociatedObject.SelectionChanged += OnSelectionChangedUp;
             }
         }
 
-        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        /// <inheritdoc />
+        protected override void OnDetaching()
         {
-            if (e.OriginalSource != null)
+            if (AssociatedObject != null)
             {
-                if (e.OriginalSource is FrameworkElement frameworkElement)
-                {
-                    if (frameworkElement.DataContext != null)
-                    {
-                        if (frameworkElement.DataContext.Equals(_pressedElement))
-                        {
-                            Command?.Invoke(frameworkElement.DataContext);
-                        }
-                    }
-                }
+                AssociatedObject.SelectionChanged -= OnSelectionChangedUp;
             }
+
+            base.OnDetaching();
+        }
+
+        private void OnSelectionChangedUp(object sender, SelectionChangedEventArgs e)
+        {
+            /*if (CommandParameter != null)
+            {
+                Command?.Invoke(CommandParameter);
+            }
+            else
+            {
+                if (AssociatedObject?.SelectedItem != null)
+                {
+                    Command?.Invoke(AssociatedObject.SelectedItem);
+                }
+                else
+                {*/
+            if (AssociatedObject?.SelectedItems != null)
+            {
+                Command?.Invoke(AssociatedObject.SelectedItems[0]);
+            }
+            /*}
+        }*/
         }
     }
-}*/
+}

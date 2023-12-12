@@ -96,9 +96,9 @@ namespace Common.Ui.Behaviors.FrameworkElements
             set => SetValue(MouseLeftButtonDownCommandProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.MouseEnter += OnMouseEnter;
             AssociatedObject.MouseLeftButtonDown += OnMouseLeftButtonDown;
             AssociatedObject.MouseLeftButtonUp += OnMouseLeftButtonUp;
@@ -109,7 +109,7 @@ namespace Common.Ui.Behaviors.FrameworkElements
             AssociatedObject.MouseMove += OnMouseMove;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.MouseMove -= OnMouseMove;
             AssociatedObject.MouseRightButtonUp -= OnMouseRightButtonUp;
@@ -119,7 +119,7 @@ namespace Common.Ui.Behaviors.FrameworkElements
             AssociatedObject.MouseLeftButtonUp -= OnMouseLeftButtonUp;
             AssociatedObject.MouseLeftButtonDown -= OnMouseLeftButtonDown;
             AssociatedObject.MouseEnter -= OnMouseEnter;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         protected virtual void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

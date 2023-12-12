@@ -5,7 +5,6 @@ using Prism.Modularity;
 using Prism.Regions;
 using TopicDb.Domain;
 using TopicDb.Module.Properties;
-using TopicsDB.Infrastructure;
 using TopicsDB.Infrastructure.Services;
 using TopicsDB.Infrastructure.Services.Interfaces;
 using TopicsDB.Infrastructure.Views;

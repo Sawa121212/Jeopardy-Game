@@ -24,9 +24,9 @@ namespace Common.Ui.Behaviors.TreeViews
             set => SetValue(SelectionCommandProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.SelectedItemChanged += OnSelectedItemChanged;
         }
 

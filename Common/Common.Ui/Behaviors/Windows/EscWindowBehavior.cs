@@ -1,4 +1,4 @@
-﻿/*using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
 
@@ -6,22 +6,32 @@ namespace Common.Ui.Behaviors.Windows
 {
     public class EscWindowBehavior : Behavior<Window>
     {
-        protected override void OnSetup()
+
+        /// <inheritdoc />
+        protected override void OnAttached()
         {
-            base.OnSetup();
-            AssociatedObject.PreviewKeyDown += OnPreviewKeyDown;
+            base.OnAttached();
+            if (AssociatedObject != null)
+            {
+                AssociatedObject.KeyDown += OnPreviewKeyDown;
+            }
         }
 
-        protected override void OnCleanup()
+        /// <inheritdoc />
+        protected override void OnDetaching()
         {
-            AssociatedObject.PreviewKeyDown -= OnPreviewKeyDown;
-            base.OnCleanup();
+            if (AssociatedObject != null)
+            {
+                AssociatedObject.KeyDown -= OnPreviewKeyDown;
+            }
+
+            base.OnDetaching();
         }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                AssociatedObject.Close();
+                AssociatedObject?.Close();
         }
     }
-}*/
+}

@@ -21,17 +21,17 @@ namespace Common.Ui.Behaviors.Windows
         }
         
         /// <inheritdoc />
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.Closing += OnClosing;
         }
 
         /// <inheritdoc />
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         { 
             AssociatedObject.Closing -= OnClosing;
-            base.OnCleanup();
+            base.OnDetaching();
         }
         
         private void OnClosing(object sender, CancelEventArgs e)

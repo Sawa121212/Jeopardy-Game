@@ -8,6 +8,9 @@
     <Application.Styles>
         <themes:MaterialTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Amber" />
         <materialIcons:MaterialIconStyles />
+
+        <!-- Custom -->
+        <StyleInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
     </Application.Styles>
 
     <Application.Resources>

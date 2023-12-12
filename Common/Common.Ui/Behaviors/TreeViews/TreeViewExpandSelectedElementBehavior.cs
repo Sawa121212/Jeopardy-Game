@@ -28,9 +28,9 @@ namespace Common.Ui.Behaviors.TreeViews
             set => SetValue(SelectedNodeElementProperty, value);
         }
 
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             var virtualizing = AssociatedObject.FindVisualChild<VirtualizingStackPanel>();
             if (virtualizing != null)
                 _virtualized = true;

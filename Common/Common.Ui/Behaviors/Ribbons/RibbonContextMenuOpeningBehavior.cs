@@ -5,16 +5,16 @@ namespace Common.Ui.Behaviors.Ribbons
 {
     public class RibbonContextMenuOpeningBehavior : Behavior<Ribbon>
     {
-        protected override void OnSetup()
+        protected override void OnAttached()
         {
-            base.OnSetup();
+            base.OnAttached();
             AssociatedObject.ContextMenuOpening += OnClosingContextMenu;
         }
 
-        protected override void OnCleanup()
+        protected override void OnDetaching()
         {
             AssociatedObject.ContextMenuOpening -= OnClosingContextMenu;
-            base.OnCleanup();
+            base.OnDetaching();
         }
 
         private void OnClosingContextMenu(object sender, ContextMenuEventArgs e)

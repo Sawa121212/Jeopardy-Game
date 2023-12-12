@@ -8,8 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.5" />
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.11000" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Extensions\Common.Extensions\Common.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

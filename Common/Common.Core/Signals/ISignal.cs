@@ -1,4 +1,5 @@
 ﻿using System;
+using Common.Core.Interfaces;
 
 namespace Common.Core.Signals
 {
