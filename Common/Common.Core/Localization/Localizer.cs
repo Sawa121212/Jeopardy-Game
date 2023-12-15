@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
+using Common.Core.Properties;
 
 namespace Common.Core.Localization
 {
@@ -22,16 +23,22 @@ namespace Common.Core.Localization
         public Localizer()
         {
             LoadLanguage();
+
+            // добавим ресурсы с текущего (Core) модуля
+            AddResourceManager(new ResourceManager(typeof(Language)));
         }
 
         public void LoadLanguage()
         {
             if (_resourceManagers != null)
+            {
                 _resources = new List<ResourceManager>(_resourceManagers);
+            }
+
             InvalidateEvents();
         }
 
-        public void EditLn(string language)
+        public void EditLanguage(string language)
         {
             Instance.ChangeLanguage(language);
         }

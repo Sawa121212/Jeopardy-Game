@@ -1,13 +1,10 @@
 ﻿using System.Windows.Input;
-using Avalonia.Controls;
 using Common.Core.Interfaces;
 using Common.Core.Signals;
-using Common.Core.Views;
 using Confirmation.Module.Enums;
 using Confirmation.Module.Models;
 using Prism.Commands;
 using Prism.Mvvm;
-using ReactiveUI;
 
 namespace Confirmation.Module.Views
 {

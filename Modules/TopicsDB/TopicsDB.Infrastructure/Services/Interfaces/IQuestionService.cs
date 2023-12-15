@@ -9,33 +9,33 @@ namespace TopicsDB.Infrastructure.Services.Interfaces
     public interface IQuestionService
     {
         /// <summary>
-        /// создание нового вопроса
+        /// Создание нового вопроса
         /// </summary>
         /// <param name="question"></param>
         public void CreateQuestion(Question question);
 
         /// <summary>
-        /// редактирование существующего вопроса
+        /// Редактирование существующего вопроса
         /// </summary>
         /// <param name="questionId"></param>
         /// <param name="updatedQuestion"></param>
         public void UpdateQuestion(int questionId, Question updatedQuestion);
 
         /// <summary>
-        /// удаление вопроса
+        /// Удаление вопроса
         /// </summary>
         /// <param name="questionId"></param>
         public void DeleteQuestion(int questionId);
 
         /// <summary>
-        /// получение вопроса по идентификатору
+        /// Получение вопроса по идентификатору
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
         public Question GetQuestionById(int questionId);
 
         /// <summary>
-        /// получение всех вопросов по идентификатору темы
+        /// Получение всех вопросов по идентификатору темы
         /// </summary>
         /// <param name="topicId"></param>
         /// <returns></returns>

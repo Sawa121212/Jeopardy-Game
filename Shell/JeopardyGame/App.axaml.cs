@@ -7,6 +7,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Common.Core.Localization;
+using Common.Core.Prism.Regions;
 using Common.Ui.Managers;
 using Common.Ui.Parameters;
 using Confirmation.Module;
@@ -19,7 +20,6 @@ using Infrastructure.Module.Managers;
 using Infrastructure.Module.Services;
 using Infrastructure.Module.Services.ApplicationInfo;
 using Infrastructure.Module.Services.Settings;
-using Infrastructure.Module.Views;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
 using JeopardyGame.Views.Settings;
@@ -80,14 +80,13 @@ namespace JeopardyGame
                 .RegisterSingleton<IConfirmationService, ConfirmationService>()
 
                 // окно Настроек
-                .Register<SettingsView>()
                 .RegisterForNavigation<BaseSettingsView, BaseSettingsViewModel>();
 
             // Views - Generic
-            containerRegistry.Register<ShellView>()
+            containerRegistry.Register<ShellView>();
 
-                // Views - Region Navigation
-                //containerRegistry.RegisterForNavigation<DashboardView, DashboardViewModel>() 
+            // Views - Region Navigation
+            containerRegistry.RegisterForNavigation<PlayInfoView>()
                 ;
         }
 
@@ -145,22 +144,8 @@ namespace JeopardyGame
         protected override void OnInitialized()
         {
             Container.Resolve<IRegionManager>()
-                .RegisterViewWithRegion(RegionNameService.SettingsContentRegionName, nameof(BaseSettingsView));
-
-            /*INotificationService? notifyService = Container.Resolve<INotificationService>();
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow = CreateShell();
-                if (desktop.MainWindow != null)
-                {
-                    notifyService.SetHostWindow(desktop.MainWindow);
-                    desktop.MainWindow.Show();
-                }
-            }*/
-            //    // Register initial Views to Region.
-            //    var regionManager = Container.Resolve<IRegionManager>();
-            //    regionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(DashboardView));
-            //    regionManager.RegisterViewWithRegion(RegionNames.SidebarRegion, typeof(SidebarView));
+                .RegisterViewWithRegion(RegionNameService.SettingsContentRegionName, nameof(BaseSettingsView))
+                .RegisterViewWithRegion(RegionNameService.ContentRegionName, nameof(PlayInfoView));
         }
 
         /// <summary>
@@ -185,7 +170,6 @@ namespace JeopardyGame
 
             ViewModelLocationProvider.SetDefaultViewModelFactory(type => Container.Resolve(type));
         }
-
 
         private Window MainWindow { get; set; }
     }

@@ -23,20 +23,25 @@ namespace TopicsDB.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public void UpdateTopic(int topicId, Topic updatedTopic)
+        public void UpdateTopic(Topic updatedTopic)
         {
-            Topic topic = _context.Topics.Find(topicId);
-            if (topic == null)
+            if (updatedTopic is null)
             {
                 return;
             }
 
-            topic.Name = updatedTopic.Name;
-            // обновление других свойств
-            _context.SaveChanges();
+            UpdateTopic(updatedTopic.Id, updatedTopic);
         }
 
         /// <inheritdoc />
+        public void DeleteTopic(Topic topic)
+        {
+            if (_context.Topics.Contains(topic))
+            {
+                DeleteTopic(topic.Id);
+            }
+        }
+
         public void DeleteTopic(int topicId)
         {
             Topic topic = _context.Topics.Find(topicId);
@@ -59,6 +64,19 @@ namespace TopicsDB.Infrastructure.Services
         public List<Topic> GetAllTopics()
         {
             return _context.Topics.ToList();
+        }
+
+        private void UpdateTopic(int topicId, Topic updatedTopic)
+        {
+            Topic topic = _context.Topics.Find(topicId);
+            if (topic == null)
+            {
+                return;
+            }
+
+            topic.Name = updatedTopic.Name;
+            // обновление других свойств
+            _context.SaveChanges();
         }
     }
 }

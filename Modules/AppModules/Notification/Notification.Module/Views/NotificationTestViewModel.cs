@@ -5,7 +5,6 @@ using Avalonia.Threading;
 using Notification.Module.Services;
 using Prism.Commands;
 using Prism.Mvvm;
-using ReactiveUI;
 
 namespace Notification.Module.Views
 {

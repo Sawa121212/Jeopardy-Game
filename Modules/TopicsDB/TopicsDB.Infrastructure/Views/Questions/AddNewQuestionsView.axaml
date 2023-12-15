@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:viewModels="clr-namespace:TopicsDB.Infrastructure.Views"
+             xmlns:textBoxes="clr-namespace:Common.Ui.Behaviors.TextBoxes;assembly=Common.Ui"
+             xmlns:models="clr-namespace:TopicDb.Domain.Models;assembly=TopicDb.Domain"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:topics="clr-namespace:TopicsDB.Infrastructure.Views.Topics"
+             xmlns:questions="clr-namespace:TopicsDB.Infrastructure.Views.Questions"
+             x:Class="TopicsDB.Infrastructure.Views.Questions.AddNewQuestionView"
+             mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             x:Name="TopicListControl"
+             x:DataType="questions:AddNewQuestionViewModel"
+             d:DesignWidth="800" d:DesignHeight="450">
+
+    <Design.DataContext>
+        <questions:AddNewQuestionViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *, Auto">
+        <!-- Back-->
+        <Button Grid.Row="0" Command="{Binding MoveBackCommand}" Margin="0,3">
+            <Button.Content>
+                <Grid ColumnDefinitions="Auto, 8, *">
+                    <materialIcons:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+                    <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+                </Grid>
+            </Button.Content>
+        </Button>
+
+        <controls:Card Grid.Row="1">
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto">
+                <TextBlock Grid.Row="0"
+                           Text="Введите данные" />
+
+                <TextBox Grid.Row="1"
+                         Classes="Floating"
+                         Text="{Binding Question.Text, Mode=TwoWay}"
+                         assists:TextFieldAssist.Label="Вопрос"
+                         UseFloatingWatermark="True"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap" Height="120" />
+
+                <TextBox Grid.Row="2"
+                         Text="{Binding Question.CorrectAnswer, Mode=TwoWay}"
+                         assists:TextFieldAssist.Label="Ответ"
+                         UseFloatingWatermark="True" />
+
+                <TextBlock Grid.Row="3" Text="Баллы" />
+
+                <WrapPanel Grid.Row="4">
+                    <RadioButton GroupName="PriceGroup" Content="100 баллов" IsChecked="True"
+                                 Command="{Binding PriceIsChangedCommand}"
+                                 CommandParameter="100" />
+                    <RadioButton GroupName="PriceGroup" Content="200 баллов"
+                                 Command="{Binding PriceIsChangedCommand}"
+                                 CommandParameter="200" />
+                    <RadioButton GroupName="PriceGroup" Content="300 баллов"
+                                 Command="{Binding PriceIsChangedCommand}"
+                                 CommandParameter="300" />
+                    <RadioButton GroupName="PriceGroup" Content="400 баллов"
+                                 Command="{Binding PriceIsChangedCommand}"
+                                 CommandParameter="400" />
+                    <RadioButton GroupName="PriceGroup" Content="500 баллов"
+                                 Command="{Binding PriceIsChangedCommand}"
+                                 CommandParameter="500" />
+                </WrapPanel>
+
+                <Grid Grid.Row="5" ColumnDefinitions="*, Auto">
+                    <TextBox Grid.Column="0"
+                             Text="{Binding Picture, Mode=OneWay}"
+                             assists:TextFieldAssist.Label="Картинка"
+                             UseFloatingWatermark="True"
+                             IsReadOnly="True" />
+                    <Button Grid.Column="0"
+                            Content="Выбрать"
+                            Command="{Binding ImportPictureComand}" />
+                </Grid>
+
+            </Grid>
+        </controls:Card>
+
+        <Button Grid.Row="2"
+                Content="Применить"
+                Command="{Binding CreateCommand}"
+                Margin="0,5">
+        </Button>
+    </Grid>
+</UserControl>

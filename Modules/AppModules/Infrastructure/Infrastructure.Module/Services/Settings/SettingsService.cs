@@ -107,7 +107,7 @@ namespace Infrastructure.Module.Services.Settings
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_applicationSettings.UsedCulture);
 
             _resourceService.ChangeResourcesEvent();
-            _localizer.EditLn(GetCulture());
+            _localizer.EditLanguage(GetCulture());
         }
 
         /// <summary>

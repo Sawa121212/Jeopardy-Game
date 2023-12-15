@@ -1,33 +1,41 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
+using Common.Core.Views;
+using Confirmation.Module.Services;
 using Prism.Commands;
-using Prism.Mvvm;
+using Prism.Regions;
+using ReactiveUI;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Services.Interfaces;
 
 namespace TopicsDB.Infrastructure.Views
 {
-    public partial class TopicListViewModel : BindableBase
+    public partial class TopicListViewModel : NavigationViewModelBase
     {
-        private ObservableCollection<Topic> _topics;
-
-        public TopicListViewModel(ITopicService topicService)
+        public TopicListViewModel(
+            IRegionManager regionManager,
+            IConfirmationService confirmationService,
+            ITopicService topicService)
+            : base(regionManager)
         {
+            _confirmationService = confirmationService;
             _topicService = topicService;
-            Topics = new ObservableCollection<Topic>(_topicService.GetAllTopics());
+            Topics = new ObservableCollection<Topic>();
 
-            EditTopicCommand = new DelegateCommand(OnEditTopic);
-            AddCommand = new DelegateCommand(OnAdd);
-            DeleteCommand = new DelegateCommand<object>(OnDelete);
+            // topic commands
+            AddNewTopicCommand = new DelegateCommand(OnAddNewTopic);
+            EditTopicCommand = new DelegateCommand<Topic>(OnEditTopic);
+            DeleteTopicCommand = new DelegateCommand<Topic>(OnDeleteTopic);
+
+            //question commands
+
+            // search commands
             FindTopicsCommand = new DelegateCommand(OnFindTopics);
             ClearFoundElementsCommand = new DelegateCommand(OnClearFoundElements);
+            ClearFoundElementsCommand = new DelegateCommand(OnAddNewTopic);
+            UpdateTopicsInformation();
         }
 
-        private void OnEditTopic()
-        {
-        }
-
-        private void UpdateCustomersInformation()
+        private void UpdateTopicsInformation()
         {
             Topics.Clear();
             foreach (Topic customer in _topicService.GetAllTopics())
@@ -36,48 +44,15 @@ namespace TopicsDB.Infrastructure.Views
             }
         }
 
-        private async void OnAdd()
-        {
-            /*var result = await _dialogManager.ShowDialog<AddKeyView, License, Customer>(customer);
-            if (result != null)
-            {
-                _dbManager.AddLicenseKey(customer, result);
-                await _confirmationService.ShowInfo("Успешно", "Лицензионный ключ добавлен");
-                UpdateCustomersInformation();
-            }*/
-        }
-
-        private async void OnDelete(object element)
-        {
-            /*var infoResult = await _confirmationService.ShowInfo("Подтвердите удаление",
-                "Вы действительно хотите удалить выбранного пользователя?", ConfirmationResult.Yes | ConfirmationResult.No);
-            if (infoResult == ConfirmationResult.Yes)
-            {
-                result = Topics.Remove(customer);
-                _dbManager.RemoveCustomer(customer);
-                await _confirmationService.ShowInfo("Успешно", "Пользователь успешно удален");
-                UpdateCustomersInformation();
-                _eventAggregator.GetEvent<NavigateViewChangedEvent>().Publish();
-            }*/
-
-
-            /*if (result is false)
-            {
-                await _confirmationService.ShowError("Error", "Ошибка при удалении");
-            }*/
-        }
-
-
         public ObservableCollection<Topic> Topics
         {
             get => _topics;
-            set => SetProperty(ref _topics, value);
+            set => this.RaiseAndSetIfChanged(ref _topics, value);
         }
 
-        public ICommand EditTopicCommand { get; }
-        public ICommand AddCommand { get; }
-        public ICommand DeleteCommand { get; }
+        private ObservableCollection<Topic> _topics;
 
+        private readonly IConfirmationService _confirmationService;
         private readonly ITopicService _topicService;
     }
 }

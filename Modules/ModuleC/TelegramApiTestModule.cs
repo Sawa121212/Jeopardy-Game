@@ -23,7 +23,7 @@ namespace TelegramAPI.Test
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             // регистрируем View для навигации по Регионам
-            containerRegistry.RegisterForNavigation<TabCView>();
+            containerRegistry.RegisterForNavigation<TelegramTestView>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
@@ -32,7 +32,7 @@ namespace TelegramAPI.Test
             containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
 
             // Зарегистрировать View к региону. Теперь при запуске ПО View будет показано
-            _regionManager.RegisterViewWithRegion("RegionC", typeof(TabCView));
+            //_regionManager.RegisterViewWithRegion("RegionC", typeof(TabCView));
         }
     }
 }

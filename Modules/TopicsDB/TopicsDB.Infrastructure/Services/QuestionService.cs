@@ -56,5 +56,10 @@ namespace TopicsDB.Infrastructure.Services
         {
             return _context.Questions.Where(q => q.TopicId == topicId).ToList();
         }
+
+        /// <summary>
+        /// Базовая цена вопроса
+        /// </summary>
+        private static int BaseQuestionPriceValue => 100;
     }
 }

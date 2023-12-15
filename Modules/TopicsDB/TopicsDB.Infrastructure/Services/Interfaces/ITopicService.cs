@@ -9,35 +9,35 @@ namespace TopicsDB.Infrastructure.Services.Interfaces
     public interface ITopicService
     {
         /// <summary>
-        /// создание новой темы
+        /// Создание новой темы
         /// </summary>
         /// <param name="topic"></param>
         public void CreateTopic(Topic topic);
 
         /// <summary>
-        /// редактирование существующей темы
+        /// Редактирование существующей темы
         /// </summary>
-        /// <param name="topicId"></param>
         /// <param name="updatedTopic"></param>
-        public void UpdateTopic(int topicId, Topic updatedTopic);
+        public void UpdateTopic(Topic updatedTopic);
 
         /// <summary>
-        /// удаление темы
+        /// Удаление темы
         /// </summary>
-        /// <param name="topicId"></param>
-        public void DeleteTopic(int topicId);
+        /// <param name="topic">Тема</param>
+        public void DeleteTopic(Topic topic);
 
         /// <summary>
-        /// получение темы по идентификатору
+        /// Получение темы по идентификатору
         /// </summary>
         /// <param name="topicId"></param>
         /// <returns></returns>
         public Topic GetTopicById(int topicId);
 
         /// <summary>
-        /// получение всех тем
+        /// Получение всех тем
         /// </summary>
         /// <returns></returns>
         public List<Topic> GetAllTopics();
+
     }
 }

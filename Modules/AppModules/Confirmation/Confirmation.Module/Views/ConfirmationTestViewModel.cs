@@ -1,10 +1,7 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Input;
-using Avalonia.Threading;
+﻿using System.Windows.Input;
 using Confirmation.Module.Services;
 using Prism.Commands;
 using Prism.Mvvm;
-using ReactiveUI;
 
 namespace Confirmation.Module.Views
 {

@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Common.Ui\Common.Ui.csproj" />
+    <ProjectReference Include="..\..\AppModules\Confirmation\Confirmation.Module\Confirmation.Module.csproj" />
     <ProjectReference Include="..\TopicsDB.Domain\TopicDb.Domain.csproj" />
   </ItemGroup>
 

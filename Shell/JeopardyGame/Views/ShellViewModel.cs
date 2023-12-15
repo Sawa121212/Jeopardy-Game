@@ -1,55 +1,22 @@
-﻿using System.Windows.Input;
-using Common.Core.Localization;
+﻿using Common.Core.Localization;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace JeopardyGame.Views
 {
-    public class ShellViewModel : BindableBase
+    public partial class ShellViewModel : BindableBase
     {
         private readonly ILocalizer _localizer;
-        private bool _drawDirtyRects;
-        private bool _drawFps = true;
-        private bool _drawLayoutTimeGraph;
-        private bool _drawRenderTimeGraph;
 
-        public ShellViewModel(ILocalizer localizer)
+        public ShellViewModel(IRegionManager regionManager, ILocalizer localizer)
         {
             _localizer = localizer;
+            _regionManager = regionManager;
 
-            ToggleDrawDirtyRects = new DelegateCommand(() => DrawDirtyRects = !DrawDirtyRects);
-            ToggleDrawFps = new DelegateCommand(() => DrawFps = !DrawFps);
-            ToggleDrawLayoutTimeGraph = new DelegateCommand(() => DrawLayoutTimeGraph = !DrawLayoutTimeGraph);
-            ToggleDrawRenderTimeGraph = new DelegateCommand(() => DrawRenderTimeGraph = !DrawRenderTimeGraph);
+            ShowTopicsCommand = new DelegateCommand(OnShowTopics);
+            ShowPlayInformationCommand = new DelegateCommand(OnShowPlayInformation);
+            OnShowTelegramTestCommand = new DelegateCommand(OnShowTelegramTest);
         }
-
-        public bool DrawDirtyRects
-        {
-            get => _drawDirtyRects;
-            set => SetProperty(ref _drawDirtyRects, value);
-        }
-
-        public bool DrawFps
-        {
-            get => _drawFps;
-            set => SetProperty(ref _drawFps, value);
-        }
-
-        public bool DrawLayoutTimeGraph
-        {
-            get => _drawLayoutTimeGraph;
-            set => SetProperty(ref _drawLayoutTimeGraph, value);
-        }
-
-        public bool DrawRenderTimeGraph
-        {
-            get => _drawRenderTimeGraph;
-            set => SetProperty(ref _drawRenderTimeGraph, value);
-        }
-
-        public ICommand ToggleDrawDirtyRects { get; }
-        public ICommand ToggleDrawFps { get; }
-        public ICommand ToggleDrawLayoutTimeGraph { get; }
-        public ICommand ToggleDrawRenderTimeGraph { get; }
     }
 }

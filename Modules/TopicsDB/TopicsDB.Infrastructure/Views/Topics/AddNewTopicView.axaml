@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:viewModels="clr-namespace:TopicsDB.Infrastructure.Views"
+             xmlns:textBoxes="clr-namespace:Common.Ui.Behaviors.TextBoxes;assembly=Common.Ui"
+             xmlns:models="clr-namespace:TopicDb.Domain.Models;assembly=TopicDb.Domain"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:topics="clr-namespace:TopicsDB.Infrastructure.Views.Topics"
+             x:Class="TopicsDB.Infrastructure.Views.Topics.AddNewTopicView"
+             mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             x:Name="TopicListControl"
+             x:DataType="topics:AddNewTopicViewModel"
+             d:DesignWidth="800" d:DesignHeight="450">
+
+    <!--<Design.DataContext>
+        <topics:TopicListViewModel />
+    </Design.DataContext>-->
+
+    <Grid RowDefinitions="Auto, *, Auto">
+        <!-- Back-->
+        <Button Grid.Row="0" Command="{Binding MoveBackCommand}" Margin="0,3">
+            <Button.Content>
+                <Grid ColumnDefinitions="Auto, 8, *">
+                    <materialIcons:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+                    <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+                </Grid>
+            </Button.Content>
+        </Button>
+
+        <controls:Card Grid.Row="1">
+            <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Введите наименование" />
+
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="Наименование"
+                           VerticalAlignment="Center"/>
+
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Text="{Binding Name, Mode=TwoWay}"/>
+            </Grid>
+        </controls:Card>
+
+        <Button Grid.Row="2"
+                Content="Применить"
+                Command="{Binding CreateCommand}"
+                Margin="0,5">
+        </Button>
+    </Grid>
+</UserControl>
