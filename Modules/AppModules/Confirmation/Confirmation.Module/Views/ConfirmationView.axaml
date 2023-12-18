@@ -7,6 +7,7 @@
         xmlns:converters="clr-namespace:Confirmation.Module.Converters"
         xmlns:views="clr-namespace:Confirmation.Module.Views"
         mvvm:ViewModelLocator.AutoWireViewModel="True"
+        Classes="NoneSystemDecorations"
         mc:Ignorable="d"
         x:Name="ConfirmationWindow"
         WindowStartupLocation="CenterOwner"
@@ -36,7 +37,7 @@
     </i:Interaction.Behaviors>
 
     <Window.Styles>
-        <Style Selector="Window">
+        <Style Selector="Window.NoneSystemDecorations">
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="CanResize" Value="False" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />

@@ -13,6 +13,7 @@
         xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
         xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:entities="clr-namespace:Common.Core.Entities;assembly=Common.Core"
+        xmlns:regions="clr-namespace:Common.Core.Prism.Regions;assembly=Common.Core"
         mvvm:ViewModelLocator.AutoWireViewModel="True"
         x:Class="Infrastructure.Module.Views.SettingsView"
         x:Name="ThisWindow"
@@ -81,7 +82,7 @@
                                 x:Name="SettingsContent"
                                 IsVisible="{Binding SelectedView, Converter={x:Static ObjectConverters.IsNotNull}}"
                                 mvvm:RegionManager.RegionManager="{Binding Region}"
-                                mvvm:RegionManager.RegionName="{x:Static services:RegionNameService.SettingsContentRegionName}"
+                                mvvm:RegionManager.RegionName="{x:Static regions:RegionNameService.SettingsContentRegionName}"
                                 Margin="5" />
             </Grid>
         </Grid>

@@ -8,6 +8,8 @@ using TopicDb.Module.Properties;
 using TopicsDB.Infrastructure.Services;
 using TopicsDB.Infrastructure.Services.Interfaces;
 using TopicsDB.Infrastructure.Views;
+using TopicsDB.Infrastructure.Views.Questions;
+using TopicsDB.Infrastructure.Views.Topics;
 
 namespace TopicDb.Module
 {
@@ -34,16 +36,15 @@ namespace TopicDb.Module
                 .RegisterSingleton<IQuestionService, QuestionService>();
 
             // регистрируем View для навигации по Регионам
-            containerRegistry.RegisterForNavigation<TopicListView>();
+            containerRegistry.RegisterForNavigation<TopicListView, TopicListViewModel>();
+            containerRegistry.RegisterForNavigation<AddNewTopicView, AddNewTopicViewModel>();
+            containerRegistry.RegisterForNavigation<AddNewQuestionView, AddNewQuestionViewModel>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
         {
             // Добавим ресурс Локализации в "коллекцию ресурсов локализации"
             containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
-
-            // Зарегистрировать View к региону. Теперь при запуске ПО View будет показано
-            _regionManager.RegisterViewWithRegion("TopicListControlRegion", typeof(TopicListView));
         }
     }
 }

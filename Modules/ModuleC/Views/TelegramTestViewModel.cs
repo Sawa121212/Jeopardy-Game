@@ -14,7 +14,7 @@ using File = System.IO.File;
 
 namespace TelegramAPI.Test.Views
 {
-    public class TabCViewModel : BindableBase
+    public class TelegramTestViewModel : BindableBase
     {
         // Это клиент для работы с Telegram Bot API, который позволяет отправлять сообщения, управлять ботом, подписываться на обновления и многое другое.
         private readonly ITelegramBotClient _botClient;
@@ -25,7 +25,7 @@ namespace TelegramAPI.Test.Views
         private ObservableCollection<string> _messages;
         private string _tokenFile = @"Settings\TelegramToken.tmp";
 
-        public TabCViewModel()
+        public TelegramTestViewModel()
         {
             Messages = new ObservableCollection<string>();
 

@@ -9,7 +9,7 @@ namespace Common.Core.Localization
 
         string? GetExpression(string key);
 
-        void EditLn(string language);
+        void EditLanguage(string language);
         void AddResourceManager(ResourceManager resourceManager);
     }
 }

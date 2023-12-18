@@ -26,10 +26,10 @@ namespace TopicDb.Domain.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TopicId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Text = table.Column<string>(type: "TEXT", nullable: true),
-                    PictureUrl = table.Column<string>(type: "TEXT", nullable: true),
-                    MusicUrl = table.Column<string>(type: "TEXT", nullable: true),
-                    CorrectAnswer = table.Column<string>(type: "TEXT", nullable: true)
+                    ChatId = table.Column<string>(type: "TEXT", nullable: true),
+                    MessageId = table.Column<string>(type: "TEXT", nullable: true),
+                    CorrectAnswer = table.Column<string>(type: "TEXT", nullable: true),
+                    Price = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

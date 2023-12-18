@@ -9,8 +9,9 @@
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:views="clr-namespace:TelegramAPI.Test.Views"
-             x:Class="TelegramAPI.Test.Views.TabCView"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             x:Class="TelegramAPI.Test.Views.TelegramTestView"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             x:DataType="views:TelegramTestViewModel">
 
     <Grid RowDefinitions="*, Auto">
         <ListBox Grid.Row="0"

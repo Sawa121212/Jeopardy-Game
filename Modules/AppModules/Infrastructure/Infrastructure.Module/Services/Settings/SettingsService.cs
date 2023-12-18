@@ -83,7 +83,7 @@ namespace Infrastructure.Module.Services.Settings
 
                 // Theme
                 await Dispatcher.UIThread.InvokeAsync(
-                    () => { _materialThemeStyles.BaseTheme = _applicationSettings.ThemeMode; },
+                    () => { _materialThemeStyles.BaseTheme = _applicationSettings!.ThemeMode; },
                     DispatcherPriority.SystemIdle);
 
                 // lang
@@ -107,7 +107,7 @@ namespace Infrastructure.Module.Services.Settings
             Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_applicationSettings.UsedCulture);
 
             _resourceService.ChangeResourcesEvent();
-            _localizer.EditLn(GetCulture());
+            _localizer.EditLanguage(GetCulture());
         }
 
         /// <summary>

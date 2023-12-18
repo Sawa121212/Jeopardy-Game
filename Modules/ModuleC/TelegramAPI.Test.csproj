@@ -24,6 +24,9 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Language.resx</DependentUpon>
       </Compile>
+      <Compile Update="Views\TelegramTestView.axaml.cs">
+        <DependentUpon>TelegramTestView.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
