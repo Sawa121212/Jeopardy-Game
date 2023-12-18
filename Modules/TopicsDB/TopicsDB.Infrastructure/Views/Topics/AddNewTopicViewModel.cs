@@ -24,7 +24,7 @@ namespace TopicsDB.Infrastructure.Views.Topics
         public Topic Topic
         {
             get => _topic;
-            private set => this.RaiseAndSetIfChanged(ref _topic, value);
+            set => this.RaiseAndSetIfChanged(ref _topic, value);
         }
 
         public string Name

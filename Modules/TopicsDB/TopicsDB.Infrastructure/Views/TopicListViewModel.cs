@@ -14,11 +14,13 @@ namespace TopicsDB.Infrastructure.Views
         public TopicListViewModel(
             IRegionManager regionManager,
             IConfirmationService confirmationService,
-            ITopicService topicService)
+            ITopicService topicService,
+            IQuestionService questionService)
             : base(regionManager)
         {
             _confirmationService = confirmationService;
             _topicService = topicService;
+            _questionService = questionService;
             Topics = new ObservableCollection<Topic>();
 
             // topic commands
@@ -27,6 +29,9 @@ namespace TopicsDB.Infrastructure.Views
             DeleteTopicCommand = new DelegateCommand<Topic>(OnDeleteTopic);
 
             //question commands
+            AddNewQuestionCommand = new DelegateCommand<Topic>(OnAddNewQuestion);
+            EditQuestionCommand = new DelegateCommand<Question>(OnEditQuestion);
+            DeleteQuestionCommand = new DelegateCommand<Question>(OnDeleteQuestion);
 
             // search commands
             FindTopicsCommand = new DelegateCommand(OnFindTopics);
@@ -54,5 +59,6 @@ namespace TopicsDB.Infrastructure.Views
 
         private readonly IConfirmationService _confirmationService;
         private readonly ITopicService _topicService;
+        private readonly IQuestionService _questionService;
     }
 }

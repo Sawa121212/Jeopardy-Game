@@ -8,11 +8,11 @@ namespace Common.Core.Views
     public abstract class NavigationViewModelBase : ReactiveObject, INavigationAware
     {
         private IRegionNavigationJournal _journal;
-        protected readonly IRegionManager _regionManager;
+        protected readonly IRegionManager RegionManager;
 
         protected NavigationViewModelBase(IRegionManager regionManager)
         {
-            _regionManager = regionManager;
+            RegionManager = regionManager;
             MoveBackCommand = new DelegateCommand(OnGoBack);
         }
 

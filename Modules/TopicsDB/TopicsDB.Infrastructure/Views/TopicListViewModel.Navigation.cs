@@ -16,7 +16,7 @@ namespace TopicsDB.Infrastructure.Views
         /// </summary>
         private void OnAddNewTopic()
         {
-            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewTopicView));
+            RegionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewTopicView));
         }
 
         private void OnEditTopic(Topic topic)
@@ -28,7 +28,7 @@ namespace TopicsDB.Infrastructure.Views
                 }
             };
 
-            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewTopicView), parameter);
+            RegionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewTopicView), parameter);
         }
 
 
@@ -47,9 +47,42 @@ namespace TopicsDB.Infrastructure.Views
         /// <summary>
         /// 
         /// </summary>
-        private void OnAddNewQuestion()
+        /// <param name="topic"></param>
+        private void OnAddNewQuestion(Topic topic)
         {
-            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewQuestionView));
+            NavigationParameters parameter = new()
+            {
+                {
+                    NavigationParameterService.InitializeParameter, topic
+                }
+            };
+
+            RegionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewQuestionView), parameter);
+        }
+
+        private void OnEditQuestion(Question question)
+        {
+            NavigationParameters parameter = new()
+            {
+                {
+                    NavigationParameterService.InitializeParameter, question
+                }
+            };
+
+            RegionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewQuestionView), parameter);
+        }
+
+
+        private async void OnDeleteQuestion(Question question)
+        {
+            ConfirmationResultEnum result = await _confirmationService.ShowInfoAsync("Подтверждение",
+                $"Вы действительно хотите удалить вопрос?",
+                ConfirmationResultEnum.Yes | ConfirmationResultEnum.No);
+
+            if (result == ConfirmationResultEnum.Yes)
+            {
+                _questionService.DeleteQuestion(question);
+            }
         }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
@@ -73,8 +106,8 @@ namespace TopicsDB.Infrastructure.Views
         public DelegateCommand<Topic> EditTopicCommand { get; }
         public DelegateCommand<Topic> DeleteTopicCommand { get; }
 
-        public DelegateCommand AddNewQuestionCommand { get; }
-        public DelegateCommand<Topic> EditQuestionCommand { get; }
-        public DelegateCommand<Topic> DeleteQuestionCommand { get; }
+        public DelegateCommand<Topic> AddNewQuestionCommand { get; }
+        public DelegateCommand<Question> EditQuestionCommand { get; }
+        public DelegateCommand<Question> DeleteQuestionCommand { get; }
     }
 }

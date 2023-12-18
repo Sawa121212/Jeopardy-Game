@@ -83,7 +83,7 @@ namespace Infrastructure.Module.Services.Settings
 
                 // Theme
                 await Dispatcher.UIThread.InvokeAsync(
-                    () => { _materialThemeStyles.BaseTheme = _applicationSettings.ThemeMode; },
+                    () => { _materialThemeStyles.BaseTheme = _applicationSettings!.ThemeMode; },
                     DispatcherPriority.SystemIdle);
 
                 // lang

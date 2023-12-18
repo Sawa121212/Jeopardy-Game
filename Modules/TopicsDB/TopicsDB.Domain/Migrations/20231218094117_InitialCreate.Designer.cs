@@ -8,8 +8,8 @@ using TopicDb.Domain;
 namespace TopicDb.Domain.Migrations
 {
     [DbContext(typeof(TopicDbContext))]
-    [Migration("20231207090420_IsPriceAdded")]
-    partial class IsPriceAdded
+    [Migration("20231218094117_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,20 +23,17 @@ namespace TopicDb.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ChatId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("CorrectAnswer")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("MusicUrl")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PictureUrl")
+                    b.Property<string>("MessageId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Price")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("TEXT");
 
                     b.Property<int>("TopicId")
                         .HasColumnType("INTEGER");

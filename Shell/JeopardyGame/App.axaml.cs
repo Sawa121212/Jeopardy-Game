@@ -118,17 +118,6 @@ namespace JeopardyGame
 
             // Применить загруженные настройки
             Container.Resolve<ISettingsService>()?.ApplySavedSettings();
-
-            /*INotificationService? notifyService = Container.Resolve<INotificationService>();
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow = CreateShell();
-                if (desktop.MainWindow != null)
-                {
-                    notifyService.SetHostWindow(desktop.MainWindow);
-                    desktop.MainWindow.Show();
-                }
-            }*/
         }
 
 

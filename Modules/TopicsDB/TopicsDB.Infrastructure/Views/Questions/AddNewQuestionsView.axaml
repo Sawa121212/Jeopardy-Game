@@ -42,7 +42,7 @@
 
                 <TextBox Grid.Row="1"
                          Classes="Floating"
-                         Text="{Binding Question.Text, Mode=TwoWay}"
+                         Text="{Binding Text, Mode=TwoWay}"
                          assists:TextFieldAssist.Label="Вопрос"
                          UseFloatingWatermark="True"
                          AcceptsReturn="True"
@@ -58,19 +58,24 @@
                 <WrapPanel Grid.Row="4">
                     <RadioButton GroupName="PriceGroup" Content="100 баллов" IsChecked="True"
                                  Command="{Binding PriceIsChangedCommand}"
-                                 CommandParameter="100" />
+                                 CommandParameter="100"
+                                 Margin="3,0" />
                     <RadioButton GroupName="PriceGroup" Content="200 баллов"
                                  Command="{Binding PriceIsChangedCommand}"
-                                 CommandParameter="200" />
+                                 CommandParameter="200"
+                                 Margin="3,0" />
                     <RadioButton GroupName="PriceGroup" Content="300 баллов"
                                  Command="{Binding PriceIsChangedCommand}"
-                                 CommandParameter="300" />
+                                 CommandParameter="300"
+                                 Margin="3,0" />
                     <RadioButton GroupName="PriceGroup" Content="400 баллов"
                                  Command="{Binding PriceIsChangedCommand}"
-                                 CommandParameter="400" />
+                                 CommandParameter="400"
+                                 Margin="3,0" />
                     <RadioButton GroupName="PriceGroup" Content="500 баллов"
                                  Command="{Binding PriceIsChangedCommand}"
-                                 CommandParameter="500" />
+                                 CommandParameter="500"
+                                 Margin="3,0" />
                 </WrapPanel>
 
                 <Grid Grid.Row="5" ColumnDefinitions="*, Auto">
@@ -79,8 +84,9 @@
                              assists:TextFieldAssist.Label="Картинка"
                              UseFloatingWatermark="True"
                              IsReadOnly="True" />
-                    <Button Grid.Column="0"
+                    <Button Grid.Column="1"
                             Content="Выбрать"
+                            Height="32"
                             Command="{Binding ImportPictureComand}" />
                 </Grid>
 

@@ -24,8 +24,8 @@ namespace TopicsDB.Infrastructure.Services.Interfaces
         /// <summary>
         /// Удаление вопроса
         /// </summary>
-        /// <param name="questionId"></param>
-        public void DeleteQuestion(int questionId);
+        /// <param name="question">Вопроса</param>
+        public void DeleteQuestion(Question question);
 
         /// <summary>
         /// Получение вопроса по идентификатору

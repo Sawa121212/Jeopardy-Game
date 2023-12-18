@@ -1,8 +1,14 @@
-﻿using System.Windows.Input;
-using Common.Core.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using Common.Core.Prism;
 using Common.Core.Views;
-using Common.Extensions;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
@@ -11,7 +17,7 @@ using TopicsDB.Infrastructure.Services.Interfaces;
 
 namespace TopicsDB.Infrastructure.Views.Questions
 {
-    public class AddNewQuestionViewModel : NavigationViewModelBase, IInitializable
+    public class AddNewQuestionViewModel : NavigationViewModelBase
     {
         /// <inheritdoc />
         public AddNewQuestionViewModel(IRegionManager regionManager, IQuestionService questionService) : base(regionManager)
@@ -19,20 +25,27 @@ namespace TopicsDB.Infrastructure.Views.Questions
             _questionService = questionService;
             PriceIsChangedCommand = new DelegateCommand<string>(OnPriceIsChanged);
             CreateCommand = new DelegateCommand(OnCreate);
+            ImportPictureComand = new DelegateCommand(async () => await OnImportPicture());
         }
 
         public Topic Topic
         {
             get => _topic;
-            private set => this.RaiseAndSetIfChanged(ref _topic, value);
+            set => this.RaiseAndSetIfChanged(ref _topic, value);
         }
 
         public Question Question
         {
             get => _question;
-            private set => this.RaiseAndSetIfChanged(ref _question, value);
+            set => this.RaiseAndSetIfChanged(ref _question, value);
         }
-        
+
+        public string Text
+        {
+            get => _text;
+            set => this.RaiseAndSetIfChanged(ref _text, value);
+        }
+
         public string Picture
         {
             get => _picture;
@@ -42,12 +55,13 @@ namespace TopicsDB.Infrastructure.Views.Questions
         public string Music
         {
             get => _music;
-            private set => this.RaiseAndSetIfChanged(ref _music, value);
+            set => this.RaiseAndSetIfChanged(ref _music, value);
         }
 
         public bool IsCreateMode { get; set; } = true;
 
         public ICommand PriceIsChangedCommand { get; }
+        public ICommand ImportPictureComand { get; }
         public ICommand CreateCommand { get; }
 
         /// <inheritdoc />
@@ -60,20 +74,16 @@ namespace TopicsDB.Infrastructure.Views.Questions
             {
                 case Topic topic:
                     Topic = topic;
-                    Initialize();
+                    Question = new Question();
                     break;
-
                 case Question question:
                     Question = question;
                     IsCreateMode = false;
                     break;
+                default:
+                    throw new Exception("Неправильный входной параметр");
+                    break;
             }
-        }
-
-        /// <inheritdoc />
-        public void Initialize()
-        {
-            Question = new Question();
         }
 
         private void OnPriceIsChanged(string price)
@@ -101,16 +111,43 @@ namespace TopicsDB.Infrastructure.Views.Questions
             MoveBackCommand.Execute(null);
         }
 
+
+        private async Task OnImportPicture()
+        {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+                desktop.MainWindow?.StorageProvider is not { } provider)
+            {
+                throw new NullReferenceException("Missing StorageProvider instance.");
+            }
+
+            // Start async operation to open the dialog.
+            IReadOnlyList<IStorageFile> files = await provider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Выберите картинку",
+                AllowMultiple = false
+            }).ConfigureAwait(true);
+
+            if (files.Count >= 1)
+            {
+                string filePath = files[0].TryGetLocalPath();
+                if (File.Exists(filePath))
+                {
+                    Picture = filePath;
+                }
+            }
+        }
+
+
         private bool CanExecuteMethod()
         {
             return false;
         }
 
-
+        private readonly IQuestionService _questionService;
         private Topic _topic;
         private Question _question;
-        private readonly IQuestionService _questionService;
         private string _picture;
         private string _music;
+        private string _text;
     }
 }
