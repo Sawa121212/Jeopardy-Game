@@ -124,7 +124,7 @@ namespace TelegramAPI.Test.Views
                                 if (message.Text == "/inline")
                                 {
                                     // Тут создаем нашу клавиатуру
-                                    InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup(
+                                    InlineKeyboardMarkup inlineKeyboard = new(
                                         new
                                             List<InlineKeyboardButton
                                                 []>() // здесь создаем лист (массив), который содрежит в себе массив из класса кнопок
@@ -158,20 +158,20 @@ namespace TelegramAPI.Test.Views
                                     // НО! Тут потребуется дополнительно указать один параметр, чтобы
                                     // клавиатура выглядела нормально, а не как абы что
 
-                                    ReplyKeyboardMarkup replyKeyboard = new ReplyKeyboardMarkup(
+                                    ReplyKeyboardMarkup replyKeyboard = new(
                                         new List<KeyboardButton[]>()
                                         {
                                             new KeyboardButton[]
                                             {
-                                                new KeyboardButton("Привет!"), new KeyboardButton("Пока!"),
+                                                new("Привет!"), new("Пока!"),
                                             },
                                             new KeyboardButton[]
                                             {
-                                                new KeyboardButton("Позвони мне!")
+                                                new("Позвони мне!")
                                             },
                                             new KeyboardButton[]
                                             {
-                                                new KeyboardButton("Напиши моему соседу!")
+                                                new("Напиши моему соседу!")
                                             }
                                         })
                                     {

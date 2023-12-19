@@ -5,11 +5,11 @@ using Prism.Regions;
 
 namespace JeopardyGame.Views
 {
-    public partial class ShellViewModel : BindableBase
+    public partial class MainViewModel : BindableBase
     {
         private readonly ILocalizer _localizer;
 
-        public ShellViewModel(IRegionManager regionManager, ILocalizer localizer)
+        public MainViewModel(IRegionManager regionManager, ILocalizer localizer)
         {
             _localizer = localizer;
             _regionManager = regionManager;
@@ -17,6 +17,7 @@ namespace JeopardyGame.Views
             ShowTopicsCommand = new DelegateCommand(OnShowTopics);
             ShowPlayInformationCommand = new DelegateCommand(OnShowPlayInformation);
             OnShowTelegramTestCommand = new DelegateCommand(OnShowTelegramTest);
+            ShowSettingsCommand = new DelegateCommand(OnShowSettings);
         }
     }
 }

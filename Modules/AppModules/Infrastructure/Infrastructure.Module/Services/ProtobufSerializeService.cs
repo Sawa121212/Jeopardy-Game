@@ -17,7 +17,7 @@ namespace Infrastructure.Module.Services
         public T Deserialize<T>(string filename)
         {
             T instance;
-            using (FileStream fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            using (FileStream fs = new(filename, FileMode.Open, FileAccess.Read))
             {
                 instance = Deserialize<T>(fs);
                 fs.Flush();
@@ -42,7 +42,7 @@ namespace Infrastructure.Module.Services
         /// <inheritdoc />
         public T Deserialize<T>(byte[] source)
         {
-            using (MemoryStream memStream = new MemoryStream(source))
+            using (MemoryStream memStream = new(source))
             {
                 return Deserialize<T>(memStream);
             }
@@ -51,7 +51,7 @@ namespace Infrastructure.Module.Services
         /// <inheritdoc />
         public object Deserialize(Type type, byte[] source)
         {
-            using (MemoryStream memStream = new MemoryStream(source))
+            using (MemoryStream memStream = new(source))
             {
                 return Deserialize(type, memStream);
             }
@@ -66,7 +66,7 @@ namespace Infrastructure.Module.Services
         /// <inheritdoc />
         public void Serialize<T>(string filename, T instance)
         {
-            using (FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write))
+            using (FileStream fs = new(filename, FileMode.Create, FileAccess.Write))
             {
                 Serialize(fs, instance);
                 fs.Flush();
@@ -77,7 +77,7 @@ namespace Infrastructure.Module.Services
         public byte[] Serialize<T>(T instance)
         {
             if (instance == null) throw new ArgumentException(InstanceCannotBeNull);
-            using (MemoryStream stream = new MemoryStream())
+            using (MemoryStream stream = new())
             {
                 Serializer.Serialize(stream, instance);
                 return stream.ToArray();

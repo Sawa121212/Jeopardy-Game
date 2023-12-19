@@ -18,32 +18,59 @@
         <views:BaseSettingsViewModel />
     </Design.DataContext>-->
 
+    <UserControl.Resources>
+        <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
+    </UserControl.Resources>
+
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,*">
         <controls:Card Grid.Row="0">
             <StackPanel Spacing="10" Margin="10,5">
-                <TextBlock Classes="Subtitle1" Text="Основные настройки" FontWeight="Bold" />
+                <TextBlock Classes="Subtitle1"
+                           Text="Основные настройки"
+                           FontWeight="Bold" />
 
                 <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Язык"
                                VerticalAlignment="Center" Margin="0 ,0,15,0" />
 
-                    <controls:Card Grid.Row="0" Grid.Column="1" Padding="0" InsideClipping="True"
-                                   HorizontalAlignment="Left" Margin="0,5">
-                        <StackPanel Orientation="Horizontal" Height="32">
-                            <RadioButton Classes="Button" GroupName="Lang"
+                    <controls:Card Grid.Row="0" Grid.Column="1"
+                                   Padding="0"
+                                   InsideClipping="True"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,5">
+                        <controls:Card.Styles>
+                            <Style Selector="RadioButton">
+                                <Setter Property="Theme" Value="{StaticResource MaterialButtonlikeRadioButton}" />
+                            </Style>
+                        </controls:Card.Styles>
+
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton GroupName="Lang"
                                          Content="Русский"
                                          IsChecked="{Binding CultureInfo, Converter={StaticResource  EnumToBooleanConverter}, ConverterParameter={x:Static localization1:LanguagesEnum.ru}}"
                                          Command="{Binding Path=ChangeLanguageCommand}" />
-                            <RadioButton Classes="Button" GroupName="Lang"
+                            <RadioButton GroupName="Lang"
                                          Content=" English "
                                          IsChecked="{Binding CultureInfo, Converter={StaticResource  EnumToBooleanConverter}, ConverterParameter={x:Static localization1:LanguagesEnum.en}}"
                                          Command="{Binding Path=ChangeLanguageCommand}" />
                         </StackPanel>
                     </controls:Card>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Тема" VerticalAlignment="Center" Margin="5" />
-                    <controls:Card Grid.Row="1" Grid.Column="1" Padding="0" InsideClipping="True"
-                                   HorizontalAlignment="Left" Margin="0,5">
+                    <!-- Тема -->
+                    <TextBlock Grid.Row="1" Grid.Column="0"
+                               Text="Тема"
+                               VerticalAlignment="Center" Margin="5" />
+                    <controls:Card Grid.Row="1" Grid.Column="1"
+                                   Padding="0"
+                                   InsideClipping="True"
+                                   HorizontalAlignment="Left"
+                                   Margin="0,5">
+                        <controls:Card.Styles>
+                            <Style Selector="RadioButton">
+                                <Setter Property="Theme" Value="{StaticResource MaterialButtonlikeRadioButton}" />
+                            </Style>
+                        </controls:Card.Styles>
+
                         <StackPanel Orientation="Horizontal" Height="32">
                             <RadioButton Content="Светлая"
                                          Classes="Button" GroupName="ThemeGroup"
@@ -56,9 +83,6 @@
                         </StackPanel>
                     </controls:Card>
                 </Grid>
-                <StackPanel Spacing="10" Orientation="Horizontal">
-                    <CheckBox Content="Свернуть в системный трей" />
-                </StackPanel>
             </StackPanel>
         </controls:Card>
     </Grid>

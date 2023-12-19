@@ -96,7 +96,7 @@ namespace Infrastructure.Module.Services.Logging.ReadersWriters
             LockerMutex.WaitOne();
             try
             {
-                using StreamWriter sw = new StreamWriter(FullFileName, isExist, Encoding);
+                using StreamWriter sw = new(FullFileName, isExist, Encoding);
 
                 logItem.SetNumber(lineCount);
                 DateTime dt = logItem.TimeStamp;

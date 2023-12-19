@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 
-namespace JeopardyGame.Views
+namespace JeopardyGame.Views.Shell
 {
     public partial class ShellView : Window
     {

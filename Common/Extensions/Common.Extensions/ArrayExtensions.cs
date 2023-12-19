@@ -12,7 +12,7 @@ namespace Common.Extensions
     public static class ArrayExtensions
     {
         [SuppressMessage("ReSharper", "InconsistentNaming")]
-        private static readonly Random RANDOM = new Random((int)DateTime.Now.Ticks);
+        private static readonly Random RANDOM = new((int)DateTime.Now.Ticks);
 
         /// <summary>
         /// Получение массива случайных символов.

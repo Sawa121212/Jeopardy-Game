@@ -17,7 +17,7 @@ namespace Notification.Module.Views
 
         public event Action<IDialogResult>? RequestClose;
 
-        public DelegateCommand<string> CmdResult => new DelegateCommand<string>((param) =>
+        public DelegateCommand<string> CmdResult => new((param) =>
         {
             RaiseRequestClose(new DialogResult(ButtonResult.OK));
         });

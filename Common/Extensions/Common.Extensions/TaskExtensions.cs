@@ -82,7 +82,7 @@ namespace Common.Extensions
         private static async Task<T> WithCancellationSlow<T>(Task<T> task, CancellationToken cancellationToken)
         {
             if (task == null) throw new ArgumentNullException(nameof(task));
-            TaskCompletionSource<bool>? tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool>? tcs = new();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
             {
                 if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(false))
@@ -94,7 +94,7 @@ namespace Common.Extensions
         private static async Task WithCancellationSlow(this Task task, CancellationToken cancellationToken)
         {
             if (task == null) throw new ArgumentNullException(nameof(task));
-            TaskCompletionSource<bool>? tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool>? tcs = new();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
             {
                 if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(false))
@@ -109,7 +109,7 @@ namespace Common.Extensions
 
             private static Task<T> CreateCanceledTask()
             {
-                TaskCompletionSource<T>? completionSource = new TaskCompletionSource<T>();
+                TaskCompletionSource<T>? completionSource = new();
                 completionSource.SetCanceled();
                 return completionSource.Task;
             }
@@ -121,7 +121,7 @@ namespace Common.Extensions
 
             private static Task CreateCanceledTask()
             {
-                TaskCompletionSource<EmptyStruct>? completionSource = new TaskCompletionSource<EmptyStruct>();
+                TaskCompletionSource<EmptyStruct>? completionSource = new();
                 completionSource.SetCanceled();
                 return completionSource.Task;
             }
