@@ -23,7 +23,7 @@ namespace Common.Extensions
             if (ex == null)
                 return message;
 
-            StringBuilder? sb = new StringBuilder();
+            StringBuilder? sb = new();
             sb.AppendLine(message);
 
             do

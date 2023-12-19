@@ -11,7 +11,6 @@
 
     <ItemGroup>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Include="Avalonia" Version="0.10.18" />
         <PackageReference Include="Avalonia" Version="11.0.6" />
         <PackageReference Include="Material.Avalonia" Version="3.1.2" />
         <PackageReference Include="Prism.Avalonia" Version="8.1.97.11000" />

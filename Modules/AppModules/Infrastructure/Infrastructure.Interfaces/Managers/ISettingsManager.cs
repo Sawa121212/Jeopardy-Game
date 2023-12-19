@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Common.Core.Entities;
 
-namespace Common.Ui.Managers
+namespace Infrastructure.Interfaces.Managers
 {
     /// <summary>
     /// Менеджер отвечает за все что связано с настройками.
@@ -22,7 +22,7 @@ namespace Common.Ui.Managers
         /// </summary>
         /// <param name="menuElement">Соответствующий названию настроек элемент.</param>
         /// <returns>Вид с настройками.</returns>
-        Control GetView(GroupedElement menuElement);
+        string GetView(GroupedElement menuElement);
 
         /// <summary>
         /// Получить список сущностей.

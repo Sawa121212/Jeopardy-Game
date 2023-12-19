@@ -11,7 +11,7 @@ namespace Common.Extensions.Collections
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public static class ListExtensions
     {
-        private static readonly Random RANDOM = new Random((int)DateTime.Now.Ticks);
+        private static readonly Random RANDOM = new((int)DateTime.Now.Ticks);
         
         /// <summary>
         /// Получить обобщенный список.

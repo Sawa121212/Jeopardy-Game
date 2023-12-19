@@ -22,7 +22,7 @@ namespace Common.Core.Localization
             if (!string.IsNullOrWhiteSpace(Context))
                 keyToUse = $"{Context}/{Key}";
 
-            ReflectionBindingExtension? binding = new ReflectionBindingExtension($"[{keyToUse}]")
+            ReflectionBindingExtension? binding = new($"[{keyToUse}]")
             {
                 Mode = BindingMode.OneWay,
                 Source = Localizer.Instance,

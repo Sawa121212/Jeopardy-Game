@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Splat.ApplicationPerformanceMonitoring;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Services.Interfaces;

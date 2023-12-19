@@ -137,7 +137,7 @@ namespace Infrastructure.Module.Services.Logging.ReadersWriters
             LockerMutex.WaitOne();
             try
             {
-                using StreamWriter sw = new StreamWriter(fullFileName!, isExist, Encoding);
+                using StreamWriter sw = new(fullFileName!, isExist, Encoding);
 
                 // Если файла не существовало - печатаем заголовок
                 if (!isExist)

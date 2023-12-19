@@ -175,7 +175,7 @@ namespace Common.Extensions.ValueTypes
         /// <param name="count">Количество элементов диапазона.</param>
         public static string BytesToHex(this byte[] bytes, int index, int count)
         {
-            StringBuilder? sb = new StringBuilder();
+            StringBuilder? sb = new();
             int last = index + count;
             for (int i = index; i < last; i++)
                 sb.Append(bytes[i].ToString("X2"));

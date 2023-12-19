@@ -15,14 +15,14 @@ namespace Common.Extensions.ValueTypes
         /// </summary>
         /// <remarks>Совпадает с началом отсчёта времени в OLE Automation и Delphi.</remarks>
         public static DateTime ScadaEpoch =>
-            new DateTime(1899, 12, 30, 0, 0, 0, DateTimeKind.Utc);
+            new(1899, 12, 30, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
         /// Минимально возможное дата/время с точки зрения UNIX.
         /// </summary>
         /// <remarks>Используется в Javascript при реализации даты.</remarks>
         public static DateTime UnixEpoch =>
-            new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
         /// Закодировать дату и время в вещественное значение времени.

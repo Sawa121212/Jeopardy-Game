@@ -73,7 +73,7 @@ namespace Common.Extensions
             int streamCapacity = stream.CanSeek 
                 ? (int)Math.Min(int.MaxValue, stream.Length) 
                 : 0;
-            using MemoryStream? ms = new MemoryStream(streamCapacity);
+            using MemoryStream? ms = new(streamCapacity);
             int count;
             while ((count = stream.Read(buffer, 0, buffer.Length)) > 0)
                 ms.Write(buffer, 0, count);
@@ -95,7 +95,7 @@ namespace Common.Extensions
             int streamCapacity = stream.CanSeek 
                 ? (int)Math.Min(int.MaxValue, stream.Length) 
                 : 0;
-            using MemoryStream? ms = new MemoryStream(streamCapacity);
+            using MemoryStream? ms = new(streamCapacity);
             int count;
             while ((count = await stream.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token)) > 0)
             {
@@ -164,7 +164,7 @@ namespace Common.Extensions
             
             Seek(stream, buffer, offset, tokenSource);       // передвигаем указатель в потоке
 
-            using MemoryStream? ms = new MemoryStream(streamCapacity);
+            using MemoryStream? ms = new(streamCapacity);
             while (ms.Length < length)
             {
                 tokenSource.Token.ThrowIfCancellationRequested();
@@ -298,7 +298,7 @@ namespace Common.Extensions
             int charCount;                                      // количество считанных символов
             int substringCount = 0;                             // количество найденых повторений строки
             char[]? chBuffer = new char[DEFAULT_BUFFER_SIZE];       // буфер для работы
-            StreamReader? sr = new StreamReader(stream, encoding, true);
+            StreamReader? sr = new(stream, encoding, true);
 
             do
             {
@@ -306,7 +306,7 @@ namespace Common.Extensions
                 charCount = sr.ReadBlock(chBuffer, 0, DEFAULT_BUFFER_SIZE);
 
                 // Подсчитываем повторения строки
-                string? str = new string(chBuffer);
+                string? str = new(chBuffer);
                 substringCount += str.GetSubstringCount(searchString);
             } 
             while(charCount >= DEFAULT_BUFFER_SIZE);    
@@ -329,7 +329,7 @@ namespace Common.Extensions
             bool isCr = false;                                   // признак возврата каретки
             bool isCrLf = false;                                 // признак возврата каретки + перевода строки 
             char[]? chBuffer = new char[DEFAULT_BUFFER_SIZE];       // буфер для работы
-            StreamReader? sr = new StreamReader(stream, encoding, true);
+            StreamReader? sr = new(stream, encoding, true);
             
             do
             {

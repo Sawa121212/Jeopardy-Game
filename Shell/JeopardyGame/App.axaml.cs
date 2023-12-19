@@ -35,6 +35,7 @@ using Prism.Regions;
 using TelegramAPI.Test;
 using TopicDb.Module;
 using IResourceProvider = Common.Core.Localization.IResourceProvider;
+using ShellView = JeopardyGame.Views.Shell.ShellView;
 
 namespace JeopardyGame
 {
@@ -86,8 +87,8 @@ namespace JeopardyGame
             containerRegistry.Register<ShellView>();
 
             // Views - Region Navigation
-            containerRegistry.RegisterForNavigation<PlayInfoView>()
-                ;
+            containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
+            containerRegistry.RegisterForNavigation<PlayInfoView>();
         }
 
         /// <summary>
@@ -133,8 +134,11 @@ namespace JeopardyGame
         protected override void OnInitialized()
         {
             Container.Resolve<IRegionManager>()
-                .RegisterViewWithRegion(RegionNameService.SettingsContentRegionName, nameof(BaseSettingsView))
+                .RegisterViewWithRegion(RegionNameService.ShellRegionName, nameof(MainView))
+                //.RegisterViewWithRegion(RegionNameService.SettingsContentRegionName, nameof(BaseSettingsView))
                 .RegisterViewWithRegion(RegionNameService.ContentRegionName, nameof(PlayInfoView));
+            Container.Resolve<ISettingsViewManager>()
+                .AddView<BaseSettingsView>("Общие", "Общие настройки");
         }
 
         /// <summary>

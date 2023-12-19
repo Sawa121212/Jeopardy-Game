@@ -9,7 +9,7 @@ namespace Common.Extensions
     /// </summary>
     public static class ProcessException
     {
-        private static readonly List<Type> FatalExceptions = new List<Type>
+        private static readonly List<Type> FatalExceptions = new()
         {
             typeof(OutOfMemoryException),
             typeof(StackOverflowException),

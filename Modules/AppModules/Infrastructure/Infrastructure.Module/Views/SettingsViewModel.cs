@@ -10,29 +10,19 @@ using Common.Core.Views;
 using Common.Extensions;
 using Common.Ui.Managers;
 using DynamicData;
+using Infrastructure.Interfaces.Managers;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
 
 namespace Infrastructure.Module.Views
 {
-    public class SettingsViewModel : ViewModelBase
+    public class SettingsViewModel : NavigationViewModelBase
     {
-        private const string DefaultGroupName = "Общие";
-        private readonly ISettingsViewManager _settingsManager;
-        private ObservableCollection<GroupedElement> _menuElements;
-        private Control _selectedView;
-        private GroupedElement _selectedGroup;
-        private object _selectedNode;
-        private ObservableCollection<NodeElement> _extraMenuElements;
-        private string _settingsContentRegionName;
-        private IRegionManager _region;
-
-        public SettingsViewModel(IRegionManager regionManager, ISettingsViewManager settingsManager)
+        public SettingsViewModel(IRegionManager regionManager, ISettingsViewManager settingsManager) : base(regionManager)
         {
+            _regionManager = regionManager;
             _settingsManager = settingsManager;
-
-            Region = regionManager.CreateRegionManager();
 
             MenuElementChangedCommand = new DelegateCommand<GroupedElement>(SelectionChanged);
             CloseWindowCommand = new DelegateCommand(OnCloseWindow);
@@ -48,6 +38,51 @@ namespace Infrastructure.Module.Views
             }
         }
 
+        /// <summary>
+        /// Элементы в меню
+        /// </summary>
+        public ObservableCollection<GroupedElement> MenuElements
+        {
+            get => _menuElements;
+            set => this.RaiseAndSetIfChanged(ref _menuElements, value);
+        }
+
+        /// <summary>
+        /// Список настроек у Элемента из меню
+        /// </summary>
+        public ObservableCollection<NodeElement> ExtraMenuElements
+        {
+            get => _extraMenuElements;
+            set => this.RaiseAndSetIfChanged(ref _extraMenuElements, value);
+        }
+
+        /// <summary>
+        /// Выбранный вью
+        /// </summary>
+        public string SelectedViewName
+        {
+            get => _selectedViewName;
+            set => this.RaiseAndSetIfChanged(ref _selectedViewName, value);
+        }
+
+        /// <summary>
+        /// Выбранный элемент из меню
+        /// </summary>
+        public GroupedElement SelectedGroup
+        {
+            get => _selectedGroup;
+            set => this.RaiseAndSetIfChanged(ref _selectedGroup, value);
+        }
+
+        /// <summary>
+        /// Выбранная настройка со списка у Элемента из меню
+        /// </summary>
+        public object SelectedGroupNode
+        {
+            get => _selectedNode;
+            set => this.RaiseAndSetIfChanged(ref _selectedNode, value);
+        }
+
         public static bool IsInitialize { get; set; }
 
         /// <summary>
@@ -60,17 +95,21 @@ namespace Infrastructure.Module.Views
                 return;
 
             SelectedGroupNode = null;
-            SelectedView = null;
+            SelectedViewName = null;
 
-            Control view = _settingsManager.GetView(menuElement);
+            string viewName = _settingsManager.GetView(menuElement);
 
-            if (view != null)
+            if (!viewName.IsNullOrEmpty())
             {
-                SelectedView = view;
-                string source = view.GetType().Name;
-                if (!source.IsNullOrEmpty())
+                SelectedViewName = viewName;
+                bool isRegionContains = _regionManager.Regions.ContainsRegionWithName(RegionNameService.SettingsContentRegionName);
+                if (isRegionContains)
                 {
-                    Region.RequestNavigate(RegionNameService.SettingsContentRegionName, source);
+                    _regionManager.RequestNavigate(RegionNameService.SettingsContentRegionName, SelectedViewName);
+                }
+                else
+                {
+                    _regionManager.RegisterViewWithRegion(RegionNameService.SettingsContentRegionName, SelectedViewName);
                 }
             }
             else
@@ -98,7 +137,7 @@ namespace Infrastructure.Module.Views
         /// </summary>
         private void CreateGroups()
         {
-            Dictionary<string, GroupedElement> groups = new Dictionary<string, GroupedElement>();
+            Dictionary<string, GroupedElement> groups = new();
 
             foreach (GroupedElement menuElement in _settingsManager.GetMenuElements())
             {
@@ -123,62 +162,19 @@ namespace Infrastructure.Module.Views
             NeedCloseSignal.Raise(true);
         }
 
-        /// <summary>
-        /// Элементы в меню
-        /// </summary>
-        public ObservableCollection<GroupedElement> MenuElements
-        {
-            get => _menuElements;
-            set => this.RaiseAndSetIfChanged(ref _menuElements, value);
-        }
-
-        /// <summary>
-        /// Список настроек у Элемента из меню
-        /// </summary>
-        public ObservableCollection<NodeElement> ExtraMenuElements
-        {
-            get => _extraMenuElements;
-            set => this.RaiseAndSetIfChanged(ref _extraMenuElements, value);
-        }
-
-        /// <summary>
-        /// Выбранный вью
-        /// </summary>
-        public Control SelectedView
-        {
-            get => _selectedView;
-            set => this.RaiseAndSetIfChanged(ref _selectedView, value);
-        }
-
-        /// <summary>
-        /// Выбранный элемент из меню
-        /// </summary>
-        public GroupedElement SelectedGroup
-        {
-            get => _selectedGroup;
-            set => this.RaiseAndSetIfChanged(ref _selectedGroup, value);
-        }
-
-        /// <summary>
-        /// Выбранная настройка со списка у Элемента из меню
-        /// </summary>
-        public object SelectedGroupNode
-        {
-            get => _selectedNode;
-            set => this.RaiseAndSetIfChanged(ref _selectedNode, value);
-        }
-
-        /// <summary>
-        /// Текущий Регион для окна
-        /// </summary>
-        public IRegionManager Region
-        {
-            get => _region;
-            set => this.RaiseAndSetIfChanged(ref _region, value);
-        }
 
         public ISignal<bool?> NeedCloseSignal { get; }
         public ICommand MenuElementChangedCommand { get; }
         public ICommand CloseWindowCommand { get; }
+
+        private const string DefaultGroupName = "Общие";
+        private readonly IRegionManager _regionManager;
+        private readonly ISettingsViewManager _settingsManager;
+        private ObservableCollection<GroupedElement> _menuElements;
+        private string _selectedViewName;
+        private GroupedElement _selectedGroup;
+        private object _selectedNode;
+        private ObservableCollection<NodeElement> _extraMenuElements;
+        private string _settingsContentRegionName;
     }
 }

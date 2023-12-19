@@ -40,7 +40,8 @@ namespace Common.Extensions.Prism
         }
 
 
-        public static void TryRegisterSingleton<T>(this IContainerRegistry container,
+        public static void TryRegisterSingleton<T>(
+            this IContainerRegistry container,
             Func<IContainerProvider, object> factoryMethod)
         {
             if (!container.IsRegistered<T>())

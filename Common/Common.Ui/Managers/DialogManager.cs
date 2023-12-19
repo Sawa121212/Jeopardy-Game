@@ -178,7 +178,7 @@ namespace Common.Ui.Managers
         public TResult ShowDialogSync<TWindow, TResult, TParam>(TParam param, bool canMinimize = false)
             where TWindow : Window, IViewWithResult<TResult>
         {
-            using (CancellationTokenSource source = new CancellationTokenSource())
+            using (CancellationTokenSource source = new())
             {
                 Window window = this.GetShellWindow();
                 TWindow view = CreateWindow<TWindow>();

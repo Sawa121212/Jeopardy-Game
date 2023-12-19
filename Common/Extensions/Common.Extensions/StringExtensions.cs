@@ -203,7 +203,7 @@ namespace Common.Extensions
         /// <param name="text">Исходная строка.</param>
         public static string RemoveWhiteSpace(this string text)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             if (text == null) 
                 return sb.ToString();
             
@@ -261,7 +261,7 @@ namespace Common.Extensions
             List<string> parts = text.Split(delimiter).ToList();
             if (parts.Count > 1)
             {
-                StringBuilder builder = new StringBuilder();
+                StringBuilder builder = new();
                 string lastPart = parts.Last();
                 int max = maxLength - lastPart.Length - 3;
                 for (int i = 0; i < parts.Count - 1; i++)
@@ -380,7 +380,7 @@ namespace Common.Extensions
                 throw new ArgumentNullException(nameof(value));
 
             IList<byte> bytes = value.ToByteArray().AddEmptyToEven();
-            List<ushort> ushorts = new List<ushort>();
+            List<ushort> ushorts = new();
             for (int i = 0; i < bytes.Count; i += 2)
             {
                 ushorts.Add((ushort)((bytes[i + 1] << 8) | bytes[i]));
@@ -398,7 +398,7 @@ namespace Common.Extensions
             if (array == null)
                 throw new ArgumentNullException(nameof(array));
 
-            List<byte> bytes = new List<byte>();
+            List<byte> bytes = new();
             foreach (ushort val in array)
             {
                 bytes.Add((byte)val);
@@ -417,7 +417,7 @@ namespace Common.Extensions
             if (array == null)
                 throw new ArgumentNullException(nameof(array));
 
-            List<byte> list = new List<byte>(array);
+            List<byte> list = new(array);
             if (list.Count % 2 != 0)
                 list.Add(32); // " " Дополняем до четного пустым символом
             return list;
@@ -439,7 +439,7 @@ namespace Common.Extensions
             if (length < sourceLength)
                 return value.Substring(0, length);
 
-            string appendString = new string(appendSymbol, length - sourceLength);
+            string appendString = new(appendSymbol, length - sourceLength);
 
             return $"{value}{appendString}";
         }
@@ -450,7 +450,7 @@ namespace Common.Extensions
         /// <param name="value">Исходная строка.</param>
         public static string RemoveNumericPostfix(this string value)
         {
-            StringBuilder builder = new StringBuilder(value);
+            StringBuilder builder = new(value);
             for (int i = builder.Length - 1; i >= 0; i--)
             {
                 if (!char.IsDigit(builder[i]))
@@ -496,7 +496,7 @@ namespace Common.Extensions
             if (format == null || args == null)
                 throw new ArgumentNullException(format == null ? nameof(format) : nameof(args));
 
-            StringBuilder builder = new StringBuilder(format.Length + args.Length * 8);
+            StringBuilder builder = new(format.Length + args.Length * 8);
             builder.AppendFormat(format, args);
             builder.Replace(" \"\"", string.Empty);
             builder.Replace("\"\" ", string.Empty);

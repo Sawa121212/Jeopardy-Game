@@ -19,15 +19,14 @@ namespace Infrastructure.Module
                 ;
 
             containerRegistry
+                .RegisterSingleton<ISettingsViewManager, SettingsViewManager>()
                 .RegisterSingleton<IApplicationSettingsRepositoryService, ApplicationSettingsRepositoryService>()
                 .RegisterSingleton<IPathService, PathService>()
                 .RegisterSingleton<IProtobufSerializeService, ProtobufSerializeService>()
                 ;
 
-            if (!containerRegistry.IsRegistered(typeof(SettingsView)))
-            {
-                containerRegistry.RegisterSingleton<SettingsView>();
-            }
+
+            containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

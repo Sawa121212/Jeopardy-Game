@@ -29,7 +29,7 @@ namespace JeopardyGame
                 })
                 .UseSkia()
                 .UseReactiveUI()
-                .UseManagedSystemDialogs()
+                //.UseManagedSystemDialogs()
                 .LogToTrace();
     }
 }
