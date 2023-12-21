@@ -2,39 +2,37 @@
 using System.Threading.Tasks;
 using Common.Core.Interfaces.Settings;
 using Common.Core.Threading;
-using Infrastructure.Domain.Settings;
 using Infrastructure.Interfaces.Managers;
 using Infrastructure.Interfaces.Services;
-using Infrastructure.Interfaces.Services.Settings;
+using TelegramAPI.Test.Settings;
 
-namespace Infrastructure.Module.Services.Settings
+namespace TelegramAPI.Test.Services.Settings
 {
-    public class ApplicationSettingsRepositoryService : IApplicationSettingsRepositoryService
+    public class TelegramSettingsRepositoryService : ITelegramSettingsRepositoryService
     {
         private readonly ISerializableSettingsManager _settingsManager;
         private readonly string _settingsFilename;
         private readonly SmartLocker _fileLocker;
 
-        public ApplicationSettingsRepositoryService(ISerializableSettingsManager settingsManager, IPathService pathService)
+        public TelegramSettingsRepositoryService(ISerializableSettingsManager settingsManager, IPathService pathService)
         {
             _settingsManager = settingsManager;
             _fileLocker = new SmartLocker();
-            _settingsFilename = Path.Combine(pathService.SettingsFolder, "Settings.config");
+            _settingsFilename = Path.Combine(pathService.SettingsFolder, "TelegramSettings.config");
         }
 
-        /// <inheritdoc />
-        public async Task<ISettings> Get()
+        public async Task<ISettings?> Get()
         {
             if (!File.Exists(_settingsFilename))
                 await CreateDefault();
 
-            ApplicationSettings settings = await Task.Run(() =>
+            TelegramSettings? settings = await Task.Run(() =>
             {
                 if (_fileLocker.Enter(0))
                 {
                     try
                     {
-                        return _settingsManager?.GetSettings<ApplicationSettings>(_settingsFilename, true);
+                        return _settingsManager.GetSettings<TelegramSettings>(_settingsFilename, true);
                     }
                     finally
                     {
@@ -44,13 +42,15 @@ namespace Infrastructure.Module.Services.Settings
 
                 return null;
             });
+
             return settings;
         }
+
 
         /// <inheritdoc />
         public async Task Save(ISettings settings)
         {
-            if (settings is ApplicationSettings applicationSettings)
+            if (settings is TelegramSettings telegramSettings)
             {
                 await Task.Run(() =>
                 {
@@ -58,7 +58,7 @@ namespace Infrastructure.Module.Services.Settings
                     {
                         try
                         {
-                            _settingsManager?.SetSettings(applicationSettings, _settingsFilename, true);
+                            _settingsManager?.SetSettings(telegramSettings, _settingsFilename, true);
                         }
                         finally
                         {
@@ -69,10 +69,9 @@ namespace Infrastructure.Module.Services.Settings
             }
         }
 
-
         private async Task CreateDefault()
         {
-            await Save(new ApplicationSettings());
+            await Save(new TelegramSettings());
         }
     }
 }

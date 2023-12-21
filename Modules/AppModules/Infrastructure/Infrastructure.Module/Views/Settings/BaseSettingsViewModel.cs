@@ -1,25 +1,26 @@
 ﻿using System.Windows.Input;
 using Common.Core.Localization;
+using Common.Core.Views;
 using Common.Extensions;
 using Infrastructure.Interfaces.Services.Settings;
 using Material.Styles.Themes.Base;
 using Prism.Commands;
 using ReactiveUI;
 
-namespace JeopardyGame.Views.Settings
+namespace Infrastructure.Module.Views.Settings
 {
     /// <summary>
     /// Основные настройки приложения
     /// </summary>
-    public class BaseSettingsViewModel : ReactiveObject
+    public class BaseSettingsViewModel : ViewModelBase
     {
         private BaseThemeMode _themeMode;
         private BaseThemeMode _currentThemeMode;
         private LanguagesEnum _appCultureInfo;
         private LanguagesEnum _currentAppCultureInfo;
-        private readonly ISettingsService _settingsService;
+        private readonly IApplicationSettingsService _settingsService;
 
-        public BaseSettingsViewModel(ISettingsService settingsService)
+        public BaseSettingsViewModel(IApplicationSettingsService settingsService)
         {
             _settingsService = settingsService;
             ChangeLanguageCommand = new DelegateCommand(OnChangeLanguage);

@@ -1,40 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using Prism.Mvvm;
+using Common.Extensions;
+using ReactiveUI;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramAPI.Test.Managers;
-using File = System.IO.File;
+using TelegramAPI.Test.Helpers;
+using TelegramAPI.Test.Services.Settings;
 
-namespace TelegramAPI.Test.Views
+namespace TelegramAPI.Test.Managers
 {
-    public class TelegramTestViewModel : BindableBase
+    public class TelegramBotManager : ReactiveObject, ITelegramBotManager
     {
-        private readonly ITelegramBotManager _telegramBotManager;
-
-        private ObservableCollection<string> _messages;
-
-        public TelegramTestViewModel(ITelegramBotManager telegramBotManager)
+        public TelegramBotManager(ITelegramSettingsService telegramSettingsService)
         {
-            _telegramBotManager = telegramBotManager;
-            Messages = new ObservableCollection<string>();
-            _botClient = _telegramBotManager.TelegramBotClient;
+            _telegramSettingsService = telegramSettingsService;
+            _token = _telegramSettingsService.GetGameBotToken();
+            _telegramBotClient = new TelegramBotClient(_token);
+
+            _receiverOptions = new ReceiverOptions // Также присваиваем значение настройкам бота
+            {
+                // Тут указываем типы получаемых Update`ов, о них подробнее рассказано тут https://core.telegram.org/bots/api#update
+                AllowedUpdates = new[]
+                {
+                    UpdateType.Message, // Сообщения (текст, фото/видео, голосовые/видео сообщения и т.д.)
+                },
+                // Параметр, отвечающий за обработку сообщений, пришедших за то время, когда ваш бот был оффлайн
+                // True - не обрабатывать, False (стоит по умолчанию) - обрабатывать
+                ThrowPendingUpdates = true,
+            };
+
+            Task.Run(async () => await Initialize());
         }
 
-        public ObservableCollection<string> Messages
+        private async Task Initialize()
         {
-            get => _messages;
-            set => SetProperty(ref _messages, value);
+            using CancellationTokenSource cts = new();
+
+            // UpdateHander - обработчик приходящих Update`ов
+            // ErrorHandler - обработчик ошибок, связанных с Bot API
+            // Запускаем бота
+            _telegramBotClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, cts.Token);
+
+            // Создаем переменную, в которую помещаем информацию о нашем боте.
+            User me = await _telegramBotClient.GetMeAsync(cancellationToken: cts.Token);
+            //Messages.Add($"{me.FirstName} запущен!");
+            Debug.Write($"{me.FirstName} запущен!");
+
+            // Устанавливаем бесконечную задержку, чтобы наш бот работал постоянно
+            await Task.Delay(-1, cts.Token);
         }
-        
-        private async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+
+        public virtual async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             // Обязательно ставим блок try-catch, чтобы наш бот не "падал" в случае каких-либо ошибок
             try
@@ -51,7 +74,7 @@ namespace TelegramAPI.Test.Views
                         User? user = message.From;
 
                         // Выводим на экран то, что пишут нашему боту, а также небольшую информацию об отправителе
-                        Messages.Add($"{user.FirstName} ({user.Id}) написал сообщение: {message.Text}");
+                        //Messages.Add($"{user.FirstName} ({user.Id}) написал сообщение: {message.Text}");
 
                         // Chat - содержит всю информацию о чате
                         Chat chat = message.Chat;
@@ -162,6 +185,12 @@ namespace TelegramAPI.Test.Views
                                     return;
                                 }
 
+                                if (!message.Text.IsNullOrEmpty())
+                                {
+                                    await CheckAddedAdminMode(chat.Id, message.Text);
+                                    return;
+                                }
+
                                 return;
                             }
 
@@ -187,7 +216,7 @@ namespace TelegramAPI.Test.Views
                         User user = callbackQuery.From;
 
                         // Выводим на экран нажатие кнопки
-                        Messages.Add($"{user.FirstName} ({user.Id}) нажал на кнопку: {callbackQuery.Data}");
+                        //Messages.Add($"{user.FirstName} ({user.Id}) нажал на кнопку: {callbackQuery.Data}");
 
                         // Вот тут нужно уже быть немножко внимательным и не путаться!
                         // Мы пишем не callbackQuery.Chat , а callbackQuery.Message.Chat , так как
@@ -241,10 +270,91 @@ namespace TelegramAPI.Test.Views
             }
             catch (Exception ex)
             {
-                Messages.Add(ex.ToString());
+                //Messages.Add(ex.ToString());
             }
         }
 
-        private readonly ITelegramBotClient _botClient;
+        private async Task SendMessage(long chatId, string message)
+        {
+            await _telegramBotClient.SendTextMessageAsync(chatId, message);
+        }
+
+        private async Task CheckAddedAdminMode(long chatId, string key)
+        {
+            if (!IsAddAdminMode)
+            {
+                return;
+            }
+
+            if (key.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            if (key == _adminModeKey)
+            {
+                await _telegramSettingsService.SetAdminUserIdToken(chatId.ToString());
+                CancelAddAdminMode();
+                await SendMessage(chatId, $"Вы стали администратором");
+            }
+        }
+
+        public bool IsConnected()
+        {
+            return false;
+        }
+
+        public bool IsAddAdminMode
+        {
+            get => _isAddAdminMode;
+            private set => this.RaiseAndSetIfChanged(ref _isAddAdminMode, value);
+        }
+
+        /// <inheritdoc />
+        public TelegramBotClient TelegramBotClient => (TelegramBotClient) _telegramBotClient;
+
+        /// <inheritdoc />
+        public async Task<string> VerifyAddAdminMode(long chatId)
+        {
+            await _telegramSettingsService.SetAdminUserIdToken(null).ConfigureAwait(true);
+
+            _adminModeKey = RandomNumberGenerator.GenerateFormattedSixDigitRandomNumber();
+            IsAddAdminMode = true;
+            await SendMessage(chatId, $"Вторая часть кода подтверждения: ***{_adminModeKey.Substring(3, 3)}");
+            return _adminModeKey.Substring(0, 3);
+        }
+
+        /// <inheritdoc />
+        public void CancelAddAdminMode()
+        {
+            _adminModeKey = null;
+            IsAddAdminMode = false;
+        }
+
+        private Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
+        {
+            // Тут создадим переменную, в которую поместим код ошибки и её сообщение 
+            string errorMessage = error switch
+            {
+                ApiRequestException apiRequestException
+                    => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
+                _ => error.ToString()
+            };
+
+            Debug.Fail(errorMessage);
+            //Messages.Add(errorMessage);
+            return Task.CompletedTask;
+        }
+
+        private readonly ITelegramSettingsService _telegramSettingsService;
+        private readonly string? _token;
+
+        // Это клиент для работы с Telegram Bot API, который позволяет отправлять сообщения, управлять ботом, подписываться на обновления и многое другое.
+        private readonly ITelegramBotClient _telegramBotClient;
+
+        // Это объект с настройками работы бота. Здесь мы будем указывать, какие типы Update мы будем получать, Timeout бота и так далее.
+        private readonly ReceiverOptions _receiverOptions;
+        private bool _isAddAdminMode;
+        private string _adminModeKey;
     }
 }

@@ -18,7 +18,7 @@
              x:Class="Infrastructure.Module.Views.SettingsView"
              x:DataType="vm:SettingsViewModel"
              x:Name="ThisWindow"
-             mc:Ignorable="d" Width="800" Height="650">
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650">
 
     <Grid RowDefinitions="*, Auto">
 
@@ -50,10 +50,8 @@
 
             <!-- Список страниц -->
             <Grid Grid.Column="1"
-                  RowDefinitions="Auto,*"
                   Margin="5">
-                <ListBox Grid.Row="0"
-                         ItemsSource="{Binding ExtraMenuElements}"
+                <ListBox ItemsSource="{Binding ExtraMenuElements}"
                          SelectedItem="{Binding SelectedGroupNode, Mode=TwoWay}"
                          IsVisible="{Binding SelectedViewName, Converter={x:Static StringConverters.IsNullOrEmpty}}">
                     <ListBox.ItemTemplate>
@@ -76,8 +74,7 @@
                 </ListBox>
 
                 <!-- Content -->
-                <ContentControl Grid.Row="1"
-                                x:Name="SettingsContent"
+                <ContentControl x:Name="SettingsContent"
                                 mvvm:RegionManager.RegionName="{x:Static regions:RegionNameService.SettingsContentRegionName}"
                                 IsVisible="{Binding SelectedViewName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                 Margin="5" />
@@ -95,9 +92,9 @@
                         ToolTip.Tip="Информация" />
                 <Button Grid.Column="1"
                         HorizontalAlignment="Right"
-                        Content="Ok" Height="24" Width="120"
+                        Content="Готово" Height="24" Width="120"
                         Padding="0"
-                        Command="{Binding CloseWindowCommand}" Margin="5,3" />
+                        Command="{Binding OkCommand}" Margin="5,3" />
             </Grid>
         </controls:ColorZone>
     </Grid>

@@ -4,6 +4,6 @@
     {
         public const string ShellRegionName = "ShellRegion";
         public const string ContentRegionName = "ContentRegion";
-        public static string SettingsContentRegionName = "Test";
+        public const string SettingsContentRegionName = "SettingsContentRegion";
     }
 }

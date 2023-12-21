@@ -21,5 +21,4 @@
     <ProjectReference Include="..\..\..\..\Common\Extensions\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj" />
   </ItemGroup>
-
 </Project>

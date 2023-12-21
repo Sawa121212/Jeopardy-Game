@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 
-namespace JeopardyGame.Views.Settings
+namespace Infrastructure.Module.Views.Settings
 {
     public partial class BaseSettingsView : UserControl
     {

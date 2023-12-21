@@ -19,10 +19,8 @@ using Infrastructure.Module;
 using Infrastructure.Module.Managers;
 using Infrastructure.Module.Services;
 using Infrastructure.Module.Services.ApplicationInfo;
-using Infrastructure.Module.Services.Settings;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
-using JeopardyGame.Views.Settings;
 using ModuleA;
 using ModuleB;
 using Notification.Module;
@@ -72,16 +70,10 @@ namespace JeopardyGame
                 .RegisterSingleton<IProtobufSerializeService, ProtobufSerializeService>()
                 .RegisterSingleton<IPathService, PathService>()
                 .RegisterSingleton<ISerializableSettingsManager, SerializableSettingsManager>()
-                .RegisterSingleton<IApplicationSettingsRepositoryService, ApplicationSettingsRepositoryService>()
-                .RegisterSingleton<ISettingsService, SettingsService>()
-                .RegisterSingleton<IApplicationSettingsService, ApplicationSettingsService>()
 
                 // Notification
                 .RegisterSingleton<INotificationService, NotificationService>()
-                .RegisterSingleton<IConfirmationService, ConfirmationService>()
-
-                // окно Настроек
-                .RegisterForNavigation<BaseSettingsView, BaseSettingsViewModel>();
+                .RegisterSingleton<IConfirmationService, ConfirmationService>();
 
             // Views - Generic
             containerRegistry.Register<ShellView>();
@@ -116,9 +108,6 @@ namespace JeopardyGame
 
             // Добавим локализацию
             Container.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
-
-            // Применить загруженные настройки
-            Container.Resolve<ISettingsService>()?.ApplySavedSettings();
         }
 
 
@@ -135,10 +124,7 @@ namespace JeopardyGame
         {
             Container.Resolve<IRegionManager>()
                 .RegisterViewWithRegion(RegionNameService.ShellRegionName, nameof(MainView))
-                //.RegisterViewWithRegion(RegionNameService.SettingsContentRegionName, nameof(BaseSettingsView))
                 .RegisterViewWithRegion(RegionNameService.ContentRegionName, nameof(PlayInfoView));
-            Container.Resolve<ISettingsViewManager>()
-                .AddView<BaseSettingsView>("Общие", "Общие настройки");
         }
 
         /// <summary>
