@@ -12,19 +12,19 @@
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              x:DataType="settings:TelegramSettingsViewModel">
 
-    <Design.DataContext>
+    <!--<Design.DataContext>
         <settings:TelegramSettingsViewModel />
-    </Design.DataContext>
+    </Design.DataContext>-->
 
     <Grid RowDefinitions="Auto, Auto, *">
         <controls:Card Grid.Row="0"
                        Margin="0,0,0,5">
             <StackPanel Spacing="10" Margin="10,5">
-                <TextBlock Classes="Subtitle1"
+                <TextBlock Classes="Headline6"
                            Text="Бот"
                            FontWeight="Bold" />
 
-                <TextBox Classes="revealPasswordButton"
+                <TextBox Classes="outline revealPasswordButton"
                          PasswordChar="*"
                          AcceptsReturn="True"
                          MaxHeight="100"
@@ -40,13 +40,13 @@
 
         <controls:Card Grid.Row="1">
             <StackPanel Spacing="10" Margin="10,5">
-                <TextBlock Classes="Subtitle1"
+                <TextBlock Classes="Headline6"
                            Text="Аккаунт администратора"
                            FontWeight="Bold" />
 
-                <TextBox Classes="revealPasswordButton"
+                <TextBox Classes="outline revealPasswordButton"
                          Text="{Binding AdminId, Mode=TwoWay}"
-                         assists:TextFieldAssist.Label="ID аккаунта администратора "
+                         assists:TextFieldAssist.Label="ID аккаунта"
                          PasswordChar="*"
                          UseFloatingWatermark="True"
                          IsEnabled="{Binding !IsAddAdminMode, Mode=OneWay}" />
@@ -58,7 +58,7 @@
                             IsVisible="{Binding IsAddAdminMode, Mode=OneWay}"
                             Margin="10,5">
                     <TextBlock Classes="Subtitle2"
-                               Text="Вам показано первые три цифры кода, остальные цифры отправлены на указанный аккаунт. Отправьте боту код соединив обе части"
+                               Text="Вам показано первые три цифры кода, остальные цифры отправлены на указанный аккаунт. Отправьте боту код соединив обе части в течение 2 минут"
                                FontWeight="Bold"
                                TextWrapping="Wrap" />
 

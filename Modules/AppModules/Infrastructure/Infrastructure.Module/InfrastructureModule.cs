@@ -31,8 +31,8 @@ namespace Infrastructure.Module
                 .RegisterSingleton<IApplicationSettingsRepositoryService, ApplicationSettingsRepositoryService>()
                 ;
 
-            containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
             containerRegistry.RegisterForNavigation<BaseSettingsView, BaseSettingsViewModel>();
+            containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

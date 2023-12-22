@@ -139,7 +139,7 @@ namespace TelegramAPI.Test.Views.Settings
             _timerSecond += (int) _timer.Interval / 1000;
             AdminIdStatus = $"Ожидание подтверждения... ({_timerSecond} секунд)";
             string id = GetAdminUserIdKey();
-            if (!id.IsNullOrEmpty())
+            if (!id.IsNullOrEmpty() || _timerSecond >= 120)
             {
                 // Остановка таймера
                 StopTimer();
@@ -150,6 +150,11 @@ namespace TelegramAPI.Test.Views.Settings
 
         private void StopTimer()
         {
+            if (_timer is null)
+            {
+                return;
+            }
+
             _timer.Stop();
             _timer.Dispose();
         }
