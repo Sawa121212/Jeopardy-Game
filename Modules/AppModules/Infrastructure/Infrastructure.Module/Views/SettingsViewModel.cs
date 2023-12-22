@@ -2,13 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Avalonia.Controls;
 using Common.Core.Entities;
 using Common.Core.Prism.Regions;
-using Common.Core.Signals;
 using Common.Core.Views;
 using Common.Extensions;
-using Common.Ui.Managers;
 using DynamicData;
 using Infrastructure.Interfaces.Managers;
 using Prism.Commands;
@@ -25,10 +22,9 @@ namespace Infrastructure.Module.Views
             _settingsManager = settingsManager;
 
             MenuElementChangedCommand = new DelegateCommand<GroupedElement>(SelectionChanged);
-            CloseWindowCommand = new DelegateCommand(OnCloseWindow);
+            OkCommand = new DelegateCommand(OnShowManinView);
 
             ExtraMenuElements = new ObservableCollection<NodeElement>();
-            NeedCloseSignal = new Signal<bool?>();
 
             CreateGroups();
 
@@ -83,7 +79,8 @@ namespace Infrastructure.Module.Views
             set => this.RaiseAndSetIfChanged(ref _selectedNode, value);
         }
 
-        public static bool IsInitialize { get; set; }
+        public ICommand MenuElementChangedCommand { get; }
+        public ICommand OkCommand { get; } // ToDo Remove
 
         /// <summary>
         /// Меняем выбранный элемент
@@ -154,18 +151,10 @@ namespace Infrastructure.Module.Views
             MenuElements = new ObservableCollection<GroupedElement>(groups.Values);
         }
 
-        /// <summary>
-        /// Закрытие окна
-        /// </summary>
-        private void OnCloseWindow()
+        private void OnShowManinView()
         {
-            NeedCloseSignal.Raise(true);
+            _regionManager.RequestNavigate(RegionNameService.ShellRegionName, "MainView");
         }
-
-
-        public ISignal<bool?> NeedCloseSignal { get; }
-        public ICommand MenuElementChangedCommand { get; }
-        public ICommand CloseWindowCommand { get; }
 
         private const string DefaultGroupName = "Общие";
         private readonly IRegionManager _regionManager;

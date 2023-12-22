@@ -2,24 +2,27 @@
 using System.Linq;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
+using TopicsDB.Infrastructure.Managers;
 using TopicsDB.Infrastructure.Services.Interfaces;
 
 namespace TopicsDB.Infrastructure.Services
 {
     public class TopicService : ITopicService
     {
-        private readonly TopicDbContext _context;
+        private readonly ITopicDbManager _topicDbManager;
+        private readonly TopicDbContext _dbContext;
 
-        public TopicService(TopicDbContext context)
+        public TopicService(ITopicDbManager topicDbManager)
         {
-            _context = context;
+            _topicDbManager = topicDbManager;
+            _dbContext = _topicDbManager.DbContext;
         }
 
         /// <inheritdoc />
         public void CreateTopic(Topic topic)
         {
-            _context.Topics.Add(topic);
-            _context.SaveChanges();
+            _dbContext.Topics.Add(topic);
+            _dbContext.SaveChanges();
         }
 
         /// <inheritdoc />
@@ -36,7 +39,7 @@ namespace TopicsDB.Infrastructure.Services
         /// <inheritdoc />
         public void DeleteTopic(Topic topic)
         {
-            if (_context.Topics.Contains(topic))
+            if (_dbContext.Topics.Contains(topic))
             {
                 DeleteTopic(topic.Id);
             }
@@ -44,31 +47,31 @@ namespace TopicsDB.Infrastructure.Services
 
         public void DeleteTopic(int topicId)
         {
-            Topic topic = _context.Topics.Find(topicId);
+            Topic topic = _dbContext.Topics.Find(topicId);
             if (topic == null)
             {
                 return;
             }
 
-            _context.Topics.Remove(topic);
-            _context.SaveChanges();
+            _dbContext.Topics.Remove(topic);
+            _dbContext.SaveChanges();
         }
 
         /// <inheritdoc />
         public Topic GetTopicById(int topicId)
         {
-            return _context.Topics.Find(topicId);
+            return _dbContext.Topics.Find(topicId);
         }
 
         /// <inheritdoc />
         public List<Topic> GetAllTopics()
         {
-            return _context.Topics.ToList();
+            return _dbContext.Topics.ToList();
         }
 
         private void UpdateTopic(int topicId, Topic updatedTopic)
         {
-            Topic topic = _context.Topics.Find(topicId);
+            Topic topic = _dbContext.Topics.Find(topicId);
             if (topic == null)
             {
                 return;
@@ -76,7 +79,7 @@ namespace TopicsDB.Infrastructure.Services
 
             topic.Name = updatedTopic.Name;
             // обновление других свойств
-            _context.SaveChanges();
+            _dbContext.SaveChanges();
         }
     }
 }

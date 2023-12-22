@@ -35,16 +35,17 @@
         </Button>
 
         <controls:Card Grid.Row="1">
-            <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Введите наименование" />
+            <Grid RowDefinitions="Auto, Auto, Auto">
+                <TextBlock Grid.Row="0"
+                           Classes="Subtitle1"
+                           Text="Введите наименование"
+                           FontWeight="Bold"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0"
-                           Text="Наименование"
-                           VerticalAlignment="Center"/>
-
-                <TextBox Grid.Row="1" Grid.Column="1"
-                         Text="{Binding Name, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1"
+                         Classes="outline"
+                         Text="{Binding Name, Mode=TwoWay}"
+                         assists:TextFieldAssist.Label="Наименование"
+                         UseFloatingWatermark="True"/>
             </Grid>
         </controls:Card>
 

@@ -20,25 +20,10 @@ namespace Infrastructure.Module.Services
         public string ImagesFolder => GetLocalDirectory("Images");
 
         /// <inheritdoc />
-        public string ProjectTemplatesFolder => GetLocalDirectory("ProjectTemplates");
-
-        /// <inheritdoc />
         public string DocumentsFolder => GetLocalDirectory("Documents");
 
         /// <inheritdoc />
-        public string ProjectsFolder => GetLocalDirectory("Projects");
-
-        /// <inheritdoc />
-        public string SpritesFolder => GetLocalDirectory("Sprites");
-
-        /// <inheritdoc />
         public string DataFolder => GetLocalDirectory("Data");
-
-        /// <inheritdoc />
-        public string TreeStructures => GetLocalDirectory("TreeStructures");
-
-        /// <inheritdoc />
-        public string XSDFolder => GetLocalDirectory("SCL");
 
         /// <inheritdoc />
         public string LogFolder => GetLocalDirectory("Logs");
@@ -49,9 +34,9 @@ namespace Infrastructure.Module.Services
         /// <param name="directoryName"></param>
         /// <returns></returns>
         private static string GetLocalDirectory(string directoryName)
-    {
-        return Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryName)).FullName;
-    }
+        {
+            return Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, directoryName)).FullName;
+        }
 
         /// <summary>
         /// Получить AppDataFolder
@@ -59,9 +44,9 @@ namespace Infrastructure.Module.Services
         /// <param name="directoryName"></param>
         /// <returns></returns>
         private static string GetAppDataDirectory(string directoryName)
-    {
-        return Directory.CreateDirectory(Path.Combine(LocalApplicationDataFolder, directoryName)).FullName;
-    }
+        {
+            return Directory.CreateDirectory(Path.Combine(LocalApplicationDataFolder, directoryName)).FullName;
+        }
 
         private static readonly string AppDataFolder =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);

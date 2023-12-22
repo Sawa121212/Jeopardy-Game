@@ -25,7 +25,7 @@ namespace TopicsDB.Infrastructure.Views.Questions
             _questionService = questionService;
             PriceIsChangedCommand = new DelegateCommand<string>(OnPriceIsChanged);
             CreateCommand = new DelegateCommand(OnCreate);
-            ImportPictureComand = new DelegateCommand(async () => await OnImportPicture());
+            ImportPictureCommand = new DelegateCommand(async () => await OnImportPicture());
         }
 
         public Topic Topic
@@ -61,7 +61,7 @@ namespace TopicsDB.Infrastructure.Views.Questions
         public bool IsCreateMode { get; set; } = true;
 
         public ICommand PriceIsChangedCommand { get; }
-        public ICommand ImportPictureComand { get; }
+        public ICommand ImportPictureCommand { get; }
         public ICommand CreateCommand { get; }
 
         /// <inheritdoc />

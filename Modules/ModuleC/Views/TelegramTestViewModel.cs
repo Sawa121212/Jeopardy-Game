@@ -10,56 +10,22 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramAPI.Test.Managers;
 using File = System.IO.File;
 
 namespace TelegramAPI.Test.Views
 {
     public class TelegramTestViewModel : BindableBase
     {
-        // Это клиент для работы с Telegram Bot API, который позволяет отправлять сообщения, управлять ботом, подписываться на обновления и многое другое.
-        private readonly ITelegramBotClient _botClient;
+        private readonly ITelegramBotManager _telegramBotManager;
 
-        // Это объект с настройками работы бота. Здесь мы будем указывать, какие типы Update мы будем получать, Timeout бота и так далее.
-        private readonly ReceiverOptions _receiverOptions;
-        private readonly string? _token;
         private ObservableCollection<string> _messages;
-        private string _tokenFile = @"Settings\TelegramToken.tmp";
 
-        public TelegramTestViewModel()
+        public TelegramTestViewModel(ITelegramBotManager telegramBotManager)
         {
+            _telegramBotManager = telegramBotManager;
             Messages = new ObservableCollection<string>();
-
-            if (File.Exists(_tokenFile))
-            {
-                _token = File.ReadAllText(_tokenFile);
-            }
-            else
-            {
-                Messages.Add("File Not Exists");
-                return;
-            }
-
-            // Присваиваем нашей переменной значение, в параметре передаем Token, полученный от BotFather
-            if (string.IsNullOrEmpty(_token))
-            {
-                Messages.Add("Token Is Empty");
-                return;
-            }
-
-            _botClient = new TelegramBotClient(_token);
-            _receiverOptions = new ReceiverOptions // Также присваиваем значение настройкам бота
-            {
-                // Тут указываем типы получаемых Update`ов, о них подробнее рассказано тут https://core.telegram.org/bots/api#update
-                AllowedUpdates = new[]
-                {
-                    UpdateType.Message, // Сообщения (текст, фото/видео, голосовые/видео сообщения и т.д.)
-                },
-                // Параметр, отвечающий за обработку сообщений, пришедших за то время, когда ваш бот был оффлайн
-                // True - не обрабатывать, False (стоит по умолчанию) - обрабатывать
-                ThrowPendingUpdates = true,
-            };
-
-            Initialize();
+            _botClient = _telegramBotManager.TelegramBotClient;
         }
 
         public ObservableCollection<string> Messages
@@ -67,21 +33,7 @@ namespace TelegramAPI.Test.Views
             get => _messages;
             set => SetProperty(ref _messages, value);
         }
-
-        private async Task Initialize()
-        {
-            using CancellationTokenSource cts = new();
-
-            // UpdateHander - обработчик приходящих Update`ов
-            // ErrorHandler - обработчик ошибок, связанных с Bot API
-            _botClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, cts.Token); // Запускаем бота
-
-            User me = await _botClient.GetMeAsync(); // Создаем переменную, в которую помещаем информацию о нашем боте.
-            Messages.Add($"{me.FirstName} запущен!");
-
-            await Task.Delay(-1); // Устанавливаем бесконечную задержку, чтобы наш бот работал постоянно
-        }
-
+        
         private async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             // Обязательно ставим блок try-catch, чтобы наш бот не "падал" в случае каких-либо ошибок
@@ -117,7 +69,7 @@ namespace TelegramAPI.Test.Views
                                         chat.Id,
                                         "Выбери клавиатуру:\n" +
                                         "/inline\n" +
-                                        "/reply\n");
+                                        "/reply\n", cancellationToken: cancellationToken);
                                     return;
                                 }
 
@@ -184,7 +136,8 @@ namespace TelegramAPI.Test.Views
                                     await botClient.SendTextMessageAsync(
                                         chat.Id,
                                         "Это reply клавиатура!",
-                                        replyMarkup: replyKeyboard); // опять передаем клавиатуру в параметр replyMarkup
+                                        replyMarkup: replyKeyboard,
+                                        cancellationToken: cancellationToken); // опять передаем клавиатуру в параметр replyMarkup
 
                                     return;
                                 }
@@ -194,7 +147,7 @@ namespace TelegramAPI.Test.Views
                                     await botClient.SendTextMessageAsync(
                                         chat.Id,
                                         "Хорошо, присылай номер!",
-                                        replyToMessageId: message.MessageId);
+                                        replyToMessageId: message.MessageId, cancellationToken: cancellationToken);
 
                                     return;
                                 }
@@ -204,7 +157,7 @@ namespace TelegramAPI.Test.Views
                                     await botClient.SendTextMessageAsync(
                                         chat.Id,
                                         "А самому что, трудно что-ли ?",
-                                        replyToMessageId: message.MessageId);
+                                        replyToMessageId: message.MessageId, cancellationToken: cancellationToken);
 
                                     return;
                                 }
@@ -217,7 +170,7 @@ namespace TelegramAPI.Test.Views
                             {
                                 await botClient.SendTextMessageAsync(
                                     chat.Id,
-                                    "Используй только текст!");
+                                    "Используй только текст!", cancellationToken: cancellationToken);
                                 return;
                             }
                         }
@@ -292,18 +245,6 @@ namespace TelegramAPI.Test.Views
             }
         }
 
-        private Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
-        {
-            // Тут создадим переменную, в которую поместим код ошибки и её сообщение 
-            string errorMessage = error switch
-            {
-                ApiRequestException apiRequestException
-                    => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-                _ => error.ToString()
-            };
-
-            Messages.Add(errorMessage);
-            return Task.CompletedTask;
-        }
+        private readonly ITelegramBotClient _botClient;
     }
 }

@@ -2,30 +2,33 @@
 using System.Linq;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
+using TopicsDB.Infrastructure.Managers;
 using TopicsDB.Infrastructure.Services.Interfaces;
 
 namespace TopicsDB.Infrastructure.Services
 {
     public class QuestionService : IQuestionService
     {
-        private readonly TopicDbContext _context;
+        private readonly ITopicDbManager _topicDbManager;
+        private readonly TopicDbContext _dbContext;
 
-        public QuestionService(TopicDbContext context)
+        public QuestionService(ITopicDbManager topicDbManager)
         {
-            _context = context;
+            _topicDbManager = topicDbManager;
+            _dbContext = _topicDbManager.DbContext;
         }
 
         /// <inheritdoc />
         public void CreateQuestion(Question question)
         {
-            _context.Questions.Add(question);
-            _context.SaveChanges();
+            _dbContext.Questions.Add(question);
+            _dbContext.SaveChanges();
         }
 
         /// <inheritdoc />
         public void UpdateQuestion(int questionId, Question updatedQuestion)
         {
-            Question question = _context.Questions.Find(questionId);
+            Question question = _dbContext.Questions.Find(questionId);
             if (question == null)
             {
                 return;
@@ -36,13 +39,13 @@ namespace TopicsDB.Infrastructure.Services
             question.CorrectAnswer = updatedQuestion.CorrectAnswer;
             question.Price = updatedQuestion.Price;
             // обновление других свойств
-            _context.SaveChanges();
+            _dbContext.SaveChanges();
         }
 
         /// <inheritdoc />
         public void DeleteQuestion(Question question)
         {
-            if (_context.Questions.Contains(question))
+            if (_dbContext.Questions.Contains(question))
             {
                 DeleteQuestion(question.Id);
             }
@@ -50,26 +53,26 @@ namespace TopicsDB.Infrastructure.Services
 
         public void DeleteQuestion(int questionId)
         {
-            Question question = _context.Questions.Find(questionId);
+            Question question = _dbContext.Questions.Find(questionId);
             if (question == null)
             {
                 return;
             }
 
-            _context.Questions.Remove(question);
-            _context.SaveChanges();
+            _dbContext.Questions.Remove(question);
+            _dbContext.SaveChanges();
         }
 
         /// <inheritdoc />
         public Question GetQuestionById(int questionId)
         {
-            return _context.Questions.Find(questionId);
+            return _dbContext.Questions.Find(questionId);
         }
 
         /// <inheritdoc />
         public List<Question> GetAllQuestionsByTopic(int topicId)
         {
-            return _context.Questions.Where(q => q.TopicId == topicId).ToList();
+            return _dbContext.Questions.Where(q => q.TopicId == topicId).ToList();
         }
 
         /// <summary>

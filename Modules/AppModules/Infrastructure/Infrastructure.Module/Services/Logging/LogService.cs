@@ -13,58 +13,59 @@ namespace Infrastructure.Module.Services.Logging
         private readonly ILogger _logger;
 
         public LogService(ILogViewService logViewService, ILogger logger, IPathService pathService)
-    {
-        _logCache = null;
-        _logViewService = logViewService;
-        _logger = logger;
-        logger.Init(pathService.LogFolder);
-    }
+        {
+            _logCache = null;
+            _logViewService = logViewService;
+            _logger = logger;
+            logger.Init(pathService.LogFolder);
+        }
 
         /// <inheritdoc />
         public void AddLog(ILogItem logItem)
-    {
-        if (_logCache != null)
         {
-            _logCache.Add(logItem);
-            return;
+            if (_logCache != null)
+            {
+                _logCache.Add(logItem);
+                return;
+            }
+
+            if (logItem != null)
+            {
+                // ToDo _logger.Log(logItem);
+                _logViewService.AddLog(logItem);
+            }
         }
-            
-        if (logItem != null)
-        {
-            // ToDo _logger.Log(logItem);
-            _logViewService.AddLog(logItem);
-        }
-    }
 
         /// <inheritdoc />
         public void AddLogs(IEnumerable<ILogItem> logItems)
-    {
-        List<ILogItem> logs = logItems.AsList();
-        foreach (ILogItem logItem in logs)
         {
-            // ToDo _logger.Log(logItem);
+            List<ILogItem> logs = logItems.AsList();
+            foreach (ILogItem logItem in logs)
+            {
+                // ToDo _logger.Log(logItem);
+            }
+
+            _logViewService.AddLogs(logs);
         }
-        _logViewService.AddLogs(logs);
-    }
 
         /// <inheritdoc />
         public void BeginCache()
-    {
-        _logCache = new List<ILogItem>();
-    }
+        {
+            _logCache = new List<ILogItem>();
+        }
 
         /// <inheritdoc />
         public void Flush()
-    {
-        try
         {
-            if (_logCache != null)
-                AddLogs(_logCache);
+            try
+            {
+                if (_logCache != null)
+                    AddLogs(_logCache);
+            }
+            finally
+            {
+                _logCache = null;
+            }
         }
-        finally
-        {
-            _logCache = null;
-        }
-    }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Common.Extensions;
 using Infrastructure.Domain.Logging.Enums;
@@ -62,8 +63,11 @@ namespace Infrastructure.Module.Managers
 
                     settings = _serializeService.Deserialize<TSettings>(filename);
                 }, exp =>
+                {
                     _logService?.AddLog(new LogItem($"Отсутствует файл настроек {filename}",
-                        LogItemCategoryEnum.Warning)));
+                        LogItemCategoryEnum.Warning));
+                    Debug.Fail($"=Warning= Отсутствует файл настроек {filename}");
+                });
             }
 
             return settings;
@@ -87,6 +91,9 @@ namespace Infrastructure.Module.Managers
                             _logService.AddLog(new LogItem(
                                 $"Ошибка при сохранении файла настроек {settingsName}.", LogItemCategoryEnum.Warning));
                             _logService.AddLog(new LogItem($"{exp.Flatten()}", LogItemCategoryEnum.Debug));
+
+                            Debug.Fail($"=Warning= Ошибка при сохранении файла настроек {settingsName}.");
+                            Debug.Fail($"=Warning= {exp.Flatten()}.");
                         }
                     });
             }

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using Common.Core.Interfaces.Settings;
 using Common.Core.Threading;
 using Infrastructure.Domain.Settings;
 using Infrastructure.Interfaces.Managers;
@@ -21,7 +22,8 @@ namespace Infrastructure.Module.Services.Settings
             _settingsFilename = Path.Combine(pathService.SettingsFolder, "Settings.config");
         }
 
-        public async Task<ApplicationSettings> Get()
+        /// <inheritdoc />
+        public async Task<ISettings> Get()
         {
             if (!File.Exists(_settingsFilename))
                 await CreateDefault();
@@ -39,28 +41,34 @@ namespace Infrastructure.Module.Services.Settings
                         _fileLocker.Leave();
                     }
                 }
+
                 return null;
             });
             return settings;
         }
 
-        public async Task Save(ApplicationSettings settings)
+        /// <inheritdoc />
+        public async Task Save(ISettings settings)
         {
-            await Task.Run(() =>
+            if (settings is ApplicationSettings applicationSettings)
             {
-                if (_fileLocker.Enter(0))
+                await Task.Run(() =>
                 {
-                    try
+                    if (_fileLocker.Enter(0))
                     {
-                        _settingsManager?.SetSettings(settings, _settingsFilename, true);
+                        try
+                        {
+                            _settingsManager?.SetSettings(applicationSettings, _settingsFilename, true);
+                        }
+                        finally
+                        {
+                            _fileLocker.Leave();
+                        }
                     }
-                    finally
-                    {
-                        _fileLocker.Leave();
-                    }
-                }
-            });
+                });
+            }
         }
+
 
         private async Task CreateDefault()
         {

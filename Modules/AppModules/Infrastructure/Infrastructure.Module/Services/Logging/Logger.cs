@@ -18,6 +18,31 @@ namespace Infrastructure.Module.Services.Logging
     public class Logger : ILogger
     {
         /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="logReaderWriterType">Тип "записывателя/чтеца" логов.</param>
+        /// <param name="loggerName">Наименование логгера.</param>
+        public Logger(LogReaderWriterTypeEnum logReaderWriterType, string loggerName = null)
+            : this(CreateReaderWriter(logReaderWriterType), loggerName)
+        {
+        }
+
+        /// <summary>
+        /// Конструктор.
+        /// </summary>
+        /// <param name="logReaderWriter">"Записыватель/чтец" логов.</param>
+        /// <param name="loggerName">Наименование логгера.</param>
+        public Logger(ILogReaderWriter<ILogItem> logReaderWriter, string loggerName = null)
+        {
+            _readerWriter = logReaderWriter;
+            AllowedCategories = LogItemCategoryEnum.All;
+            IsInitSuccess = false;
+            Name = string.IsNullOrEmpty(loggerName)
+                ? "Logger"
+                : loggerName;
+        }
+
+        /// <summary>
         /// "Записыватель/чтец" лога.
         /// </summary>
         private readonly ILogReaderWriter<ILogItem> _readerWriter;
@@ -45,32 +70,6 @@ namespace Infrastructure.Module.Services.Logging
 
         /// <inheritdoc />
         public Result<bool> LastOperationResult { get; private set; }
-
-
-        /// <summary>
-        /// Конструктор.
-        /// </summary>
-        /// <param name="logReaderWriterType">Тип "записывателя/чтеца" логов.</param>
-        /// <param name="loggerName">Наименование логгера.</param>
-        public Logger(LogReaderWriterTypeEnum logReaderWriterType, string loggerName = null)
-            : this(CreateReaderWriter(logReaderWriterType), loggerName)
-        {
-        }
-
-        /// <summary>
-        /// Конструктор.
-        /// </summary>
-        /// <param name="logReaderWriter">"Записыватель/чтец" логов.</param>
-        /// <param name="loggerName">Наименование логгера.</param>
-        public Logger(ILogReaderWriter<ILogItem> logReaderWriter, string loggerName = null)
-        {
-            _readerWriter = logReaderWriter;
-            AllowedCategories = LogItemCategoryEnum.All;
-            IsInitSuccess = false;
-            Name = string.IsNullOrEmpty(loggerName)
-                ? "Logger"
-                : loggerName;
-        }
 
         /// <summary>
         /// Создать "записыватель/чтец" лога (фабричный метод).

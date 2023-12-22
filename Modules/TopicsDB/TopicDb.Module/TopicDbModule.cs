@@ -2,9 +2,9 @@
 using Common.Core.Localization;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
 using TopicDb.Domain;
 using TopicDb.Module.Properties;
+using TopicsDB.Infrastructure.Managers;
 using TopicsDB.Infrastructure.Services;
 using TopicsDB.Infrastructure.Services.Interfaces;
 using TopicsDB.Infrastructure.Views;
@@ -18,20 +18,11 @@ namespace TopicDb.Module
     /// </summary>
     public class TopicDbModule : IModule
     {
-        private readonly IRegionManager _regionManager;
-        private readonly TopicDbContext _topicDbContext;
-
-        public TopicDbModule(IRegionManager regionManager)
-        {
-            _regionManager = regionManager;
-            _topicDbContext = new TopicDbContext();
-        }
-
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry
                 // сперва регистрируем контекст БД с вопросам
-                .RegisterInstance(_topicDbContext)
+                .RegisterSingleton<ITopicDbManager, TopicDbManager>()
                 .RegisterSingleton<ITopicService, TopicService>()
                 .RegisterSingleton<IQuestionService, QuestionService>();
 

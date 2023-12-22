@@ -1,15 +1,20 @@
-﻿using Material.Styles.Themes.Base;
+﻿using Common.Core.Interfaces.Settings;
+using Material.Styles.Themes.Base;
 using ProtoBuf;
 
 namespace Infrastructure.Domain.Settings
 {
-
     [ProtoContract]
-    public class ApplicationSettings
+    public class ApplicationSettings : ISettings
     {
-        [ProtoMember(1)] private string _cultureInfo;
-        [ProtoMember(2)] private BaseThemeMode _themeMode;
-        [ProtoMember(3)] private bool _hideToSystemTray;
+        [ProtoMember(1)]
+        private string _cultureInfo;
+
+        [ProtoMember(2)]
+        private BaseThemeMode _themeMode;
+
+        [ProtoMember(3)]
+        private bool _hideToSystemTray;
 
         /// <summary>
         /// Скрыть в системном трее
@@ -27,15 +32,6 @@ namespace Infrastructure.Domain.Settings
         {
             get => _themeMode;
             set => _themeMode = value;
-        }
-
-        /// <summary>
-        /// Скрыть в системном трее
-        /// </summary>
-        public bool HideToSystemTray
-        {
-            get => _hideToSystemTray;
-            set => _hideToSystemTray = value;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 using Common.Core.Prism.Regions;
 using Infrastructure.Module.Views;
-using JeopardyGame.Views.Settings;
 using Prism.Regions;
 using TelegramAPI.Test.Views;
 using TopicsDB.Infrastructure.Views;

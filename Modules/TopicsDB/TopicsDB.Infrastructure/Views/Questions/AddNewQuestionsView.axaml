@@ -38,22 +38,27 @@
         <controls:Card Grid.Row="1">
             <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto">
                 <TextBlock Grid.Row="0"
-                           Text="Введите данные" />
+                           Classes="Subtitle1"
+                           Text="Введите данные"
+                           FontWeight="Bold"/>
 
                 <TextBox Grid.Row="1"
-                         Classes="Floating"
+                         Classes="outline Floating"
                          Text="{Binding Text, Mode=TwoWay}"
                          assists:TextFieldAssist.Label="Вопрос"
                          UseFloatingWatermark="True"
                          AcceptsReturn="True"
-                         TextWrapping="Wrap" Height="120" />
+                         TextWrapping="Wrap"
+                         Margin="3"/>
 
                 <TextBox Grid.Row="2"
+                         Classes="outline"
                          Text="{Binding Question.CorrectAnswer, Mode=TwoWay}"
                          assists:TextFieldAssist.Label="Ответ"
-                         UseFloatingWatermark="True" />
+                         UseFloatingWatermark="True" 
+                         Margin="3"/>
 
-                <TextBlock Grid.Row="3" Text="Баллы" />
+                <TextBlock Grid.Row="3" Text="Баллы" Margin="3"/>
 
                 <WrapPanel Grid.Row="4">
                     <RadioButton GroupName="PriceGroup" Content="100 баллов" IsChecked="True"
@@ -75,19 +80,22 @@
                     <RadioButton GroupName="PriceGroup" Content="500 баллов"
                                  Command="{Binding PriceIsChangedCommand}"
                                  CommandParameter="500"
-                                 Margin="3,0" />
+                                 Margin="3" />
                 </WrapPanel>
 
-                <Grid Grid.Row="5" ColumnDefinitions="*, Auto">
+                <Grid Grid.Row="5" 
+                      ColumnDefinitions="*, Auto"
+                      Margin="3">
                     <TextBox Grid.Column="0"
+                             Classes="outline"
                              Text="{Binding Picture, Mode=OneWay}"
                              assists:TextFieldAssist.Label="Картинка"
                              UseFloatingWatermark="True"
                              IsReadOnly="True" />
                     <Button Grid.Column="1"
                             Content="Выбрать"
-                            Height="32"
-                            Command="{Binding ImportPictureComand}" />
+                            Command="{Binding ImportPictureCommand}" 
+                            Margin="3,0"/>
                 </Grid>
 
             </Grid>

@@ -1,11 +1,12 @@
-﻿using Material.Styles.Themes.Base;
+﻿using Common.Core.Interfaces.Settings;
+using Material.Styles.Themes.Base;
 
 namespace Infrastructure.Interfaces.Services.Settings
 {
     /// <summary>
     /// Управление настройками приложения
     /// </summary>
-    public interface ISettingsService
+    public interface IApplicationSettingsService : ISettingsService
     {
         /// <summary>
         /// Применить тему 
@@ -28,10 +29,5 @@ namespace Infrastructure.Interfaces.Services.Settings
         /// Получить текущую локализацию 
         /// </summary>
         public abstract string GetCulture();
-
-        /// <summary>
-        /// Применить сохраненные настройки из файла
-        /// </summary>
-        public abstract void ApplySavedSettings();
     }
 }

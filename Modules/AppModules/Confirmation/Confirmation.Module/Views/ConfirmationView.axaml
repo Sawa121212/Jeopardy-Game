@@ -69,13 +69,16 @@
                                Margin="3,0,0,0"
                                Stretch="Uniform"
                                MaxHeight="32" />
-                        <TextBlock Grid.Column="1" x:Name="Caption"
-                                   HorizontalAlignment="Left" VerticalAlignment="Center"
-                                   Margin="4,0,0,0"
+                        <TextBlock Grid.Column="1" 
+                                   x:Name="Caption"
+                                   Text="{Binding Path=Title, Mode=OneWay, ElementName=ConfirmationWindow}" 
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
                                    FontSize="12"
                                    FontWeight="DemiBold"
                                    Opacity="1"
-                                   Text="{Binding Path=Title, Mode=OneWay, ElementName=ConfirmationWindow}" />
+                                   Margin="4,0,0,0"
+                                   />
                     </Grid>
                 </Border>
 
@@ -88,8 +91,11 @@
                                 <TextBlock Grid.Row="0"
                                            Text="{Binding Info.Message}"
                                            TextWrapping="Wrap"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" />
-                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                           Margin="10" />
+                                <StackPanel Grid.Row="1" 
+                                            Orientation="Horizontal" 
+                                            HorizontalAlignment="Right"
                                             Margin="3,3,3,3">
                                     <Button Classes="Outline" Content="Готово"
                                             TabIndex="0"
@@ -126,9 +132,9 @@
                     <ChangePropertyAction TargetObject="PartBorder"
                                           PropertyName="BorderBrush"
                                           Value="{StaticResource InfoBorderBrush}" />
-                    <ChangePropertyAction TargetObject="Caption"
+                    <!--<ChangePropertyAction TargetObject="Caption"
                                           PropertyName="Foreground"
-                                          Value="Black" />
+                                          Value="Black" />-->
                 </DataTriggerBehavior>
 
                 <!-- Warning -->
