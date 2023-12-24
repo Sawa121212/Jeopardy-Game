@@ -26,9 +26,6 @@
 
                 <TextBox Classes="outline revealPasswordButton"
                          PasswordChar="*"
-                         AcceptsReturn="True"
-                         MaxHeight="100"
-                         TextWrapping="Wrap"
                          assists:TextFieldAssist.Label="BotToken"
                          UseFloatingWatermark="True"
                          Text="{Binding Token, Mode=TwoWay}" />

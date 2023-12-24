@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Common.Core.Components
 {
-
     /// <summary>
     /// Для возврата значения вместо исключений.
     /// </summary>
@@ -25,7 +24,6 @@ namespace Common.Core.Components
     /// }
     /// </code>
     /// </example>
-
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public class Result<T>
@@ -39,7 +37,7 @@ namespace Common.Core.Components
         /// Сообщение об ошибке.
         /// </summary>
         public string ErrorMessage { get; }
-        
+
         /// <summary>
         /// Исключение (ошибка).
         /// </summary>
@@ -50,7 +48,6 @@ namespace Common.Core.Components
         /// </summary>
         public bool HasValue => (ErrorMessage == null) && (Excptn == null);
 
-        
         /// <summary>
         /// Конструктор.
         /// </summary>
@@ -75,7 +72,7 @@ namespace Common.Core.Components
             Excptn = excptn;
         }
 
-        
+
         /// <summary>
         /// При успешном выполнении.
         /// </summary>
@@ -83,7 +80,7 @@ namespace Common.Core.Components
         {
             return new Result<T>(value);
         }
-        
+
         /// <summary>
         /// В случае ошибки.
         /// </summary>
@@ -105,7 +102,7 @@ namespace Common.Core.Components
         /// </summary>
         public static implicit operator bool(Result<T> result)
         {
-            return result.HasValue;
+            return result != null && result.HasValue;
         }
     }
 }
