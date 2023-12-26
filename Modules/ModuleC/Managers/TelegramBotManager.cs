@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using Common.Core.Components;
 using Common.Extensions;
 using ReactiveUI;
 using Telegram.Bot;
@@ -22,7 +19,7 @@ namespace TelegramAPI.Test.Managers
         {
             _telegramSettingsService = telegramSettingsService;
             _token = _telegramSettingsService.GetGameBotToken();
-            _telegramBotClient = new TelegramBotClient(_token);
+
 
             _receiverOptions = new ReceiverOptions // Также присваиваем значение настройкам бота
             {
@@ -36,28 +33,48 @@ namespace TelegramAPI.Test.Managers
                 ThrowPendingUpdates = true,
             };
 
-            Task.Run(async () => await Initialize());
+            Task.Run(async () => await StartTelegramBot(_token));
         }
 
-        private async Task Initialize()
+        public async Task<Result<bool>> StartTelegramBot(string token)
         {
-            using CancellationTokenSource cts = new();
+            string errorMessage = null;
+            try
+            {
+                if (token.IsNullOrEmpty())
+                {
+                    return Result<bool>.Fail("Токен пуст");
+                }
 
-            // UpdateHander - обработчик приходящих Update`ов
-            // ErrorHandler - обработчик ошибок, связанных с Bot API
-            // Запускаем бота
-            _telegramBotClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, cts.Token);
+                _telegramBotClient = new TelegramBotClient(token);
+                using CancellationTokenSource cts = new();
 
-            // Создаем переменную, в которую помещаем информацию о нашем боте.
-            User me = await _telegramBotClient.GetMeAsync(cancellationToken: cts.Token);
-            //Messages.Add($"{me.FirstName} запущен!");
-            Debug.Write($"{me.FirstName} запущен!");
+                // UpdateHander - обработчик приходящих Update`ов
+                // ErrorHandler - обработчик ошибок, связанных с Bot API
+                // Запускаем бота
+                _telegramBotClient.StartReceiving(UpdateHandler, ErrorHandler, _receiverOptions, cts.Token);
 
-            // Устанавливаем бесконечную задержку, чтобы наш бот работал постоянно
-            await Task.Delay(-1, cts.Token);
+                // Создаем переменную, в которую помещаем информацию о нашем боте.
+                User me = await _telegramBotClient.GetMeAsync(cancellationToken: cts.Token);
+                //Messages.Add($"{me.FirstName} запущен!");
+                Debug.Write($"{me.FirstName} запущен!");
+
+                // Устанавливаем бесконечную задержку, чтобы наш бот работал постоянно
+                //await Task.Delay(-1, cts.Token);
+
+                return Result<bool>.Done(true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                errorMessage = $"TelegramBot: {e.Message}";
+            }
+
+            return Result<bool>.Fail(errorMessage);
         }
 
-        public virtual async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        public virtual async Task UpdateHandler(ITelegramBotClient botClient, Update update,
+            CancellationToken cancellationToken)
         {
             // Обязательно ставим блок try-catch, чтобы наш бот не "падал" в случае каких-либо ошибок
             try
@@ -80,7 +97,8 @@ namespace TelegramAPI.Test.Managers
                         Chat chat = message.Chat;
 
                         // Добавляем проверку на тип Message
-                        switch (message.Type)
+                        
+                            switch (message.Type)
                         {
                             // Тут понятно, текстовый тип
                             case MessageType.Text:
@@ -109,8 +127,10 @@ namespace TelegramAPI.Test.Managers
 
                                                 new InlineKeyboardButton[] // тут создаем массив кнопок
                                                 {
-                                                    InlineKeyboardButton.WithUrl("Это кнопка с сайтом", "https://habr.com/"),
-                                                    InlineKeyboardButton.WithCallbackData("А это просто кнопка", "button1"),
+                                                    InlineKeyboardButton.WithUrl("Это кнопка с сайтом",
+                                                        "https://habr.com/"),
+                                                    InlineKeyboardButton.WithCallbackData("А это просто кнопка",
+                                                        "button1"),
                                                 },
                                                 new InlineKeyboardButton[]
                                                 {
@@ -122,7 +142,8 @@ namespace TelegramAPI.Test.Managers
                                     await botClient.SendTextMessageAsync(
                                         chat.Id,
                                         "Это inline клавиатура!",
-                                        replyMarkup: inlineKeyboard); // Все клавиатуры передаются в параметр replyMarkup
+                                        replyMarkup:
+                                        inlineKeyboard); // Все клавиатуры передаются в параметр replyMarkup
 
                                     return;
                                 }
@@ -160,7 +181,8 @@ namespace TelegramAPI.Test.Managers
                                         chat.Id,
                                         "Это reply клавиатура!",
                                         replyMarkup: replyKeyboard,
-                                        cancellationToken: cancellationToken); // опять передаем клавиатуру в параметр replyMarkup
+                                        cancellationToken:
+                                        cancellationToken); // опять передаем клавиатуру в параметр replyMarkup
 
                                     return;
                                 }
@@ -255,7 +277,8 @@ namespace TelegramAPI.Test.Managers
                             case "button3":
                             {
                                 // А тут мы добавили еще showAlert, чтобы отобразить пользователю полноценное окно
-                                await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "А это полноэкранный текст!", showAlert: true);
+                                await botClient.AnswerCallbackQueryAsync(callbackQuery.Id, "А это полноэкранный текст!",
+                                    showAlert: true);
 
                                 await botClient.SendTextMessageAsync(
                                     chat.Id,
@@ -276,7 +299,15 @@ namespace TelegramAPI.Test.Managers
 
         private async Task SendMessage(long chatId, string message)
         {
-            await _telegramBotClient.SendTextMessageAsync(chatId, message);
+            // ToDo show Exception result
+            try
+            {
+                await _telegramBotClient.SendTextMessageAsync(chatId, message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private async Task CheckAddedAdminMode(long chatId, string key)
@@ -311,7 +342,7 @@ namespace TelegramAPI.Test.Managers
         }
 
         /// <inheritdoc />
-        public TelegramBotClient TelegramBotClient => (TelegramBotClient) _telegramBotClient;
+        public TelegramBotClient TelegramBotClient => (TelegramBotClient)_telegramBotClient;
 
         /// <inheritdoc />
         public async Task<string> VerifyAddAdminMode(long chatId)
@@ -341,7 +372,7 @@ namespace TelegramAPI.Test.Managers
                 _ => error.ToString()
             };
 
-            Debug.Fail(errorMessage);
+            //Debug.Fail(errorMessage);
             //Messages.Add(errorMessage);
             return Task.CompletedTask;
         }
@@ -350,7 +381,7 @@ namespace TelegramAPI.Test.Managers
         private readonly string? _token;
 
         // Это клиент для работы с Telegram Bot API, который позволяет отправлять сообщения, управлять ботом, подписываться на обновления и многое другое.
-        private readonly ITelegramBotClient _telegramBotClient;
+        private ITelegramBotClient _telegramBotClient;
 
         // Это объект с настройками работы бота. Здесь мы будем указывать, какие типы Update мы будем получать, Timeout бота и так далее.
         private readonly ReceiverOptions _receiverOptions;
