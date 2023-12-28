@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Common.Core.Components;
 using Common.Extensions;
 using ReactiveUI;
@@ -10,6 +14,7 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramAPI.Test.Helpers;
 using TelegramAPI.Test.Services.Settings;
+using Users.Infrastructure;
 
 namespace TelegramAPI.Test.Managers
 {
@@ -76,20 +81,23 @@ namespace TelegramAPI.Test.Managers
         public virtual async Task UpdateHandler(ITelegramBotClient botClient, Update update,
             CancellationToken cancellationToken)
         {
+            // Эта переменная будет содержать в себе все связанное с сообщениями
+            Message? message = update?.Message;
+            // From - это от кого пришло сообщение (или любой другой Update)
+            User? user = message?.From;
             // Обязательно ставим блок try-catch, чтобы наш бот не "падал" в случае каких-либо ошибок
             try
             {
+
+                if (_userService.GetUserById(user.Id) == null)
+                {
+                    var user_ = _userService.CreateUser(user.Id, $"{user.FirstName} {user.LastName}");
+                }
                 // Сразу же ставим конструкцию switch, чтобы обрабатывать приходящие Update
                 switch (update.Type)
                 {
                     case UpdateType.Message:
                     {
-                        // Эта переменная будет содержать в себе все связанное с сообщениями
-                        Message? message = update.Message;
-
-                        // From - это от кого пришло сообщение (или любой другой Update)
-                        User? user = message.From;
-
                         // Выводим на экран то, что пишут нашему боту, а также небольшую информацию об отправителе
                         //Messages.Add($"{user.FirstName} ({user.Id}) написал сообщение: {message.Text}");
 
@@ -235,7 +243,7 @@ namespace TelegramAPI.Test.Managers
                         CallbackQuery? callbackQuery = update.CallbackQuery;
 
                         // Аналогично и с Message мы можем получить информацию о чате, о пользователе и т.д.
-                        User user = callbackQuery.From;
+                        user = callbackQuery.From;
 
                         // Выводим на экран нажатие кнопки
                         //Messages.Add($"{user.FirstName} ({user.Id}) нажал на кнопку: {callbackQuery.Data}");
@@ -382,6 +390,7 @@ namespace TelegramAPI.Test.Managers
 
         // Это клиент для работы с Telegram Bot API, который позволяет отправлять сообщения, управлять ботом, подписываться на обновления и многое другое.
         private ITelegramBotClient _telegramBotClient;
+        private readonly IUserService _userService;
 
         // Это объект с настройками работы бота. Здесь мы будем указывать, какие типы Update мы будем получать, Timeout бота и так далее.
         private readonly ReceiverOptions _receiverOptions;
