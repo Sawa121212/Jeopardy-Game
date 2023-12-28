@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
+using Common.Core.Components;
 using Common.Core.Views;
 using Common.Extensions;
 using Prism.Commands;
@@ -9,6 +10,7 @@ using Prism.Regions;
 using ReactiveUI;
 using TelegramAPI.Test.Managers;
 using TelegramAPI.Test.Services.Settings;
+using Timer = System.Timers.Timer;
 
 namespace TelegramAPI.Test.Views.Settings
 {
@@ -86,7 +88,14 @@ namespace TelegramAPI.Test.Views.Settings
         {
             if (!_token.IsNullOrEmpty())
             {
+                Result<bool> result = await _telegramBotManager.StartTelegramBot(_token);
+                if (!result)
+                {
+                    TokenStatus = result.ErrorMessage;
+                    return;
+                }
                 await _telegramSettingsService.SetGameBotToken(_token);
+                TokenStatus = "Telegram бот запущен";
             }
         }
 
@@ -136,7 +145,7 @@ namespace TelegramAPI.Test.Views.Settings
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             // Здесь выполняется ваш метод каждые две секунды
-            _timerSecond += (int) _timer.Interval / 1000;
+            _timerSecond += (int)_timer.Interval / 1000;
             AdminIdStatus = $"Ожидание подтверждения... ({_timerSecond} секунд)";
             string id = GetAdminUserIdKey();
             if (!id.IsNullOrEmpty() || _timerSecond >= 120)

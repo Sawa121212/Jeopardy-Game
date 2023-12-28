@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\AppModules\Infrastructure\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\Users\Users.Infrastructure\Users.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

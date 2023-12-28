@@ -22,6 +22,7 @@ using Infrastructure.Module.Services;
 using Infrastructure.Module.Services.ApplicationInfo;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
+using ModuleA;
 using ModuleB;
 using Notification.Module;
 using Notification.Module.Services;
@@ -94,6 +95,7 @@ namespace JeopardyGame
                 .AddModule<NotificationModule>()
                 .AddModule<InfrastructureModule>()
                 .AddModule<TopicDbModule>()
+                .AddModule<UsersModule>()
                 .AddModule<GameModule>()
                 .AddModule<ModuleBModule>()
                 .AddModule<TelegramApiTestModule>();
