@@ -30,11 +30,11 @@ namespace DataDomain.Rooms.Rounds
         public string Theme { get; }
 
         /// <summary>
-        /// Вопросы
+        /// 
         /// </summary>
-        public List<Question> Questions { get; } // max 5
+        public List<Topic> Topics { get; } // max 5
 
-        /// <summary>
+        /*/// <summary>
         /// Получить баллы за ответ на вопрос
         /// </summary>
         /// <param name="question">Вопрос</param>
@@ -49,6 +49,6 @@ namespace DataDomain.Rooms.Rounds
             }
 
             return 0;
-        }
+        }*/
     }
 }

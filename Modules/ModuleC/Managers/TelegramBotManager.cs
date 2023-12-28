@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Extensions;
+using Infrastructure.Domain.Helpers;
 using ReactiveUI;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -11,7 +12,6 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramAPI.Test.Helpers;
 using TelegramAPI.Test.Services.Settings;
 
 namespace TelegramAPI.Test.Managers
@@ -318,7 +318,7 @@ namespace TelegramAPI.Test.Managers
         {
             await _telegramSettingsService.SetAdminUserIdToken(null).ConfigureAwait(true);
 
-            _adminModeKey = RandomNumberGenerator.GenerateFormattedSixDigitRandomNumber();
+            _adminModeKey = RandomGenerator.GenerateFormattedSixDigitRandomNumber();
             IsAddAdminMode = true;
             await SendMessage(chatId, $"Вторая часть кода подтверждения: ***{_adminModeKey.Substring(3, 3)}");
             return _adminModeKey.Substring(0, 3);

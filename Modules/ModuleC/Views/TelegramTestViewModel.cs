@@ -5,13 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Prism.Mvvm;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramAPI.Test.Managers;
-using File = System.IO.File;
 
 namespace TelegramAPI.Test.Views
 {
@@ -33,7 +30,7 @@ namespace TelegramAPI.Test.Views
             get => _messages;
             set => SetProperty(ref _messages, value);
         }
-        
+
         private async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             // Обязательно ставим блок try-catch, чтобы наш бот не "падал" в случае каких-либо ошибок
