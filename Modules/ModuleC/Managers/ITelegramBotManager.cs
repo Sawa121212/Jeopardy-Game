@@ -1,4 +1,5 @@
 ﻿using Common.Core.Components;
+using System.Threading.Tasks;
 using Telegram.Bot;
 
 namespace TelegramAPI.Test.Managers
