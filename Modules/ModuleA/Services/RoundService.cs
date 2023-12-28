@@ -2,55 +2,51 @@
 using DataDomain.Rooms.Rounds;
 using DataDomain.Rooms.Rounds.Enums;
 
-namespace Game.Services;
-
-public class RoundService : IRoundService
+namespace Game.Services
 {
-    /// <inheritdoc />
-    public List<Round> CreateGameRounds()
+    public class RoundService : IRoundService
     {
-        List<Round> rounds = new()
+        /// <inheritdoc />
+        public List<Round> CreateGameRounds()
         {
-            CreateRound(RoundsLevelEnum.Round1),
-            CreateRound(RoundsLevelEnum.Round2),
-            CreateRound(RoundsLevelEnum.Round3),
-            CreateRound(RoundsLevelEnum.Final)
-        };
-
-        return rounds;
-    }
-
-    private Round CreateRound(RoundsLevelEnum levelEnum)
-    {
-
-        // 1. topic
-        // 2. questions
-        // 3. round
-
-        Round round = new(levelEnum)
-        {
-            Topics = { }
-        };
-
-
-
-        new Topic()
-        {
-            Questions = new List<Question>()
+            List<Round> rounds = new()
             {
-                new Question()
-            }
-        };
-        return round;
-    }
+                CreateRound(RoundsLevelEnum.Round1),
+                CreateRound(RoundsLevelEnum.Round2),
+                CreateRound(RoundsLevelEnum.Round3),
+                CreateRound(RoundsLevelEnum.Final)
+            };
 
-    private Topic GetRandomTopic()
-    {
-        return new Topic();
-    }
-}
+            return rounds;
+        }
 
-public interface IRoundService
-{
-    List<Round> CreateGameRounds();
+        private Round CreateRound(RoundsLevelEnum levelEnum)
+        {
+
+            // 1. topic
+            // 2. questions
+            // 3. round
+
+            Round round = new(levelEnum)
+            {
+                Topics = { }
+            };
+
+
+
+            new Topic()
+            {
+                Questions = new List<Question>()
+                {
+                    new()
+                }
+            };
+            return round;
+        }
+
+        private Topic GetRandomTopic()
+        {
+            return new Topic();
+        }
+    }
 }

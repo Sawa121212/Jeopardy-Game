@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using Common.Core.Views;
+using Common.Core.Views.Interfaces;
 using DataDomain.Rooms;
 using Game.Events;
 using Game.Mangers;
@@ -26,6 +27,7 @@ namespace Game.Views
         {
             _eventAggregator = eventAggregator;
             _gameManager = gameManager;
+            MoveGoBackCommand = new DelegateCommand(OnMoveGoBack);
             CreateRoomCommand = new DelegateCommand(OnCreateRoom);
             AddPlayerCommand = new DelegateCommand(OnAddPlayer);
             KickOutPlayerCommand = new DelegateCommand<Player>(OnKickOutPlayer);
@@ -64,6 +66,7 @@ namespace Game.Views
         public ICommand SetPlayerToHostCommand { get; }
         public ICommand CreateRoomCommand { get; }
         public ICommand StartGameCommand { get; }
+        public ICommand MoveGoBackCommand { get; }
 
         private void OnCreateRoom()
         {
@@ -149,6 +152,14 @@ namespace Game.Views
             };
 
             RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
+        }
+
+
+        private void OnMoveGoBack()
+        {
+            // ToDo: Close room event
+            //_eventAggregator.GetEvent<Event>().Publish(new SetPlayerToHostEvent(_roomKey, player.Id));
+            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, "MainView");
         }
 
         private readonly IEventAggregator _eventAggregator;

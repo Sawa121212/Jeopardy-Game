@@ -61,7 +61,7 @@ namespace Game.Mangers
                                 {
                                     Questions = new List<Question>()
                                     {
-                                        new Question()
+                                        new()
                                     }
                                 }
                             }

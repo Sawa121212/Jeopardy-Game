@@ -15,7 +15,7 @@ namespace Users.Infrastructure
         /// <inheritdoc />
         public User CreateUser(long userId, string name)
         {
-            User user = new User()
+            User user = new()
             {
                 Id = userId,
                 Name = name,

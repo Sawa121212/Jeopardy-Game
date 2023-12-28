@@ -22,7 +22,6 @@ using Infrastructure.Module.Services;
 using Infrastructure.Module.Services.ApplicationInfo;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
-using ModuleA;
 using ModuleB;
 using Notification.Module;
 using Notification.Module.Services;

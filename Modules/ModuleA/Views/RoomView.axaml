@@ -24,7 +24,7 @@
         <Button Grid.Row="0"
                 Classes="Flat"
                 HorizontalAlignment="Left"
-                Command="{Binding MoveBackCommand}"
+                Command="{Binding MoveGoBackCommand}"
                 Margin="3">
             <Button.Content>
                 <Grid ColumnDefinitions="Auto, 8, *">
