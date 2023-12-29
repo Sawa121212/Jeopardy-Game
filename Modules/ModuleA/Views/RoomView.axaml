@@ -1,0 +1,219 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="500" d:DesignWidth="300"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:views="clr-namespace:Game.Views"
+             xmlns:rooms="clr-namespace:DataDomain.Rooms;assembly=DataDomain"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             x:Name="RoomViewControl"
+             x:Class="Game.Views.RoomView"
+             x:DataType="views:RoomViewModel">
+
+    <Design.DataContext>
+        <views:RoomViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *">
+        <!-- Back-->
+        <Button Grid.Row="0"
+                Classes="Flat"
+                HorizontalAlignment="Left"
+                Command="{Binding MoveGoBackCommand}"
+                Margin="3">
+            <Button.Content>
+                <Grid ColumnDefinitions="Auto, 8, *">
+                    <avalonia:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+                    <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+                </Grid>
+            </Button.Content>
+        </Button>
+
+        <controls:Card Grid.Row="1" IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center">
+            <Grid RowDefinitions="Auto, Auto">
+                <TextBlock Text="Начнем?"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0 ,3" />
+                <Button Grid.Row="1"
+                        Content="Создать комнату"
+                        Command="{Binding CreateRoomCommand}" />
+
+            </Grid>
+        </controls:Card>
+
+        <Grid Grid.Row="1" RowDefinitions="*, Auto, Auto"
+              IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+            <!-- Players -->
+            <controls:Card Grid.Row="0">
+                <Grid RowDefinitions="Auto,*">
+                    <TextBlock Grid.Row="0"
+                               Text="Игроки"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0 ,3" />
+                    <!-- Test -->
+                    <Button Grid.Row="0"
+                            Content="AddPlayerCommand Test"
+                            Command="{Binding AddPlayerCommand}" />
+
+                    <!-- Players -->
+                    <ScrollViewer Grid.Row="1"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Players}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="rooms:Player">
+                                    <Grid Margin="5">
+                                        <Image Stretch="Fill" Height="64" Width="64"
+                                               Source="{StaticResource PrisonerDrawingImage}"
+                                               VerticalAlignment="Top"
+                                               Margin="10,5" />
+                                        <TextBlock Classes="Subtitle2"
+                                                   Text="{Binding Name}"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Top"
+                                                   Margin="0,68,0, 0" />
+                                        <!-- Опции -->
+                                        <Menu VerticalAlignment="Top"
+                                              HorizontalAlignment="Right"
+                                              Height="16">
+                                            <MenuItem Height="16" Width="16"
+                                                      Header="{avalonia:MaterialIconExt DotsVertical, Size=16}"
+                                                      Padding="0">
+                                                <MenuItem Header="На место ведущего"
+                                                          Command="{Binding DataContext.SetPlayerToHostCommand, ElementName=RoomViewControl}"
+                                                          CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <avalonia:MaterialIcon Kind="Crown"
+                                                                               Width="16"
+                                                                               Height="16" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                                <MenuItem Header="Кикнуть"
+                                                          Foreground="{DynamicResource MaterialValidationErrorBrush}"
+                                                          Command="{Binding DataContext.KickOutPlayerCommand, ElementName=RoomViewControl}"
+                                                          CommandParameter="{Binding}">
+                                                    <MenuItem.Icon>
+                                                        <avalonia:MaterialIcon Kind="Delete"
+                                                                               Width="16"
+                                                                               Height="16" />
+                                                    </MenuItem.Icon>
+                                                </MenuItem>
+                                            </MenuItem>
+                                        </Menu>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </controls:Card>
+
+            <!-- Host -->
+            <Grid Grid.Row="1"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  RowDefinitions="Auto,*">
+                <TextBlock Grid.Row="0"
+                           Text="Ведущий"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0 ,3" />
+
+                <Grid Grid.Row="1">
+                    <Image Grid.Column="0"
+                           Stretch="Fill" Height="64" Width="64"
+                           Source="{StaticResource PrisonerDrawingImage}"
+                           VerticalAlignment="Top"
+                           Margin="10,5" />
+                    <TextBlock Classes="Subtitle2"
+                               Text="{Binding Host.Name}"
+                               FontWeight="Bold"
+                               IsVisible="{Binding Host.Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                               HorizontalAlignment="Center" VerticalAlignment="Top"
+                               Margin="0,68,0, 0" />
+
+                    <TextBlock Classes="Subtitle2"
+                               IsVisible="{Binding Host.Name, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                               Text="??????"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center" VerticalAlignment="Top"
+                               Margin="0,68,0, 0" />
+                    <avalonia:MaterialIcon Kind="Crown"
+                                           Foreground="Gold"
+                                           Width="24"
+                                           Height="24"
+                                           VerticalAlignment="Top"
+                                           HorizontalAlignment="Left" />
+                    <Menu VerticalAlignment="Top"
+                          HorizontalAlignment="Right"
+                          Height="16">
+                        <MenuItem Height="16" Width="16"
+                                  Header="{avalonia:MaterialIconExt DotsVertical, Size=16}"
+                                  Padding="0">
+                            <MenuItem Header="Покинуть место ведущего"
+                                      Command="{Binding DataContext.GetOutHostPlayerCommand, ElementName=RoomViewControl}"
+                                      CommandParameter="{Binding}">
+                                <MenuItem.Icon>
+                                    <avalonia:MaterialIcon Kind="Crown"
+                                                           Width="16"
+                                                           Height="16" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Кикнуть"
+                                      Foreground="{DynamicResource MaterialValidationErrorBrush}"
+                                      Command="{Binding DataContext.KickOutPlayerCommand, ElementName=RoomViewControl}"
+                                      CommandParameter="{Binding}">
+                                <MenuItem.Icon>
+                                    <avalonia:MaterialIcon Kind="Delete"
+                                                           Width="16"
+                                                           Height="16" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuItem>
+                    </Menu>
+                </Grid>
+            </Grid>
+
+            <controls:Card Grid.Row="1"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Margin="0, 0, 15, 0">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Row="0"
+                               Classes="Subtitle1"
+                               Text="Код комнаты"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0 ,3" />
+
+                    <TextBlock Grid.Row="1"
+                               Classes="Headline5"
+                               Text="{Binding RoomKey}"
+                               Foreground="{DynamicResource MaterialPrimaryMidBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontWeight="Bold" />
+                </Grid>
+            </controls:Card>
+
+            <Button Grid.Row="2"
+                    Content="Запустить игру"
+                    Command="{Binding StartGameCommand}"
+                    Margin="3" />
+        </Grid>
+    </Grid>
+</UserControl>

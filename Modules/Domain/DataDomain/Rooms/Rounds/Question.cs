@@ -5,19 +5,24 @@
     /// </summary>
     public class Question
     {
-        public string Text { get; }
-        public object Picture { get; }
+        public Question(int point)
+        {
+            Point = point;
+        }
 
-        public int Point { get; }
+        public string Text { get; set; }
+        public object Picture { get; set; }
+
+        public int Point { get; set; }
 
         /// <summary>
         /// Правильный ответ
         /// </summary>
-        public string Answer { get; }
+        public string Answer { get; set; }
 
         /// <summary>
         /// Вопрос был задан
         /// </summary>
-        public bool IsTheQuestionWasAsked { get; set; }
+        public bool IsAsked { get; set; }
     }
 }

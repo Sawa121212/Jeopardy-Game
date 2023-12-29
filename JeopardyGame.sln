@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JeopardyGame", "Shell\Jeopa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Core", "Common\Common.Core\Common.Core.csproj", "{AC7A420C-A27F-4505-A3FF-2474F0F839CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuleA", "Modules\ModuleA\ModuleA.csproj", "{ED73024C-33BA-4E97-BA0E-8F684EE5830A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Module", "Modules\ModuleA\Game.Module.csproj", "{ED73024C-33BA-4E97-BA0E-8F684EE5830A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuleB", "Modules\ModuleB\ModuleB.csproj", "{1CB6BA37-D4E7-456B-979A-EB4D1B91464A}"
 EndProject

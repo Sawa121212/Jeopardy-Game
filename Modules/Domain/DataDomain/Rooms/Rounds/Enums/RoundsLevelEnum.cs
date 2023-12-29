@@ -7,6 +7,9 @@ namespace DataDomain.Rooms.Rounds.Enums
     /// </summary>
     public enum RoundsLevelEnum
     {
+        [Description("Перестрелка")]
+        Shootout = 1,
+        
         [Description("Финальный раунд")]
         Final = 1,
 

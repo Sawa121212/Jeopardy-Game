@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using Common.Core.Prism.Regions;
+using Game.Views;
 using Infrastructure.Module.Views;
 using Prism.Regions;
 using TelegramAPI.Test.Views;
@@ -13,6 +14,7 @@ namespace JeopardyGame.Views
         public ICommand ShowPlayInformationCommand { get; }
         public ICommand OnShowTelegramTestCommand { get; }
         public ICommand ShowSettingsCommand { get; }
+        public ICommand PlayCommand { get; }
 
         private void OnShowTopics()
         {
@@ -27,6 +29,11 @@ namespace JeopardyGame.Views
         private void OnShowTelegramTest()
         {
             _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(TelegramTestView));
+        }
+
+        private void OnPlay()
+        {
+            _regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(RoomView));
         }
 
         private void OnShowSettings()

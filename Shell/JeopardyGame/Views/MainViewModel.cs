@@ -18,6 +18,7 @@ namespace JeopardyGame.Views
             ShowPlayInformationCommand = new DelegateCommand(OnShowPlayInformation);
             OnShowTelegramTestCommand = new DelegateCommand(OnShowTelegramTest);
             ShowSettingsCommand = new DelegateCommand(OnShowSettings);
+            PlayCommand = new DelegateCommand(OnPlay);
         }
     }
 }
