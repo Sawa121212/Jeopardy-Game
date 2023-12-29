@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DataDomain.Rooms.Rounds;
 using DataDomain.Rooms.Rounds.Enums;
+using DataDomain.Rooms.Rounds.Helpers;
 using Game.Data;
 using TopicsDB.Infrastructure.Services.Interfaces;
 
@@ -14,8 +16,8 @@ namespace Game.Services
             List<Round> rounds = new();
 
             RoundsLevelEnum roundLevelEnum = RoundsLevelEnum.Round1;
-
-            while (true)
+            bool createNextRound = true;
+            while (createNextRound)
             {
                 Round round = GetRound(roundLevelEnum);
                 if (!rounds.Contains(round))
@@ -25,29 +27,19 @@ namespace Game.Services
                     switch (roundLevelEnum)
                     {
                         case RoundsLevelEnum.Round1:
-                            roundLevelEnum = RoundsLevelEnum.Round2;
-                            break;
                         case RoundsLevelEnum.Round2:
-                            roundLevelEnum = RoundsLevelEnum.Round3;
-                            break;
                         case RoundsLevelEnum.Round3:
-                            roundLevelEnum = RoundsLevelEnum.Final;
+                        case RoundsLevelEnum.Shootout:
+                            roundLevelEnum = RoundHelper.GetNextRoundLevel(roundLevelEnum);
+                            break;
+                        case RoundsLevelEnum.Final:
+                            createNextRound = false;
                             break;
                         default:
-                        {
-                            if (roundLevelEnum == RoundsLevelEnum.Final)
-                                roundLevelEnum = RoundsLevelEnum.Shootout;
-                            break;
-                        }
+                            throw new ArgumentOutOfRangeException();
                     }
                 }
-
-                if (roundLevelEnum == RoundsLevelEnum.Shootout)
-                {
-                    break;
-                }
             }
-
 
             return rounds;
         }
@@ -55,7 +47,7 @@ namespace Game.Services
         private Round GetRound(RoundsLevelEnum levelEnum)
         {
             int topicsCount = GameParameterConstants.TopicsCount;
-            int topicLevel = (int) levelEnum;
+            int topicLevelMultiplier = RoundHelper.GetRoundLevelMultiplier(levelEnum);
             if (levelEnum == RoundsLevelEnum.Final)
             {
                 topicsCount = GameParameterConstants.FinalTopicsCount;
@@ -68,27 +60,27 @@ namespace Game.Services
 
             for (int i = 0; i < topicsCount; i++)
             {
-                round.Topics.Add(CreateTopic(topicLevel));
+                round.Topics.Add(CreateTopic(topicLevelMultiplier));
             }
 
             return round;
         }
 
-        private Topic CreateTopic(int topicLevel)
+        private Topic CreateTopic(int topicLevelMultiplier)
         {
             Topic topic = new()
             {
-                Questions = CreateQuestions(topicLevel)
+                Questions = CreateQuestions(topicLevelMultiplier)
             };
             return topic;
         }
 
-        private List<Question> CreateQuestions(int topicLevel)
+        private List<Question> CreateQuestions(int topicLevelMultiplier)
         {
             List<Question> questions = new();
             while (questions.Count < GameParameterConstants.QuestionsCount)
             {
-                questions.Add(new Question(GameParameterConstants.BaseQuestionPrice * (questions.Count + 1) * topicLevel));
+                questions.Add(new Question(GameParameterConstants.BaseQuestionPrice * (questions.Count + 1) * topicLevelMultiplier));
             }
 
             return questions;

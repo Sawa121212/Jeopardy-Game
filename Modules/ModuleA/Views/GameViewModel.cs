@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Common.Core.Prism;
 using Common.Core.Views;
 using DataDomain.Rooms;
@@ -8,6 +9,7 @@ using DataDomain.Rooms.Rounds;
 using Game.Mangers;
 using Prism.Regions;
 using ReactiveUI;
+using TopicsDB.Infrastructure.Services;
 
 namespace Game.Views
 {
@@ -40,6 +42,12 @@ namespace Game.Views
             set => this.RaiseAndSetIfChanged(ref _topics, value);
         }
 
+        public ObservableCollection<Player> Players
+        {
+            get => _players;
+            set => this.RaiseAndSetIfChanged(ref _players, value);
+        }
+
         /// <inheritdoc />
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -52,18 +60,29 @@ namespace Game.Views
                 return;
             }
 
-            /*_roomKey = value;
+            _roomKey = value;
             Game = _gameManager.GetGame(_roomKey);
-            if (Game is {Rounds.Count: > 0})
+
+            if (Game == null || Game.Rounds.Count == 0)
             {
-                Rounds.AddRange(_game.Rounds);
-            }*/
+                return;
+            }
+
+            Rounds.AddRange(Game.Rounds);
+
+            List<Topic>? collection = Rounds.FirstOrDefault(r => r.Level == Game.CurrentRound)?.Topics;
+            if (collection != null)
+            {
+                Topics = new ObservableCollection<Topic>(collection);
+            }
+
+            Players = new ObservableCollection<Player>(_gameManager.GetPlayersFromRoom(_roomKey));
         }
 
         private readonly IGameManager _gameManager;
         private string? _roomKey;
         private List<Round> _rounds;
-        private List<Player> _players;
+        private ObservableCollection<Player> _players;
         private ObservableCollection<Topic> _topics;
         private DataDomain.Rooms.Game? _game;
     }
