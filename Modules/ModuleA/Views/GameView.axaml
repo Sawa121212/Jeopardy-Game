@@ -3,15 +3,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:rounds="clr-namespace:DataDomain.Rooms.Rounds;assembly=DataDomain"
+             xmlns:views="clr-namespace:Game.Views"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Game.Views.GameView">
-    <Grid>
-        <TextBlock Text="Игра не найдена"
+             x:Class="Game.Views.GameView"
+             x:DataType="views:GameViewModel">
+
+    <Design.DataContext>
+        <views:GameViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *">
+        <!-- Back-->
+        <Button Grid.Row="0"
+                Classes="Flat"
+                HorizontalAlignment="Left"
+                Command="{Binding MoveGoBackCommand}"
+                Margin="3">
+            <Button.Content>
+                <Grid ColumnDefinitions="Auto, 8, *">
+                    <avalonia:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+                    <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+                </Grid>
+            </Button.Content>
+        </Button>
+        <TextBlock Grid.Row="1"
+                   Text="Игра не найдена"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
                    IsVisible="{Binding Game, Converter={x:Static ObjectConverters.IsNull}}" />
 
-        <Grid ColumnDefinitions="Auto, *"
-              VerticalAlignment="Center"
-              HorizontalAlignment="Center"
+        <Grid Grid.Row="1"
+              ColumnDefinitions="Auto, *"
               IsVisible="{Binding Game, Converter={x:Static ObjectConverters.IsNotNull}}">
 
             <!-- Topics -->
@@ -30,39 +55,53 @@
                 </ListBox.Styles>
 
                 <ListBox.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate DataType="rounds:Topic">
                         <Grid>
                             <controls:Card>
-                                <TextBlock Text="100" />
+                                <Button Classes="Flat">
+                                    <Button.Content>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </Button.Content>
+                                </Button>
                             </controls:Card>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <ListBox Grid.Column="1">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="6" Columns="5" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+            <ItemsControl Grid.Column="1"
+                          ItemsSource="{Binding Topics, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="rounds:Topic">
+                        <ListBox ItemsSource="{Binding Questions, Mode=OneWay}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1" Columns="5" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
 
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="VerticalAlignment" Value="Stretch" />
-                    </Style>
-                </ListBox.Styles>
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                                </Style>
+                            </ListBox.Styles>
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Button
-                                Content="100">
-                            </Button>
-                        </Grid>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <controls:Card>
+                                        <Button Classes="Flat"
+                                                IsVisible="{Binding IsAsked, Mode=OneWay}">
+                                            <Button.Content>
+                                                <TextBlock Text="{Binding Point}" />
+                                            </Button.Content>
+                                        </Button>
+                                    </controls:Card>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </UserControl>

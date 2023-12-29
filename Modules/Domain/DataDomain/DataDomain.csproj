@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Rooms\Rounds\Helpers\" />
+  </ItemGroup>
+
 </Project>
