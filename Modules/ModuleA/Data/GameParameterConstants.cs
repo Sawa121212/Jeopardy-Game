@@ -20,6 +20,11 @@ namespace Game.Data
         public static int TopicsCount = 6;
 
         /// <summary>
+        /// Количество тем финального раунда
+        /// </summary>
+        public static int FinalTopicsCount = 7;
+
+        /// <summary>
         /// Количество вопросов
         /// </summary>
         public static int QuestionsCount = 5;

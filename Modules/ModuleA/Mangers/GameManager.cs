@@ -18,11 +18,12 @@ namespace Game.Mangers
         public GameManager(
             IEventAggregator eventAggregator,
             INotificationService notificationService,
-            IRoomService roomService)
+            IRoomService roomService, IRoundService roundService)
         {
             _eventAggregator = eventAggregator;
             _notificationService = notificationService;
             _roomService = roomService;
+            _roundService = roundService;
             _eventAggregator.GetEvent<PlayerIsTryingToConnectToRoomEvent>().Subscribe(e => ConnectPlayerToRoom(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<SetPlayerToHostEvent>().Subscribe(e => SetPlayerToHost(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<KickOutPlayerEvent>().Subscribe(e => KickOutPlayer(e.RoomKey, e.PlayerId));
@@ -49,24 +50,7 @@ namespace Game.Mangers
                 room.Game = new DataDomain.Rooms.Game
                 {
                     IsStarted = true,
-                    // ToDo: generate Rounds
-                    //Test
-                    Rounds =
-                    {
-                        new Round(RoundsLevelEnum.Round1)
-                        {
-                            Topics =
-                            {
-                                new Topic()
-                                {
-                                    Questions = new List<Question>()
-                                    {
-                                        new()
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    Rounds = _roundService.CreateGameRounds()
                 };
 
 
@@ -176,5 +160,6 @@ namespace Game.Mangers
         private readonly IEventAggregator _eventAggregator;
         private readonly INotificationService _notificationService;
         private readonly IRoomService _roomService;
+        private readonly IRoundService _roundService;
     }
 }

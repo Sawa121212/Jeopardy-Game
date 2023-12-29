@@ -24,6 +24,7 @@
     <ProjectReference Include="..\AppModules\Infrastructure\Infrastructure.Domain\Infrastructure.Domain.csproj" />
     <ProjectReference Include="..\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
     <ProjectReference Include="..\Domain\DataDomain\DataDomain.csproj" />
+    <ProjectReference Include="..\TopicsDB\TopicsDB.Infrastructure\TopicsDB.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

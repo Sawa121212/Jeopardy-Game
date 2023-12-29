@@ -32,7 +32,7 @@ namespace DataDomain.Rooms.Rounds
         /// <summary>
         /// 
         /// </summary>
-        public List<Topic> Topics { get; } // max 5
+        public List<Topic> Topics { get; set; } // max 5
 
         /*/// <summary>
         /// Получить баллы за ответ на вопрос

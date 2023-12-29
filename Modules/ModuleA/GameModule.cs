@@ -6,7 +6,6 @@ using Game.Properties;
 using Game.Services;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
 
 namespace Game
 {
@@ -17,6 +16,7 @@ namespace Game
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterSingleton<IRoundService, RoundService>();
             containerRegistry.RegisterSingleton<IRoomService, RoomService>();
             containerRegistry.RegisterSingleton<IGameManager, GameManager>();
 
