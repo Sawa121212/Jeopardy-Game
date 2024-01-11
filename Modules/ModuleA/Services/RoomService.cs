@@ -1,41 +1,54 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
+using Avalonia.Controls.Notifications;
 using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
 using Infrastructure.Domain.Helpers;
+using Notification.Module.Services;
 using ReactiveUI;
+using Users.Domain;
+using Users.Infrastructure;
 
 namespace Game.Services
 {
     public class RoomService : ReactiveObject, IRoomService
     {
-        public RoomService()
+        public RoomService(INotificationService notificationService, IUserService userService)
         {
-            Rooms = new ObservableCollection<Room>();
+            _notificationService = notificationService;
+            _userService = userService;
+            Rooms = new ObservableCollection<RoomModel>();
         }
 
-        private ObservableCollection<Room> Rooms
+        /// <summary>
+        /// Список комнат
+        /// </summary>
+        private ObservableCollection<RoomModel> Rooms
         {
             get => _rooms;
-            set => this.RaiseAndSetIfChanged(ref _rooms, value);
+            init => this.RaiseAndSetIfChanged(ref _rooms, value);
         }
 
+        /// <inheritdoc/>
         public string Create()
         {
             string key = RandomGenerator.GenerateRandomString(5);
 
-            while (GetByKey(key) != null)
+            // сгенерировать уникальный ключ
+            while (GetRoomByKey(key) != null)
             {
                 key = RandomGenerator.GenerateRandomString(5);
             }
 
-            Room room = new(key);
+            RoomModel room = new(key);
             Rooms.Add(room);
 
             return room.Key;
         }
 
+        /// <inheritdoc/>
         public bool ConnectPlayer(string roomKey, long playerId)
         {
             if (playerId == default)
@@ -43,14 +56,23 @@ namespace Game.Services
                 return false;
             }
 
-            Room? room = GetByKey(roomKey);
+            RoomModel? room = GetRoomByKey(roomKey);
             if (room == null)
             {
                 return false;
             }
 
-            // ToDo: get player from DB
-            Player player = new() //Test
+            // get player from DB
+            /*User user = _userService.GetUserById(playerId);
+            if (user is null)
+            {
+                _notificationService.Show("Error", $"User '{playerId}' not found", NotificationType.Error);
+                return false;
+            }
+
+            PlayerModel player = new(user);*/
+
+            PlayerModel player = new() //Test
             {
                 Id = playerId,
                 Name = $"Test {playerId}"
@@ -61,6 +83,7 @@ namespace Game.Services
             return true;
         }
 
+        /// <inheritdoc/>
         public bool Remove(string roomKey)
         {
             if (roomKey.IsNullOrEmpty())
@@ -68,7 +91,7 @@ namespace Game.Services
                 return false;
             }
 
-            Room? room = GetByKey(roomKey);
+            RoomModel? room = GetRoomByKey(roomKey);
             if (room == null)
             {
                 return false;
@@ -77,9 +100,10 @@ namespace Game.Services
             return Rooms.Remove(room);
         }
 
-        public Room? GetByKey(string roomKey) => roomKey.IsNullOrEmpty() ? null : Rooms.FirstOrDefault(r => r.Key == roomKey);
+        /// <inheritdoc/>
+        public RoomModel? GetRoomByKey(string roomKey) => roomKey.IsNullOrEmpty() ? null : Rooms.FirstOrDefault(r => r.Key == roomKey);
 
-        private Player? GetPlayerById(string playerId) => null;
+        private PlayerModel? GetPlayerById(string playerId) => null;
         //playerId.IsNullOrEmpty() ? null : _userDbService.GetUserById(u => u.Id == playerId);
 
         /// <inheritdoc />
@@ -90,9 +114,9 @@ namespace Game.Services
                 return false;
             }
 
-            Room? room = GetByKey(roomKey);
+            RoomModel? room = GetRoomByKey(roomKey);
 
-            Player player = room?.Players.FirstOrDefault(e => e.Id == playerId);
+            PlayerModel player = room?.Players.FirstOrDefault(e => e.Id == playerId);
 
             if (player == null)
             {
@@ -118,14 +142,14 @@ namespace Game.Services
                 return false;
             }
 
-            Room? room = GetByKey(roomKey);
+            RoomModel? room = GetRoomByKey(roomKey);
 
             if (room == null)
             {
                 return true;
             }
 
-            Player player = room.Players.FirstOrDefault(e => e.Id == playerId);
+            PlayerModel player = room.Players.FirstOrDefault(e => e.Id == playerId);
 
             if (player == null)
             {
@@ -144,11 +168,13 @@ namespace Game.Services
         }
 
         /// <inheritdoc />
-        public DataDomain.Rooms.Game? GetGame(string roomKey)
+        public GameModel? GetGame(string roomKey)
         {
-            return GetByKey(roomKey)?.Game;
+            return GetRoomByKey(roomKey)?.Game;
         }
 
-        private ObservableCollection<Room> _rooms;
+        private readonly INotificationService _notificationService;
+        private readonly IUserService _userService;
+        private ObservableCollection<RoomModel> _rooms;
     }
 }

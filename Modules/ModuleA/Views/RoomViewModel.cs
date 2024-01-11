@@ -4,7 +4,6 @@ using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using Common.Core.Views;
-using Common.Core.Views.Interfaces;
 using DataDomain.Rooms;
 using Game.Events;
 using Game.Mangers;
@@ -30,13 +29,13 @@ namespace Game.Views
             MoveGoBackCommand = new DelegateCommand(OnMoveGoBack);
             CreateRoomCommand = new DelegateCommand(OnCreateRoom);
             AddPlayerCommand = new DelegateCommand(OnAddPlayer);
-            KickOutPlayerCommand = new DelegateCommand<Player>(OnKickOutPlayer);
-            SetPlayerToHostCommand = new DelegateCommand<Player>(OnSetPlayerToHost);
+            KickOutPlayerCommand = new DelegateCommand<PlayerModel>(OnKickOutPlayer);
+            SetPlayerToHostCommand = new DelegateCommand<PlayerModel>(OnSetPlayerToHost);
             StartGameCommand = new DelegateCommand(OnStartGame, () => Host != null && Players.Any())
                 .ObservesProperty(() => Host)
                 .ObservesProperty(() => Players);
 
-            Players = new ObservableCollection<Player>();
+            Players = new ObservableCollection<PlayerModel>();
             _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Subscribe(e => OnUpdatePlayerList(e.RoomKey));
             _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(e => OnUpdateHostPlayer(e.RoomKey));
             _eventAggregator.GetEvent<PlayerKickedOutEvent>().Subscribe(e => OnUpdateAllPlayers(e.RoomKey));
@@ -49,13 +48,13 @@ namespace Game.Views
             set => this.RaiseAndSetIfChanged(ref _roomKey, value);
         }
 
-        public ObservableCollection<Player> Players
+        public ObservableCollection<PlayerModel> Players
         {
             get => _players;
             set => this.RaiseAndSetIfChanged(ref _players, value);
         }
 
-        public Player Host
+        public PlayerModel Host
         {
             get => _host;
             set => this.RaiseAndSetIfChanged(ref _host, value);
@@ -76,7 +75,7 @@ namespace Game.Views
         // Test
         private void OnAddPlayer()
         {
-            Player player = new()
+            PlayerModel player = new()
             {
                 Id = RandomGenerator.GenerateSixDigitRandomNumber()
             };
@@ -89,7 +88,7 @@ namespace Game.Views
         /// Выгнать игрока
         /// </summary>
         /// <param name="player"></param>
-        private void OnKickOutPlayer(Player player)
+        private void OnKickOutPlayer(PlayerModel player)
         {
             _eventAggregator.GetEvent<KickOutPlayerEvent>().Publish(new KickOutPlayerEvent(_roomKey, player.Id));
         }
@@ -99,7 +98,7 @@ namespace Game.Views
             _eventAggregator.GetEvent<GameIsReadyToStartEvent>().Publish(new GameIsReadyToStartEvent(_roomKey));
         }
 
-        private void OnSetPlayerToHost(Player player)
+        private void OnSetPlayerToHost(PlayerModel player)
         {
             if (Players.Contains(player))
             {
@@ -165,7 +164,7 @@ namespace Game.Views
         private readonly IEventAggregator _eventAggregator;
         private readonly IGameManager _gameManager;
         private string _roomKey;
-        private ObservableCollection<Player> _players;
-        private Player _host;
+        private ObservableCollection<PlayerModel> _players;
+        private PlayerModel _host;
     }
 }

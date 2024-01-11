@@ -4,7 +4,7 @@ using Avalonia;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     /// <summary>
     /// Convert Level to left margin

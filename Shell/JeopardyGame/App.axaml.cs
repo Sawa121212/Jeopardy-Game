@@ -15,7 +15,6 @@ using Confirmation.Module.Services;
 using Game;
 using Infrastructure.Interfaces.Managers;
 using Infrastructure.Interfaces.Services;
-using Infrastructure.Interfaces.Services.Settings;
 using Infrastructure.Module;
 using Infrastructure.Module.Managers;
 using Infrastructure.Module.Services;
@@ -32,6 +31,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using TelegramAPI.Test;
 using TopicDb.Module;
+using Users.Module;
 using IResourceProvider = Common.Core.Localization.IResourceProvider;
 using ShellView = JeopardyGame.Views.Shell.ShellView;
 

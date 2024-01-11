@@ -2,21 +2,15 @@
 using System.Collections;
 using System.Globalization;
 using Avalonia.Data.Converters;
-using Avalonia.Markup.Xaml;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     /// <summary>
     /// Возвращает true если в IList есть хоть один элемент.
     /// </summary>
-    public class IsAnyToBooleanConverter : MarkupExtension, IValueConverter
+    public class IsAnyToBooleanConverter : IValueConverter
     {
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is ICollection collection)
             {
@@ -25,15 +19,16 @@ namespace Common.Ui.Converters
                     if (inverse)
                         return !(collection.Count > 0);
                 }
+
                 return collection.Count > 0;
             }
+
             return false;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotSupportedException();
         }
-
     }
 }

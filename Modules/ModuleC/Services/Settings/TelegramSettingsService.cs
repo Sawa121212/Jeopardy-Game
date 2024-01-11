@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Avalonia.Threading;
 using Common.Core.Interfaces.Settings;
 using Common.Core.Localization;
-using Infrastructure.Domain.Settings;
-using Material.Styles.Themes.Base;
 using TelegramAPI.Test.Settings;
 
 namespace TelegramAPI.Test.Services.Settings

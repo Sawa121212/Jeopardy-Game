@@ -7,6 +7,8 @@
              xmlns:views="clr-namespace:Game.Views"
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:converters="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
+             xmlns:old="clr-namespace:Common.Ui.Converters.Old;assembly=Common.Ui"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Game.Views.GameView"
              x:DataType="views:GameViewModel">
@@ -20,7 +22,7 @@
         <Button Grid.Row="0"
                 Classes="Flat"
                 HorizontalAlignment="Left"
-                Command="{Binding MoveGoBackCommand}"
+                Command="{Binding MoveBackCommand}"
                 Margin="3">
             <Button.Content>
                 <Grid ColumnDefinitions="Auto, 8, *">
@@ -31,9 +33,17 @@
         </Button>
         <TextBlock Grid.Row="1"
                    Text="Игра не найдена"
+                   Foreground="{DynamicResource MaterialValidationErrorBrush}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
                    IsVisible="{Binding Game, Converter={x:Static ObjectConverters.IsNull}}" />
+
+        <TextBlock Grid.Row="1"
+                   Text="Не удалось собрать игру. Продолжение невозможно."
+                   Foreground="{DynamicResource MaterialValidationErrorBrush}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   IsVisible="{Binding Rounds, Converter={x:Static converters:CollectionConverter.IsNotAny}}" />
 
         <Grid Grid.Row="1"
               ColumnDefinitions="Auto, *"
@@ -55,7 +65,7 @@
                 </ListBox.Styles>
 
                 <ListBox.ItemTemplate>
-                    <DataTemplate DataType="rounds:Topic">
+                    <DataTemplate DataType="rounds:TopicModel">
                         <Grid>
                             <controls:Card>
                                 <Button Classes="Flat">
@@ -72,7 +82,7 @@
             <ItemsControl Grid.Column="1"
                           ItemsSource="{Binding Topics, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="rounds:Topic">
+                    <DataTemplate DataType="rounds:TopicModel">
                         <ListBox ItemsSource="{Binding Questions, Mode=OneWay}">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -92,7 +102,7 @@
                                         <Button Classes="Flat"
                                                 IsVisible="{Binding IsAsked, Mode=OneWay}">
                                             <Button.Content>
-                                                <TextBlock Text="{Binding Point}" />
+                                                <TextBlock Text="{Binding Price}" />
                                             </Button.Content>
                                         </Button>
                                     </controls:Card>

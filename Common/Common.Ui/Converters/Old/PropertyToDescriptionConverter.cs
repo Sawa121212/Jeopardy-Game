@@ -5,7 +5,7 @@ using System.Reflection;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     /// <summary>
     /// Получение значения атрибута Description из свойства. В случае отсутствия Description возвращает имя свойства.

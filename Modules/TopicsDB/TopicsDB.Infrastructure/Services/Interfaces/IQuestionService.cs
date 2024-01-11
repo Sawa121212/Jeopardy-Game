@@ -39,6 +39,14 @@ namespace TopicsDB.Infrastructure.Services.Interfaces
         /// </summary>
         /// <param name="topicId"></param>
         /// <returns></returns>
-        public List<Question> GetAllQuestionsByTopic(int topicId);
+        public List<Question> GetAllQuestionsByTopicId(int topicId);
+
+        /// <summary>
+        /// Получить случайный вопрос из темы по указанной цене
+        /// </summary>
+        /// <param name="topicId">ИД темы</param>
+        /// <param name="questionBasePrice">Цена вопроса</param>
+        /// <returns></returns>
+        Question GetRandomQuestionFromTopicByPrice(int topicId, int questionBasePrice);
     }
 }

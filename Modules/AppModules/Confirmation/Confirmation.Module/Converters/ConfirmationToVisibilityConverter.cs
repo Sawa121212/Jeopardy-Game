@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Common.Extensions;
-using Common.Ui.Converters;
+using Common.Ui.Converters.Old;
 using Confirmation.Module.Enums;
 
 namespace Confirmation.Module.Converters

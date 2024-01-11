@@ -3,12 +3,9 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
-    /// <summary>
-    /// Преобразует значение в Тип.
-    /// </summary>
-    public class InstanceToTypeConverter : MarkupExtension, IValueConverter
+    public class NotNullOrEmptyToBooleanConverter : MarkupExtension, IValueConverter
     {
         /// <inheritdoc />
         public override object ProvideValue(IServiceProvider serviceProvider)
@@ -19,7 +16,7 @@ namespace Common.Ui.Converters
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value?.GetType();
+            return !string.IsNullOrEmpty(value as string);
         }
 
         /// <inheritdoc />

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Common.Core.Prism;
@@ -9,7 +8,6 @@ using DataDomain.Rooms.Rounds;
 using Game.Mangers;
 using Prism.Regions;
 using ReactiveUI;
-using TopicsDB.Infrastructure.Services;
 
 namespace Game.Views
 {
@@ -20,29 +18,29 @@ namespace Game.Views
         {
             _gameManager = gameManager;
             //_gameManager.
-            Rounds = new List<Round>(3);
-            Topics = new ObservableCollection<Topic>();
+            Rounds = new List<RoundModel?>();
+            Topics = new ObservableCollection<TopicModel>();
         }
 
-        public DataDomain.Rooms.Game? Game
+        public GameModel? Game
         {
             get => _game;
             set => this.RaiseAndSetIfChanged(ref _game, value);
         }
 
-        public List<Round> Rounds
+        public List<RoundModel?> Rounds
         {
             get => _rounds;
             set => this.RaiseAndSetIfChanged(ref _rounds, value);
         }
 
-        public ObservableCollection<Topic> Topics
+        public ObservableCollection<TopicModel> Topics
         {
             get => _topics;
             set => this.RaiseAndSetIfChanged(ref _topics, value);
         }
 
-        public ObservableCollection<Player> Players
+        public ObservableCollection<PlayerModel> Players
         {
             get => _players;
             set => this.RaiseAndSetIfChanged(ref _players, value);
@@ -63,27 +61,27 @@ namespace Game.Views
             _roomKey = value;
             Game = _gameManager.GetGame(_roomKey);
 
-            if (Game == null || Game.Rounds.Count == 0)
+            if (Game?.Rounds is null || Game.Rounds.Count == 0)
             {
                 return;
             }
 
             Rounds.AddRange(Game.Rounds);
 
-            List<Topic>? collection = Rounds.FirstOrDefault(r => r.Level == Game.CurrentRound)?.Topics;
-            if (collection != null)
+            List<TopicModel>? topicModels = Rounds.FirstOrDefault(r => r.Level == Game.CurrentRound)?.Topics;
+            if (topicModels != null)
             {
-                Topics = new ObservableCollection<Topic>(collection);
+                Topics = new ObservableCollection<TopicModel>(topicModels);
             }
 
-            Players = new ObservableCollection<Player>(_gameManager.GetPlayersFromRoom(_roomKey));
+            Players = new ObservableCollection<PlayerModel>(_gameManager.GetPlayersFromRoom(_roomKey));
         }
 
         private readonly IGameManager _gameManager;
         private string? _roomKey;
-        private List<Round> _rounds;
-        private ObservableCollection<Player> _players;
-        private ObservableCollection<Topic> _topics;
-        private DataDomain.Rooms.Game? _game;
+        private List<RoundModel?> _rounds;
+        private ObservableCollection<PlayerModel> _players;
+        private ObservableCollection<TopicModel> _topics;
+        private GameModel? _game;
     }
 }

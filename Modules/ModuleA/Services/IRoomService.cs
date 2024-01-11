@@ -1,4 +1,5 @@
 ﻿using DataDomain;
+using DataDomain.Rooms;
 
 namespace Game.Services
 {
@@ -30,7 +31,7 @@ namespace Game.Services
         /// </summary>
         /// <param name="roomKey">Ключ комнаты</param>
         /// <returns></returns>
-        Room? GetByKey(string roomKey);
+        RoomModel? GetRoomByKey(string roomKey);
 
         /// <summary>
         /// Установить игрока "Ведущим"
@@ -49,9 +50,9 @@ namespace Game.Services
         bool KickPlayer(string roomKey, long playerId);
 
         /// <summary>
-        /// 
+        /// Получить игру по ключу комнаты
         /// </summary>
         /// <param name="roomKey"></param>
-        DataDomain.Rooms.Game? GetGame(string roomKey);
+        GameModel? GetGame(string roomKey);
     }
 }

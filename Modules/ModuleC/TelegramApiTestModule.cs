@@ -3,7 +3,6 @@ using Common.Core.Localization;
 using Infrastructure.Interfaces.Managers;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
 using TelegramAPI.Test.Managers;
 using TelegramAPI.Test.Properties;
 using TelegramAPI.Test.Services.Settings;

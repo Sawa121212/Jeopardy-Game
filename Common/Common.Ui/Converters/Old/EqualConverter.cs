@@ -3,23 +3,25 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     /// <summary>
-    /// Преобразует value != null в true
+    /// Сравнивает значения value и parameter
     /// </summary>
-    public class NotEqualConverter : MarkupExtension, IValueConverter
+    /// <example> IsEnabled="{Binding ReadOnlyMode, Converter={StaticResource EqualConverter}, 
+    /// ConverterParameter={markup:Boolean False}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></example>
+    public class EqualConverter : MarkupExtension, IValueConverter
     {
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return !value?.Equals(parameter) ?? parameter != null;
+            return value?.Equals(parameter) ?? parameter == null;
         }
 
         /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            return value?.Equals(parameter) ?? parameter == null;
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Infrastructure.Domain.Helpers;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Managers;
@@ -9,13 +11,11 @@ namespace TopicsDB.Infrastructure.Services
 {
     public class QuestionService : IQuestionService
     {
-        private readonly ITopicDbManager _topicDbManager;
-        private readonly TopicDbContext _dbContext;
-
-        public QuestionService(ITopicDbManager topicDbManager)
+        public QuestionService(ITopicDbManager topicDbManager, ITopicService topicService)
         {
             _topicDbManager = topicDbManager;
             _dbContext = _topicDbManager.DbContext;
+            _topicService = topicService;
         }
 
         /// <inheritdoc />
@@ -70,14 +70,30 @@ namespace TopicsDB.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public List<Question> GetAllQuestionsByTopic(int topicId)
+        public List<Question> GetAllQuestionsByTopicId(int topicId)
         {
             return _dbContext.Questions.Where(q => q.TopicId == topicId).ToList();
         }
 
-        /// <summary>
-        /// Базовая цена вопроса
-        /// </summary>
-        private static int BaseQuestionPriceValue => 100;
+        /// <inheritdoc />
+        public Question GetRandomQuestionFromTopicByPrice(int topicId, int price)
+        {
+            Topic topic = _topicService.GetTopicById(topicId);
+            List<Question> questionsWithPrice = topic.Questions
+                .Where(q => q.Price == price)
+                .ToList();
+
+            if (questionsWithPrice.Count == 0)
+            {
+                throw new ArgumentException($"No questions found for topic '{topic.Name}' with price {price}.");
+            }
+
+            int randomIndex = RandomGenerator.GetRandom().Next(0, questionsWithPrice.Count);
+            return questionsWithPrice[randomIndex];
+        }
+
+        private readonly ITopicDbManager _topicDbManager;
+        private readonly ITopicService _topicService;
+        private readonly TopicDbContext _dbContext;
     }
 }

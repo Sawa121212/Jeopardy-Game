@@ -5,6 +5,6 @@ namespace Game.Services
 {
     public interface IRoundService
     {
-        List<Round> CreateGameRounds();
+        List<RoundModel?>? CreateGameRounds();
     }
 }

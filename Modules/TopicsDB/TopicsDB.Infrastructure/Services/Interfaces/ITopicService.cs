@@ -39,5 +39,10 @@ namespace TopicsDB.Infrastructure.Services.Interfaces
         /// <returns></returns>
         public List<Topic> GetAllTopics();
 
+        /// <summary>
+        /// Получить количество всех тем
+        /// </summary>
+        /// <returns></returns>
+        int GetAllTopicsCount();
     }
 }

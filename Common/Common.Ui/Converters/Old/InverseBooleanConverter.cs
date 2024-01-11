@@ -1,7 +1,7 @@
 ﻿using System;
 using Avalonia.Data.Converters;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     /// <summary>
     /// Инвертировать Boolean значение

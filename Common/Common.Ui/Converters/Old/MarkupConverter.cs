@@ -3,7 +3,7 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     /// <summary>
     /// This is easier to read and will create a new instance of the converter every time
@@ -18,9 +18,9 @@ namespace Common.Ui.Converters
         }
 
         /// <inheritdoc />
-        public abstract object Convert(object value, Type targetType, object parameter, CultureInfo culture);
+        public abstract object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture);
 
         /// <inheritdoc />
-        public abstract object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture);
+        public abstract object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture);
     }
 }

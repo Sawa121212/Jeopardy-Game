@@ -1,12 +1,8 @@
-﻿using System.Resources;
-using Common.Core.Localization;
-using Infrastructure.Interfaces.Logging;
-using Infrastructure.Interfaces.Managers;
+﻿using Infrastructure.Interfaces.Managers;
 using Infrastructure.Interfaces.Services;
 using Infrastructure.Interfaces.Services.Settings;
 using Infrastructure.Module.Managers;
 using Infrastructure.Module.Services;
-using Infrastructure.Module.Services.Logging;
 using Infrastructure.Module.Services.Settings;
 using Infrastructure.Module.Views;
 using Infrastructure.Module.Views.Settings;

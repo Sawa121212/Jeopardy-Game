@@ -21,10 +21,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\..\Common\Common.Resources\Common.Resources.csproj" />
+    <ProjectReference Include="..\..\Common\Common.Ui\Common.Ui.csproj" />
     <ProjectReference Include="..\AppModules\Infrastructure\Infrastructure.Domain\Infrastructure.Domain.csproj" />
     <ProjectReference Include="..\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
     <ProjectReference Include="..\Domain\DataDomain\DataDomain.csproj" />
     <ProjectReference Include="..\TopicsDB\TopicsDB.Infrastructure\TopicsDB.Infrastructure.csproj" />
+    <ProjectReference Include="..\Users\Users.Infrastructure\Users.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,9 +34,6 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Language.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Views\RoomView.axaml.cs">
-      <DependentUpon>RoomView.axaml</DependentUpon>
     </Compile>
     <EmbeddedResource Update="Properties\Language.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

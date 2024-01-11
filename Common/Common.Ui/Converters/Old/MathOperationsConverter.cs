@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Avalonia.Data.Converters;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     public class MathOperationsConverter : IMultiValueConverter
     {

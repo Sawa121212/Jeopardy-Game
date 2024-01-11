@@ -4,7 +4,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 using Common.Extensions;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     public class MathOperationConverter : MarkupExtension, IValueConverter
     {
