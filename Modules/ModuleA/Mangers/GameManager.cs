@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Avalonia.Controls.Notifications;
 using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
-using DataDomain.Rooms.Rounds;
-using DataDomain.Rooms.Rounds.Enums;
 using Game.Events;
 using Game.Services;
 using Notification.Module.Services;
@@ -43,16 +42,19 @@ namespace Game.Mangers
                 return false;
             }
 
-            Room? room = _roomService.GetByKey(roomKey);
+            RoomModel? room = _roomService.GetRoomByKey(roomKey);
 
             if (room != null)
             {
-                room.Game = new DataDomain.Rooms.Game
+                room.Game = new GameModel
                 {
-                    IsStarted = true,
                     Rounds = _roundService.CreateGameRounds()
                 };
 
+                if (room.Game.Rounds != null)
+                {
+                    room.Game.IsStarted = room.Game.Rounds.Count > 0;
+                }
 
                 _eventAggregator.GetEvent<GameIsStartedEvent>().Publish(new GameIsStartedEvent(roomKey));
             }
@@ -65,29 +67,29 @@ namespace Game.Mangers
         }
 
         /// <inheritdoc />
-        public IEnumerable<Player> GetPlayersFromRoom(string roomKey)
+        public IEnumerable<PlayerModel> GetPlayersFromRoom(string roomKey)
         {
             if (roomKey.IsNullOrEmpty())
             {
                 return null;
             }
 
-            return _roomService.GetByKey(roomKey)?.Players;
+            return _roomService.GetRoomByKey(roomKey)?.Players;
         }
 
         /// <inheritdoc />
-        public Player GetHostPlayerFromRoom(string roomKey)
+        public PlayerModel GetHostPlayerFromRoom(string roomKey)
         {
             if (roomKey.IsNullOrEmpty())
             {
                 return null;
             }
 
-            return _roomService.GetByKey(roomKey)?.Host;
+            return _roomService.GetRoomByKey(roomKey)?.Host;
         }
 
         /// <inheritdoc />
-        public DataDomain.Rooms.Game? GetGame(string roomKey)
+        public GameModel? GetGame(string roomKey)
         {
             return _roomService.GetGame(roomKey);
         }
@@ -115,7 +117,7 @@ namespace Game.Mangers
                 return;
             }
 
-            Room? room = _roomService.GetByKey(roomKey);
+            RoomModel? room = _roomService.GetRoomByKey(roomKey);
             if (room is null)
             {
                 return;

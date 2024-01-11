@@ -12,7 +12,7 @@ namespace Game.Data
         /// <summary>
         /// Количество раундов
         /// </summary>
-        public static int RoundsCount = 4;
+        //public static int RoundsCount = 5;
 
         /// <summary>
         /// Количество тем

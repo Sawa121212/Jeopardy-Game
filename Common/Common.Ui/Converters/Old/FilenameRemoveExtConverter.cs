@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.IO;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
     public class FilenameRemoveExtConverter : MarkupConverter
     {

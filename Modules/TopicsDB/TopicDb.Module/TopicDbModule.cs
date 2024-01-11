@@ -2,7 +2,6 @@
 using Common.Core.Localization;
 using Prism.Ioc;
 using Prism.Modularity;
-using TopicDb.Domain;
 using TopicDb.Module.Properties;
 using TopicsDB.Infrastructure.Managers;
 using TopicsDB.Infrastructure.Services;

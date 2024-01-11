@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Avalonia.Data;
-using Common.Ui.Converters;
+using Common.Ui.Converters.Old;
 using Confirmation.Module.Models;
 
 namespace Confirmation.Module.Converters

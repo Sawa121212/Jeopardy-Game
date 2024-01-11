@@ -3,20 +3,20 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Markup.Xaml;
 
-namespace Common.Ui.Converters
+namespace Common.Ui.Converters.Old
 {
-    public class NotNullToBooleanConverter : MarkupExtension, IValueConverter
+    public class NullOrEmptyToBooleanConverter : MarkupExtension, IValueConverter
     {
         /// <inheritdoc />
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return this;
+            return true;
         }
 
         /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null;
+            return string.IsNullOrEmpty(value as string);
         }
 
         /// <inheritdoc />

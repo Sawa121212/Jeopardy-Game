@@ -10,6 +10,7 @@ namespace TopicDb.Domain.Models
 
         public string ChatId { get; set; }
         public string MessageId { get; set; }
+        public string Text { get; set; }
         public string CorrectAnswer { get; set; }
         public int Price { get; set; }
 

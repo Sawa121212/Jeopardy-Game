@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Avalonia.Data;
+using Common.Ui.Converters.Old;
 
 namespace Common.Ui.Converters
 {
@@ -10,7 +11,7 @@ namespace Common.Ui.Converters
     public class EnumToBooleanConverter : MarkupConverter
     {
         /// <inheritdoc />
-        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is Enum enumValue)
             {
@@ -27,7 +28,7 @@ namespace Common.Ui.Converters
                             }
                             catch
                             {
-                                //ToDo: Нужно ли что то делать?
+                                //ToDo: Нужно ли что-то делать?
                             }
                         }
 
@@ -42,7 +43,7 @@ namespace Common.Ui.Converters
         }
 
         /// <inheritdoc />
-        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             switch (parameter)
             {

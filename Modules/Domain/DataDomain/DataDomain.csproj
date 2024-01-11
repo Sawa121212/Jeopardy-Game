@@ -8,6 +8,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
+    <ProjectReference Include="..\..\TopicsDB\TopicsDB.Domain\TopicDb.Domain.csproj" />
+    <ProjectReference Include="..\..\Users\Users.Domain\Users.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Rooms\Rounds\Helpers\" />
   </ItemGroup>
 
 </Project>

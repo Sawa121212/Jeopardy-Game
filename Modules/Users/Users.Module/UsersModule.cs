@@ -1,10 +1,8 @@
-﻿using System.Resources;
-using Common.Core.Localization;
-using Prism.Ioc;
+﻿using Prism.Ioc;
 using Prism.Modularity;
 using Users.Infrastructure;
 
-namespace TopicDb.Module
+namespace Users.Module
 {
     /// <summary>
     /// Модуль A

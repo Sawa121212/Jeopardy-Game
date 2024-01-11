@@ -7,6 +7,8 @@ namespace Infrastructure.Domain.Helpers
     {
         private static readonly Random Random = new();
 
+        public static Random GetRandom() => Random;
+
         /// <summary>
         /// Сгенерировать случайное число от 1 до 999999
         /// </summary>

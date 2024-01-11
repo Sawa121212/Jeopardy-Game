@@ -69,6 +69,9 @@ namespace TopicsDB.Infrastructure.Services
             return _dbContext.Topics.ToList();
         }
 
+        /// <inheritdoc />
+        public int GetAllTopicsCount() => _dbContext.Topics.Count();
+
         private void UpdateTopic(int topicId, Topic updatedTopic)
         {
             Topic topic = _dbContext.Topics.Find(topicId);
