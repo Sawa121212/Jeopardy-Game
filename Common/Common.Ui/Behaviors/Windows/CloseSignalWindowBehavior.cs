@@ -12,6 +12,18 @@ namespace Common.Ui.Behaviors.Windows
         public static readonly StyledProperty<ISignal<bool?>> ResultProperty =
             AvaloniaProperty.Register<CloseSignalWindowBehavior, ISignal<bool?>>(nameof(Result));
 
+        protected override void OnAttached()
+        {
+            base.OnAttached();
+            AssociatedObject.Closing += OnCancel;
+        }
+
+        protected override void OnDetaching()
+        {
+            AssociatedObject.Closing -= OnCancel;
+            base.OnDetaching();
+        }
+
         /// <summary>
         /// Сигнал на закрытие окна.  
         /// </summary>
@@ -39,8 +51,14 @@ namespace Common.Ui.Behaviors.Windows
         /// https://docs.avaloniaui.net/ru/docs/reference/controls/window#show-hide-and-close-a-window
         private void Close(bool? obj)
         {
-            AssociatedObject?.Hide();
+            AssociatedObject?.Close();
             //AssociatedObject?.Close();
+        }
+
+        private void OnCancel(object? sender, WindowClosingEventArgs e)
+        {
+            ((Window) sender).Hide();
+            e.Cancel = true;
         }
     }
 }

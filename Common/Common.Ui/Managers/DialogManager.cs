@@ -149,8 +149,8 @@ namespace Common.Ui.Managers
         {
             TWindow view = CreateWindow<TWindow>(canMinimize);
 
-            if (view.DataContext is not BindableBase viewModel) // ObservableViewModelBase
-                throw new InvalidOperationException("ViewModel must implement BindableBase");
+            if (view.DataContext is not ReactiveObject viewModel) // ObservableViewModelBase
+                throw new InvalidOperationException("ViewModel must implement ReactiveObject");
 
             if (view.DataContext is not IInitializable<TParam> init)
                 throw new InvalidOperationException("ViewModel must implement IInitializable<TParam>");

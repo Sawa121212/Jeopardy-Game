@@ -1,4 +1,5 @@
 ﻿using TopicDb.Domain;
+using TopicsDB.Infrastructure.Interfaces.Managers;
 
 namespace TopicsDB.Infrastructure.Managers
 {
@@ -8,8 +9,7 @@ namespace TopicsDB.Infrastructure.Managers
         {
             _topicDbContext = new TopicDbContext();
         }
-
-
+        
         /// <inheritdoc />
         public TopicDbContext DbContext => _topicDbContext;
 

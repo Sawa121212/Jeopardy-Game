@@ -1,6 +1,6 @@
 ﻿using TopicDb.Domain;
 
-namespace TopicsDB.Infrastructure.Managers
+namespace TopicsDB.Infrastructure.Interfaces.Managers
 {
     public interface ITopicDbManager
     {

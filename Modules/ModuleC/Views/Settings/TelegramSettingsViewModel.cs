@@ -21,11 +21,12 @@ namespace TelegramAPI.Test.Views.Settings
         public TelegramSettingsViewModel(
             IRegionManager regionManager,
             ITelegramSettingsService telegramSettingsService,
-            ITelegramBotManager telegramBotManager)
+            ITelegramBotManager telegramBotManager, ITelegramBotService telegramBotService)
             : base(regionManager)
         {
             _telegramSettingsService = telegramSettingsService;
             _telegramBotManager = telegramBotManager;
+            _telegramBotService = telegramBotService;
             CheckTokenCommand = new DelegateCommand(async () => await OnCheckToken());
             CheckAdminUserIdCommand = new DelegateCommand(async () => await OnCheckAdminUserId(), () => !IsAddAdminMode)
                 .ObservesProperty(() => IsAddAdminMode);
@@ -45,7 +46,7 @@ namespace TelegramAPI.Test.Views.Settings
             set => this.RaiseAndSetIfChanged(ref _tokenStatus, value);
         }
 
-        public string AdminId
+        public long AdminId
         {
             get => _adminId;
             set => this.RaiseAndSetIfChanged(ref _adminId, value);
@@ -93,6 +94,7 @@ namespace TelegramAPI.Test.Views.Settings
                     TokenStatus = result.ErrorMessage;
                     return;
                 }
+
                 await _telegramSettingsService.SetGameBotToken(_token);
                 TokenStatus = "Telegram бот запущен";
             }
@@ -100,15 +102,14 @@ namespace TelegramAPI.Test.Views.Settings
 
         private async Task OnCheckAdminUserId()
         {
-            if (!_adminId.IsNullOrEmpty())
+            if (_adminId != -1)
             {
-                if (!long.TryParse(_adminId, out long id))
-                {
-                    AdminIdStatus = "Введенные данные не распознаны";
-                    return;
-                }
+                //if (!long.TryParse(_adminId, out long id))
 
-                AdminKey = await _telegramBotManager.VerifyAddAdminMode(id);
+                /*AdminIdStatus = "Введенные данные не распознаны";
+                return;*/
+
+                AdminKey = await _telegramBotService.VerifyAddAdminMode(_adminId);
                 IsAddAdminMode = true;
                 CheckAdminUserIdTimerStart();
             }
@@ -116,12 +117,12 @@ namespace TelegramAPI.Test.Views.Settings
             AdminIdStatus = "Введите данные";
         }
 
-        private string GetAdminUserIdKey() => _telegramSettingsService.GetAdminUserId();
+        private long GetAdminUserIdKey() => _telegramSettingsService.GetAdminUserId();
 
         private void OnCancelAddAdminMode()
         {
             AdminKey = null;
-            _telegramBotManager.CancelAddAdminMode();
+            _telegramBotService.CancelAddAdminMode();
             IsAddAdminMode = false;
 
             AdminIdStatus = "Вы стали администратором";
@@ -144,16 +145,18 @@ namespace TelegramAPI.Test.Views.Settings
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             // Здесь выполняется ваш метод каждые две секунды
-            _timerSecond += (int)_timer.Interval / 1000;
+            _timerSecond += (int) _timer.Interval / 1000;
             AdminIdStatus = $"Ожидание подтверждения... ({_timerSecond} секунд)";
-            string id = GetAdminUserIdKey();
-            if (!id.IsNullOrEmpty() || _timerSecond >= 120)
-            {
-                // Остановка таймера
-                StopTimer();
 
-                OnCancelAddAdminMode();
+            long id = GetAdminUserIdKey();
+            if (id == -1 && _timerSecond < 120)
+            {
+                return;
             }
+
+            // Остановка таймера
+            StopTimer();
+            OnCancelAddAdminMode();
         }
 
         private void StopTimer()
@@ -181,10 +184,11 @@ namespace TelegramAPI.Test.Views.Settings
         }
 
         private readonly ITelegramBotManager _telegramBotManager;
+        private readonly ITelegramBotService _telegramBotService;
         private readonly ITelegramSettingsService _telegramSettingsService;
         private Timer _timer;
         private string _token;
-        private string _adminId;
+        private long _adminId;
         private string _tokenStatus;
         private string _adminIdStatus;
         private string _adminKey;

@@ -9,8 +9,5 @@ namespace TelegramAPI.Test.Managers
         TelegramBotClient TelegramBotClient { get; }
 
         Task<Result<bool>> StartTelegramBot(string token);
-
-        Task<string> VerifyAddAdminMode(long chatId);
-        void CancelAddAdminMode();
     }
 }

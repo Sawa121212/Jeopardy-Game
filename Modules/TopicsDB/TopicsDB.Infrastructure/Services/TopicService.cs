@@ -2,8 +2,8 @@
 using System.Linq;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
-using TopicsDB.Infrastructure.Managers;
-using TopicsDB.Infrastructure.Services.Interfaces;
+using TopicsDB.Infrastructure.Interfaces.Managers;
+using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace TopicsDB.Infrastructure.Services
 {

@@ -8,7 +8,7 @@ namespace DataDomain.Rooms.Rounds
     /// </summary>
     public class QuestionModel : ReactiveObject
     {
-        public QuestionModel(Question question, int point)
+        public QuestionModel(Question? question, int point)
         {
             Price = point;
             Text = question.Text;

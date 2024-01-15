@@ -13,12 +13,14 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              x:DataType="views:TelegramTestViewModel">
 
-    <Grid RowDefinitions="*, Auto">
-        <ListBox Grid.Row="0"
-                 ItemsSource="{Binding Messages, Mode=OneWay}">
-        </ListBox>
-        <Grid Grid.Row="1">
+    <Design.DataContext>
+        <views:TelegramTestViewModel />
+    </Design.DataContext>
 
+    <Grid RowDefinitions="Auto, Auto">
+        <Grid Grid.Row="0">
+            <Button Content="ForwardMessage"
+                    Command="{Binding SendMessCommand}" />
         </Grid>
     </Grid>
 </UserControl>

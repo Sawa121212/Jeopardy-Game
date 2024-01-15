@@ -9,7 +9,7 @@ namespace TelegramAPI.Test.Services.Settings
     public interface ITelegramSettingsService : ISettingsService
     {
         string GetGameBotToken();
-        string GetAdminUserId();
+        long GetAdminUserId();
 
         Task SetGameBotToken(string token);
         Task SetAdminUserIdToken(string id);
