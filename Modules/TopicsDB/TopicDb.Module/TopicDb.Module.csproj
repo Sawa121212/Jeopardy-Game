@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
+    <ProjectReference Include="..\TopicsDB.Infrastructure.Interfaces\TopicsDB.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\TopicsDB.Infrastructure\TopicsDB.Infrastructure.csproj" />
   </ItemGroup>
 

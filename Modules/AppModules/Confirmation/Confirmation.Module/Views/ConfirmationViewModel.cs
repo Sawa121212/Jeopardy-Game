@@ -5,15 +5,12 @@ using Confirmation.Module.Enums;
 using Confirmation.Module.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using ReactiveUI;
 
 namespace Confirmation.Module.Views
 {
-    public class ConfirmationViewModel : BindableBase, IInitializable<DialogInfo>, IResult<ConfirmationResultEnum>
+    public class ConfirmationViewModel : ReactiveObject, IInitializable<DialogInfo>, IResult<ConfirmationResultEnum>
     {
-        private DialogInfo _info;
-        private ConfirmationResultEnum _result;
-        private ISignal<bool?> _closeSignal;
-
         public ConfirmationViewModel()
         {
             OkCommand = new DelegateCommand(Ok);
@@ -25,27 +22,22 @@ namespace Confirmation.Module.Views
             CloseSignal = new Signal<bool?>();
         }
 
-        public void Initialize(DialogInfo param)
-        {
-            Info = param;
-        }
-
         public ConfirmationResultEnum Result
         {
             get => _result;
-            set => SetProperty(ref _result, value);
+            set => this.RaiseAndSetIfChanged(ref _result, value);
         }
 
         public DialogInfo Info
         {
             get => _info;
-            set => SetProperty(ref _info, value);
+            set => this.RaiseAndSetIfChanged(ref _info, value);
         }
 
         public ISignal<bool?> CloseSignal
         {
             get => _closeSignal;
-            set => SetProperty(ref _closeSignal, value);
+            set => this.RaiseAndSetIfChanged(ref _closeSignal, value);
         }
 
         /// <inheritdoc />
@@ -54,27 +46,39 @@ namespace Confirmation.Module.Views
             return _result;
         }
 
+        public ICommand OkCommand { get; }
+        public ICommand YesCommand { get; }
+        public ICommand NoCommand { get; }
+        public ICommand CancelCommand { get; }
+        public ICommand EscCommand { get; }
+        public ICommand EnterCommand { get; }
+
+        public void Initialize(DialogInfo param)
+        {
+            Info = param;
+        }
+
         private void Ok()
         {
-            _result = ConfirmationResultEnum.Ok;
+            Result = ConfirmationResultEnum.Ok;
             CloseSignal.Raise(true);
         }
 
         private void Yes()
         {
-            _result = ConfirmationResultEnum.Yes;
+            Result = ConfirmationResultEnum.Yes;
             CloseSignal.Raise(true);
         }
 
         private void No()
         {
-            _result = ConfirmationResultEnum.No;
+            Result = ConfirmationResultEnum.No;
             CloseSignal.Raise(true);
         }
 
         private void Cancel()
         {
-            _result = ConfirmationResultEnum.Cancel;
+            Result = ConfirmationResultEnum.Cancel;
         }
 
         private void Esc()
@@ -105,11 +109,9 @@ namespace Confirmation.Module.Views
             CloseSignal.Raise(true);
         }
 
-        public ICommand OkCommand { get; }
-        public ICommand YesCommand { get; }
-        public ICommand NoCommand { get; }
-        public ICommand CancelCommand { get; }
-        public ICommand EscCommand { get; }
-        public ICommand EnterCommand { get; }
+        private readonly Interaction<string, bool> confirm;
+        private DialogInfo _info;
+        private ConfirmationResultEnum _result;
+        private ISignal<bool?> _closeSignal;
     }
 }

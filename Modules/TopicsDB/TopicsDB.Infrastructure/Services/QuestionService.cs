@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Infrastructure.Domain.Helpers;
+using Microsoft.EntityFrameworkCore;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
-using TopicsDB.Infrastructure.Managers;
-using TopicsDB.Infrastructure.Services.Interfaces;
+using TopicsDB.Infrastructure.Interfaces.Managers;
+using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace TopicsDB.Infrastructure.Services
 {
@@ -19,10 +20,11 @@ namespace TopicsDB.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public void CreateQuestion(Question question)
+        public Question CreateQuestion(Question question)
         {
             _dbContext.Questions.Add(question);
             _dbContext.SaveChanges();
+            return question;
         }
 
         /// <inheritdoc />
@@ -34,10 +36,12 @@ namespace TopicsDB.Infrastructure.Services
                 return;
             }
 
-            question.ChatId = updatedQuestion.ChatId;
-            question.MessageId = updatedQuestion.MessageId;
+            question.Text = updatedQuestion.Text;
             question.CorrectAnswer = updatedQuestion.CorrectAnswer;
             question.Price = updatedQuestion.Price;
+            question.Picture = updatedQuestion.Picture;
+            question.Music = updatedQuestion.Music;
+
             // обновление других свойств
             _dbContext.SaveChanges();
         }
@@ -70,15 +74,33 @@ namespace TopicsDB.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public List<Question> GetAllQuestionsByTopicId(int topicId)
+        public List<Question> GetAllQuestions()
         {
-            return _dbContext.Questions.Where(q => q.TopicId == topicId).ToList();
+            return _dbContext.Questions
+                .Include(q => q.Picture)
+                .Include(q => q.Music)
+                .ToList();
         }
 
         /// <inheritdoc />
-        public Question GetRandomQuestionFromTopicByPrice(int topicId, int price)
+        public List<Question> GetAllQuestionsByTopicId(int topicId)
+        {
+            return _dbContext.Questions
+                .Where(q => q.TopicId == topicId)
+                .Include(q => q.Picture)
+                .Include(q => q.Music)
+                .ToList();
+        }
+
+        /// <inheritdoc />
+        public Question? GetRandomQuestionFromTopicByPrice(int topicId, int price)
         {
             Topic topic = _topicService.GetTopicById(topicId);
+            if (topic.Questions == null)
+            {
+                return null;
+            }
+
             List<Question> questionsWithPrice = topic.Questions
                 .Where(q => q.Price == price)
                 .ToList();

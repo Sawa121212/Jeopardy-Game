@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TopicDb.Domain.Models;
 
-namespace TopicsDB.Infrastructure.Services.Interfaces
+namespace TopicsDB.Infrastructure.Interfaces.Services
 {
     /// <summary>
     /// для управления вопросами
@@ -12,7 +12,7 @@ namespace TopicsDB.Infrastructure.Services.Interfaces
         /// Создание нового вопроса
         /// </summary>
         /// <param name="question"></param>
-        public void CreateQuestion(Question question);
+        public Question CreateQuestion(Question question);
 
         /// <summary>
         /// Редактирование существующего вопроса
@@ -33,6 +33,12 @@ namespace TopicsDB.Infrastructure.Services.Interfaces
         /// <param name="questionId"></param>
         /// <returns></returns>
         public Question GetQuestionById(int questionId);
+
+        /// <summary>
+        /// Получение всех
+        /// </summary>
+        /// <returns></returns>
+        List<Question> GetAllQuestions();
 
         /// <summary>
         /// Получение всех вопросов по идентификатору темы

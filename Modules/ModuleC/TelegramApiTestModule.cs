@@ -22,6 +22,7 @@ namespace TelegramAPI.Test
             containerRegistry.RegisterSingleton<ITelegramSettingsRepositoryService, TelegramSettingsRepositoryService>();
             containerRegistry.RegisterSingleton<ITelegramSettingsService, TelegramSettingsService>();
             containerRegistry.RegisterSingleton<ITelegramBotManager, TelegramBotManager>();
+            containerRegistry.RegisterSingleton<ITelegramBotService, TelegramBotService>();
             containerRegistry.RegisterForNavigation<TelegramTestView, TelegramTestViewModel>();
             containerRegistry.RegisterForNavigation<TelegramSettingsView, TelegramSettingsViewModel>();
         }

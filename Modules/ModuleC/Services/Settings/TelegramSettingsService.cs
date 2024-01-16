@@ -81,7 +81,10 @@ namespace TelegramAPI.Test.Services.Settings
         public string GetGameBotToken() => _currentTelegramSettings.GameBotToken;
 
         /// <inheritdoc/>
-        public string GetAdminUserId() => _currentTelegramSettings.AdminUserId;
+        public long GetAdminUserId()
+        {
+            return long.TryParse(_currentTelegramSettings.AdminUserId, out long value) ? value : -1;
+        }
 
         /// <inheritdoc/>
         public async Task SetGameBotToken(string token)

@@ -9,7 +9,7 @@ using Game.Data;
 using Infrastructure.Domain.Helpers;
 using Notification.Module.Services;
 using TopicDb.Domain.Models;
-using TopicsDB.Infrastructure.Services.Interfaces;
+using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace Game.Services
 {
@@ -138,7 +138,7 @@ namespace Game.Services
             int questionBasePrice = GetQuestionBasePrice(questions.Count + 1);
             while (questions.Count < GameParameterConstants.QuestionsCount)
             {
-                Question question = _questionService.GetRandomQuestionFromTopicByPrice(topicId, questionBasePrice);
+                Question? question = _questionService.GetRandomQuestionFromTopicByPrice(topicId, questionBasePrice);
                 questions.Add(new QuestionModel(question, questionBasePrice * topicLevelMultiplier));
             }
 

@@ -7,7 +7,7 @@ using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
 using TopicDb.Domain.Models;
-using TopicsDB.Infrastructure.Services.Interfaces;
+using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace TopicsDB.Infrastructure.Views.Topics
 {
@@ -17,7 +17,7 @@ namespace TopicsDB.Infrastructure.Views.Topics
         public AddNewTopicViewModel(IRegionManager regionManager, ITopicService topicService) : base(regionManager)
         {
             _topicService = topicService;
-            CreateCommand = new DelegateCommand(OnCreate, () => Name != null && (!Name.IsEmpty() || !Name.IsWhiteSpace()))
+            CreateCommand = new DelegateCommand(OnCreate, () => !Name.IsNullOrEmpty() && !Name.IsWhiteSpace())
                 .ObservesProperty(() => Name);
         }
 
@@ -45,7 +45,7 @@ namespace TopicsDB.Infrastructure.Views.Topics
 
         private void OnCreate()
         {
-            Topic.Name = _name;
+            Topic.Name = _name.Trim();
 
             if (IsCreateMode)
             {
@@ -75,6 +75,14 @@ namespace TopicsDB.Infrastructure.Views.Topics
             {
                 Initialize();
             }
+        }
+
+        /// <inheritdoc />
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, true);
+
+            Name = default;
         }
 
         private Topic _topic;

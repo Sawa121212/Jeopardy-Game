@@ -19,9 +19,9 @@
              x:DataType="topics:AddNewTopicViewModel"
              d:DesignWidth="800" d:DesignHeight="450">
 
-    <!--<Design.DataContext>
-        <topics:TopicListViewModel />
-    </Design.DataContext>-->
+    <Design.DataContext>
+        <topics:AddNewTopicViewModel />
+    </Design.DataContext>
 
     <Grid RowDefinitions="Auto, *, Auto">
         <!-- Back-->
@@ -34,24 +34,27 @@
             </Button.Content>
         </Button>
 
-        <controls:Card Grid.Row="1">
+        <controls:Card Grid.Row="1"
+                       VerticalAlignment="Center">
             <Grid RowDefinitions="Auto, Auto, Auto">
                 <TextBlock Grid.Row="0"
                            Classes="Subtitle1"
-                           Text="Введите наименование"
-                           FontWeight="Bold"/>
+                           Text="Введите наименование темы:"
+                           FontWeight="Bold" />
 
                 <TextBox Grid.Row="1"
                          Classes="outline"
                          Text="{Binding Name, Mode=TwoWay}"
                          assists:TextFieldAssist.Label="Наименование"
-                         UseFloatingWatermark="True"/>
+                         UseFloatingWatermark="True"
+                         MaxLength="500" />
             </Grid>
         </controls:Card>
 
         <Button Grid.Row="2"
                 Content="Применить"
                 Command="{Binding CreateCommand}"
+                VerticalAlignment="Bottom"
                 Margin="0,5">
         </Button>
     </Grid>

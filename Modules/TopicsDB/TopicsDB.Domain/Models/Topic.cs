@@ -7,7 +7,11 @@ namespace TopicDb.Domain.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
-        public List<Question> Questions { get; set; }
+
+        // Optional
+        public List<Question>? Questions { get; set; }
     }
 }

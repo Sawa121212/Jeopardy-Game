@@ -5,7 +5,7 @@ using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
 using TopicDb.Domain.Models;
-using TopicsDB.Infrastructure.Services.Interfaces;
+using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace TopicsDB.Infrastructure.Views
 {
@@ -22,6 +22,7 @@ namespace TopicsDB.Infrastructure.Views
             _topicService = topicService;
             _questionService = questionService;
             Topics = new ObservableCollection<Topic>();
+            Questions = new ObservableCollection<Question>();
 
             // topic commands
             AddNewTopicCommand = new DelegateCommand(OnAddNewTopic);
@@ -36,8 +37,19 @@ namespace TopicsDB.Infrastructure.Views
             // search commands
             FindTopicsCommand = new DelegateCommand(OnFindTopics);
             ClearFoundElementsCommand = new DelegateCommand(OnClearFoundElements);
-            ClearFoundElementsCommand = new DelegateCommand(OnAddNewTopic);
             UpdateTopicsInformation();
+        }
+
+        public ObservableCollection<Topic> Topics
+        {
+            get => _topics;
+            set => this.RaiseAndSetIfChanged(ref _topics, value);
+        }
+
+        public ObservableCollection<Question> Questions
+        {
+            get => _questions;
+            set => this.RaiseAndSetIfChanged(ref _questions, value);
         }
 
         private void UpdateTopicsInformation()
@@ -47,12 +59,9 @@ namespace TopicsDB.Infrastructure.Views
             {
                 Topics.Add(customer);
             }
-        }
 
-        public ObservableCollection<Topic> Topics
-        {
-            get => _topics;
-            set => this.RaiseAndSetIfChanged(ref _topics, value);
+            Questions.Clear();
+            Questions.AddRange(_questionService.GetAllQuestions());
         }
 
         private ObservableCollection<Topic> _topics;
@@ -60,5 +69,6 @@ namespace TopicsDB.Infrastructure.Views
         private readonly IConfirmationService _confirmationService;
         private readonly ITopicService _topicService;
         private readonly IQuestionService _questionService;
+        private ObservableCollection<Question> _questions;
     }
 }

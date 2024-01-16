@@ -25,7 +25,6 @@ namespace TelegramAPI.Test.Managers
             _telegramSettingsService = telegramSettingsService;
             _token = _telegramSettingsService.GetGameBotToken();
 
-
             _receiverOptions = new ReceiverOptions // Также присваиваем значение настройкам бота
             {
                 // Тут указываем типы получаемых Update`ов, о них подробнее рассказано тут https://core.telegram.org/bots/api#update
@@ -78,7 +77,9 @@ namespace TelegramAPI.Test.Managers
             return Result<bool>.Fail(errorMessage);
         }
 
-        public virtual async Task UpdateHandler(ITelegramBotClient botClient, Update update,
+        public virtual async Task UpdateHandler(
+            ITelegramBotClient botClient,
+            Update update,
             CancellationToken cancellationToken)
         {
             // Эта переменная будет содержать в себе все связанное с сообщениями
@@ -88,11 +89,11 @@ namespace TelegramAPI.Test.Managers
             // Обязательно ставим блок try-catch, чтобы наш бот не "падал" в случае каких-либо ошибок
             try
             {
-
                 if (_userService.GetUserById(user.Id) == null)
                 {
                     var user_ = _userService.CreateUser(user.Id, $"{user.FirstName} {user.LastName}");
                 }
+
                 // Сразу же ставим конструкцию switch, чтобы обрабатывать приходящие Update
                 switch (update.Type)
                 {
@@ -105,8 +106,8 @@ namespace TelegramAPI.Test.Managers
                         Chat chat = message.Chat;
 
                         // Добавляем проверку на тип Message
-                        
-                            switch (message.Type)
+
+                        switch (message.Type)
                         {
                             // Тут понятно, текстовый тип
                             case MessageType.Text:
@@ -215,11 +216,12 @@ namespace TelegramAPI.Test.Managers
                                     return;
                                 }
 
-                                if (!message.Text.IsNullOrEmpty())
+                                // ToDo: нужно сделать регистрацию обработчиков
+                                /*if (!message.Text.IsNullOrEmpty())
                                 {
                                     await CheckAddedAdminMode(chat.Id, message.Text);
                                     return;
-                                }
+                                }*/
 
                                 return;
                             }
@@ -305,70 +307,14 @@ namespace TelegramAPI.Test.Managers
             }
         }
 
-        private async Task SendMessage(long chatId, string message)
-        {
-            // ToDo show Exception result
-            try
-            {
-                await _telegramBotClient.SendTextMessageAsync(chatId, message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
-        private async Task CheckAddedAdminMode(long chatId, string key)
-        {
-            if (!IsAddAdminMode)
-            {
-                return;
-            }
-
-            if (key.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            if (key == _adminModeKey)
-            {
-                await _telegramSettingsService.SetAdminUserIdToken(chatId.ToString());
-                CancelAddAdminMode();
-                await SendMessage(chatId, $"Вы стали администратором");
-            }
-        }
 
         public bool IsConnected()
         {
             return false;
         }
 
-        public bool IsAddAdminMode
-        {
-            get => _isAddAdminMode;
-            private set => this.RaiseAndSetIfChanged(ref _isAddAdminMode, value);
-        }
-
         /// <inheritdoc />
-        public TelegramBotClient TelegramBotClient => (TelegramBotClient)_telegramBotClient;
-
-        /// <inheritdoc />
-        public async Task<string> VerifyAddAdminMode(long chatId)
-        {
-            await _telegramSettingsService.SetAdminUserIdToken(null).ConfigureAwait(true);
-
-            _adminModeKey = RandomGenerator.GenerateFormattedSixDigitRandomNumber();
-            IsAddAdminMode = true;
-            await SendMessage(chatId, $"Вторая часть кода подтверждения: ***{_adminModeKey.Substring(3, 3)}");
-            return _adminModeKey.Substring(0, 3);
-        }
-
-        /// <inheritdoc />
-        public void CancelAddAdminMode()
-        {
-            _adminModeKey = null;
-            IsAddAdminMode = false;
-        }
+        public TelegramBotClient TelegramBotClient => (TelegramBotClient) _telegramBotClient;
 
         private Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
@@ -394,7 +340,5 @@ namespace TelegramAPI.Test.Managers
 
         // Это объект с настройками работы бота. Здесь мы будем указывать, какие типы Update мы будем получать, Timeout бота и так далее.
         private readonly ReceiverOptions _receiverOptions;
-        private bool _isAddAdminMode;
-        private string _adminModeKey;
     }
 }

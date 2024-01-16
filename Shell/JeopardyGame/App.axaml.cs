@@ -96,7 +96,7 @@ namespace JeopardyGame
                 .AddModule<TopicDbModule>()
                 .AddModule<UsersModule>()
                 .AddModule<GameModule>()
-                .AddModule<ModuleBModule>()
+                //.AddModule<ModuleBModule>()
                 .AddModule<TelegramApiTestModule>();
 
             base.ConfigureModuleCatalog(moduleCatalog);

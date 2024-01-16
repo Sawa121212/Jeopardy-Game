@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using TopicDb.Domain.Models;
+using TopicDb.Domain.Models.QuestionAttachments;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace TopicDb.Domain
@@ -23,5 +24,7 @@ namespace TopicDb.Domain
 
         public Microsoft.EntityFrameworkCore.DbSet<Topic> Topics { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<Question> Questions { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Picture> Pictures { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Music> Musics { get; set; }
     }
 }
