@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using TopicDb.Domain;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Interfaces.Managers;
@@ -66,7 +67,9 @@ namespace TopicsDB.Infrastructure.Services
         /// <inheritdoc />
         public List<Topic> GetAllTopics()
         {
-            return _dbContext.Topics.ToList();
+            return _dbContext.Topics
+                .Include(t => t.Questions)
+                .ToList();
         }
 
         /// <inheritdoc />
@@ -74,7 +77,8 @@ namespace TopicsDB.Infrastructure.Services
 
         private void UpdateTopic(int topicId, Topic updatedTopic)
         {
-            Topic topic = _dbContext.Topics.Find(topicId);
+            Topic topic = _dbContext.Topics
+                .Find(topicId);
             if (topic == null)
             {
                 return;

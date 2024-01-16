@@ -19,6 +19,8 @@ namespace Game.Data
         /// </summary>
         public static int TopicsCount = 6;
 
+        public static int ShootoutTopicsCount = 2;
+
         /// <summary>
         /// Количество тем финального раунда
         /// </summary>

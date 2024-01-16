@@ -17,22 +17,34 @@ namespace TopicsDB.Infrastructure.Interfaces.Services
         /// <summary>
         /// Редактирование существующего вопроса
         /// </summary>
+        /// <param name="updatedQuestion"></param>
+        void UpdateQuestion(Question updatedQuestion);
+
+        /// <summary>
+        /// Редактирование существующего вопроса
+        /// </summary>
         /// <param name="questionId"></param>
         /// <param name="updatedQuestion"></param>
-        public void UpdateQuestion(int questionId, Question updatedQuestion);
+        void UpdateQuestion(int questionId, Question updatedQuestion);
 
         /// <summary>
         /// Удаление вопроса
         /// </summary>
-        /// <param name="question">Вопроса</param>
-        public void DeleteQuestion(Question question);
+        /// <param name="question">Вопрос</param>
+        void DeleteQuestion(Question question);
+
+        /// <summary>
+        /// Удаление вопроса
+        /// </summary>
+        /// <param name="questionId">ID вопроса</param>
+        void DeleteQuestion(int questionId);
 
         /// <summary>
         /// Получение вопроса по идентификатору
         /// </summary>
         /// <param name="questionId"></param>
         /// <returns></returns>
-        public Question GetQuestionById(int questionId);
+        Question GetQuestionById(int questionId);
 
         /// <summary>
         /// Получение всех
@@ -45,7 +57,7 @@ namespace TopicsDB.Infrastructure.Interfaces.Services
         /// </summary>
         /// <param name="topicId"></param>
         /// <returns></returns>
-        public List<Question> GetAllQuestionsByTopicId(int topicId);
+        List<Question> GetAllQuestionsByTopicId(int topicId);
 
         /// <summary>
         /// Получить случайный вопрос из темы по указанной цене

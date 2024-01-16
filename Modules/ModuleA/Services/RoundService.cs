@@ -47,10 +47,10 @@ namespace Game.Services
                         case RoundsLevelEnum.Round1:
                         case RoundsLevelEnum.Round2:
                         case RoundsLevelEnum.Round3:
-                        case RoundsLevelEnum.Shootout:
+                        case RoundsLevelEnum.Final:
                             roundLevelEnum = RoundHelper.GetNextRoundLevel(roundLevelEnum);
                             break;
-                        case RoundsLevelEnum.Final:
+                        case RoundsLevelEnum.Shootout:
                             createNextRound = false;
                             break;
                         default:
@@ -77,7 +77,24 @@ namespace Game.Services
                 return null;
             }
 
-            int topicsMaxCount = GameParameterConstants.TopicsCount;
+            int topicsMaxCount = default;
+            switch (levelEnum)
+            {
+                case RoundsLevelEnum.Round1:
+                case RoundsLevelEnum.Round2:
+                case RoundsLevelEnum.Round3:
+                    topicsMaxCount = GameParameterConstants.TopicsCount;
+                    break;
+                case RoundsLevelEnum.Shootout:
+                    topicsMaxCount = GameParameterConstants.ShootoutTopicsCount;
+                    break;
+                case RoundsLevelEnum.Final:
+                    topicsMaxCount = GameParameterConstants.QuestionsCount;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(levelEnum), levelEnum, null);
+            }
+
             int topicLevelMultiplier = RoundHelper.GetRoundLevelMultiplier(levelEnum);
             if (levelEnum == RoundsLevelEnum.Final)
             {

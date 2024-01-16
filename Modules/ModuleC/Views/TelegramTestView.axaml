@@ -22,5 +22,12 @@
             <Button Content="ForwardMessage"
                     Command="{Binding SendMessCommand}" />
         </Grid>
+
+        <Grid Grid.Row="1" RowDefinitions="Auto, *">
+            <Image Grid.Row="0"
+                   Source="{Binding Bitmap, Mode=OneWay}" />
+            <TextBlock Grid.Row="1"
+                       Text="{Binding Text, Mode=OneWay}" />
+        </Grid>
     </Grid>
 </UserControl>

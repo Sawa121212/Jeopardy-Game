@@ -13,6 +13,7 @@ using Notification.Module.Services;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
+using Telegram.Bot.Types;
 using TelegramAPI.Test.Managers;
 using TelegramAPI.Test.Services.Settings;
 using TopicDb.Domain.Models;
@@ -83,7 +84,7 @@ namespace TopicsDB.Infrastructure.Views.Questions
             set => this.RaiseAndSetIfChanged(ref _pictureUrl, value);
         }
 
-        public string MusicUrl
+        public string? MusicUrl
         {
             get => _musicUrl;
             set => this.RaiseAndSetIfChanged(ref _musicUrl, value);
@@ -248,10 +249,13 @@ namespace TopicsDB.Infrastructure.Views.Questions
                 if (File.Exists(filePath))
                 {
                     PictureUrl = filePath;
-                    var message = await _telegramBotService.SendPhotoAsync(_chatId, _pictureUrl, _text);
-                    if (message is not null)
+                    if (PictureUrl != null)
                     {
-                        PictureMessageId = message.MessageId;
+                        Message? message = await _telegramBotService.SendPhotoAsync(_chatId, PictureUrl, _text);
+                        if (message is not null)
+                        {
+                            PictureMessageId = message.MessageId;
+                        }
                     }
                 }
             }
@@ -279,6 +283,14 @@ namespace TopicsDB.Infrastructure.Views.Questions
                 if (File.Exists(filePath))
                 {
                     MusicUrl = filePath;
+                    if (MusicUrl != null)
+                    {
+                        Message? message = await _telegramBotService.SendPhotoAsync(_chatId, MusicUrl, _text);
+                        if (message is not null)
+                        {
+                            MusicMessageId = message.MessageId;
+                        }
+                    }
                 }
             }
         }
@@ -302,7 +314,7 @@ namespace TopicsDB.Infrastructure.Views.Questions
         private Topic _topic;
         private Question _question;
         private string? _pictureUrl;
-        private string _musicUrl;
+        private string? _musicUrl;
         private string _text;
         private string _correctAnswer;
         private int _price;
