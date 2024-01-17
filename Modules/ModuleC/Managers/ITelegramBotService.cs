@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
+using TelegramAPI.Test.Models;
 
 namespace TelegramAPI.Test.Managers
 {
@@ -19,6 +20,7 @@ namespace TelegramAPI.Test.Managers
         /// <returns>On success, the sent Message is returned.</returns>
         Task<Message?> SendPhotoAsync(long chatId, string photo, string caption = "", int replyToMessageId = 0);
 
+        Task<MessageModel?> ParseMessageAsync(Message message);
 
         Task<string> VerifyAddAdminMode(long chatId);
         void CancelAddAdminMode();

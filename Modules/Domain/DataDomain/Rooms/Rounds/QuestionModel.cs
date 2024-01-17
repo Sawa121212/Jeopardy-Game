@@ -31,7 +31,7 @@ namespace DataDomain.Rooms.Rounds
         public int Price
         {
             get => _price;
-            init => this.RaiseAndSetIfChanged(ref _price, value);
+            set => this.RaiseAndSetIfChanged(ref _price, value); // Финальный раунд. игроки делают ставки
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace DataDomain.Rooms.Rounds
 
         private string _text;
         private object _picture;
-        private readonly int _price;
+        private int _price;
         private string _answer;
         private bool _isAsked;
     }

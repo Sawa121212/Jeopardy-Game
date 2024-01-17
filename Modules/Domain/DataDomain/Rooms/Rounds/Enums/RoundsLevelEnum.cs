@@ -16,10 +16,10 @@ namespace DataDomain.Rooms.Rounds.Enums
         [Description("Третий раунд")]
         Round3 = 3,
 
-        [Description("Перестрелка")]
-        Shootout = 4,
-
         [Description("Финальный раунд")]
-        Final = 5
+        Final = 4,
+
+        [Description("Перестрелка")]
+        Shootout = 5
     }
 }

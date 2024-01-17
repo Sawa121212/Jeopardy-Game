@@ -28,6 +28,17 @@ namespace TopicsDB.Infrastructure.Services
         }
 
         /// <inheritdoc />
+        public void UpdateQuestion(Question updatedQuestion)
+        {
+            if (updatedQuestion is null)
+            {
+                return;
+            }
+
+            UpdateQuestion(updatedQuestion.Id, updatedQuestion);
+        }
+
+        /// <inheritdoc />
         public void UpdateQuestion(int questionId, Question updatedQuestion)
         {
             Question question = _dbContext.Questions.Find(questionId);
@@ -55,6 +66,7 @@ namespace TopicsDB.Infrastructure.Services
             }
         }
 
+        /// <inheritdoc />
         public void DeleteQuestion(int questionId)
         {
             Question question = _dbContext.Questions.Find(questionId);
