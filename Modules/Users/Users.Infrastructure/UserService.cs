@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Common.Core.Components;
+using System.Collections.Generic;
 using System.Linq;
 using Users.Domain;
 
@@ -13,12 +14,14 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
-        public User CreateUser(long userId, string name)
+        public User CreateUser(long userId, string name, string nick)
         {
             User user = new()
             {
                 Id = userId,
                 Name = name,
+                Nick = nick,
+                State = StateUserEnum.SetName,
             };
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
@@ -53,10 +56,10 @@ namespace Users.Infrastructure
             return _dbContext.Users.ToList();
         }
 
-        /// <inheritdoc />
-        public User GetUserById(long userId)
+        public bool TryGetUserById(long userId, out User user)
         {
-            return _dbContext.Users.Find(userId);
+            user = _dbContext.Users.Find(userId);
+            return user != null;
         }
 
         /// <inheritdoc />
@@ -70,8 +73,37 @@ namespace Users.Infrastructure
 
             oldUser.Name = user.Name;
             oldUser.State = user.State;
+            oldUser.Nick = user.Nick;
             // обновление других свойств
             _dbContext.SaveChanges();
+        }
+
+        public bool TryGetUserByNiсk(string nick, out User user)
+        {
+            user = _dbContext.Users.FirstOrDefault(x => x.Nick == nick);
+            return user != null;
+        }
+
+        public Result<StateUserEnum> UpdateUsername(Telegram.Bot.Types.Message message)
+        {
+            if (message == null)
+            {
+                return Result<StateUserEnum>.Fail("Сообщения нет");
+            }
+
+            if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)
+            {
+                if (TryGetUserById(message.From.Id, out User user))
+                {
+                    user.Name = message.Text;
+                    UpdateUser(user);
+                    return Result<StateUserEnum>.Done(StateUserEnum.MainMenu);
+                }
+
+                return Result<StateUserEnum>.Fail("Нет такого пользователя");
+            }
+
+            return Result<StateUserEnum>.Fail("Сообщение не текстовое");
         }
 
         private readonly UserDbContext _dbContext;

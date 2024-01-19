@@ -1,34 +1,21 @@
-﻿using System;
+﻿using Avalonia.Media.Imaging;
+using ReactiveUI;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Media.Imaging;
-using Common.Extensions;
-using Infrastructure.Domain.Helpers;
-using ReactiveUI;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using TelegramAPI.Test.Models;
-using TelegramAPI.Test.Services.Settings;
 using File = Telegram.Bot.Types.File;
 
 namespace TelegramAPI.Test.Managers
 {
     public class TelegramBotService : ReactiveObject, ITelegramBotService
     {
-        public TelegramBotService(ITelegramBotManager telegramBotManager, ITelegramSettingsService telegramSettingsService)
+        public TelegramBotService(ITelegramBotManager telegramBotManager)
         {
             _telegramBotManager = telegramBotManager;
-            _telegramSettingsService = telegramSettingsService;
-        }
-
-        /// <inheritdoc />
-        public bool IsAddAdminMode
-        {
-            get => _isAddAdminMode;
-            private set => this.RaiseAndSetIfChanged(ref _isAddAdminMode, value);
         }
 
         /// <inheritdoc />
@@ -112,46 +99,6 @@ namespace TelegramAPI.Test.Managers
 
             return null;
         }
-
-        /// <inheritdoc />
-        public async Task<string> VerifyAddAdminMode(long chatId)
-        {
-            await _telegramSettingsService.SetAdminUserIdToken(null).ConfigureAwait(true);
-
-            _adminModeKey = RandomGenerator.GenerateFormattedSixDigitRandomNumber();
-            IsAddAdminMode = true;
-            await SendMessageAsync(chatId, $"Вторая часть кода подтверждения: ***{_adminModeKey.Substring(3, 3)}" +
-                                           $"\nОтправьте код, соединив обе части в течение 2 минут\n");
-            return _adminModeKey.Substring(0, 3);
-        }
-
-        /// <inheritdoc />
-        public void CancelAddAdminMode()
-        {
-            _adminModeKey = null;
-            IsAddAdminMode = false;
-        }
-
-        private async Task CheckAddedAdminMode(long chatId, string key)
-        {
-            if (!IsAddAdminMode)
-            {
-                return;
-            }
-
-            if (key.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            if (key == _adminModeKey)
-            {
-                await _telegramSettingsService.SetAdminUserIdToken(chatId.ToString());
-                CancelAddAdminMode();
-                await SendMessageAsync(chatId, $"Вы стали администратором");
-            }
-        }
-
         private async Task<Bitmap?> CreateBitmapAsync(Message message)
         {
             try
@@ -191,9 +138,5 @@ namespace TelegramAPI.Test.Managers
         }
 
         private readonly ITelegramBotManager _telegramBotManager;
-        private readonly ITelegramSettingsService _telegramSettingsService;
-
-        private bool _isAddAdminMode;
-        private string _adminModeKey;
     }
 }

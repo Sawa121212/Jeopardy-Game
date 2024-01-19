@@ -21,8 +21,5 @@ namespace TelegramAPI.Test.Managers
         Task<Message?> SendPhotoAsync(long chatId, string photo, string caption = "", int replyToMessageId = 0);
 
         Task<MessageModel?> ParseMessageAsync(Message message);
-
-        Task<string> VerifyAddAdminMode(long chatId);
-        void CancelAddAdminMode();
     }
 }
