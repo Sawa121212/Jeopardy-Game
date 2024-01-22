@@ -28,6 +28,7 @@ namespace Game.Services
             List<RoundModel?>? rounds = new();
 
             RoundsLevelEnum roundLevelEnum = RoundsLevelEnum.Round1;
+
             bool createNextRound = true;
             while (createNextRound)
             {
@@ -38,6 +39,7 @@ namespace Game.Services
                     return null;
                 }
 
+                // ToDo: улучшить проверку!!!
                 if (!rounds.Contains(round))
                 {
                     rounds.Add(round);
@@ -116,12 +118,12 @@ namespace Game.Services
                     break;
                 }
 
-                while (round.Topics.FirstOrDefault(t => t.Id == topic.Id) == null)
+                while (round.Topics.FirstOrDefault(t => t.Id == topic.Id) != null)
                 {
                     topic = GetRandomFullTopic();
                 }
 
-                TopicModel collectTopic = CollectTopic(topic, topicLevelMultiplier);
+                TopicModel? collectTopic = CollectTopic(topic, topicLevelMultiplier);
                 round.Topics.Add(collectTopic);
             }
 
@@ -134,10 +136,17 @@ namespace Game.Services
         /// <param name="topic"></param>
         /// <param name="topicLevelMultiplier"></param>
         /// <returns></returns>
-        private TopicModel CollectTopic(Topic? topic, int topicLevelMultiplier)
+        private TopicModel? CollectTopic(Topic? topic, int topicLevelMultiplier)
         {
-            TopicModel topicModel = new()
+            if (topic == null)
             {
+                return null;
+            }
+
+            TopicModel? topicModel = new()
+            {
+                Id = topic.Id,
+                Name = topic.Name,
                 Questions = CollectQuestions(topicLevelMultiplier, topic.Id)
             };
             return topicModel;
@@ -165,14 +174,20 @@ namespace Game.Services
 
         private Topic? GetRandomFullTopic()
         {
-            int topicsCount = _topicService.GetAllTopicsCount();
+            List<Topic>? allTopics = _topicService.GetAllTopics();
+            if (!allTopics.Any())
+            {
+                return null;
+            }
+
+            int topicsCount = allTopics.Count;
             Topic? randomFullTopic = null;
 
             // получаем рандомную полную тему
             while (true)
             {
                 int index = RandomGenerator.GetRandom().Next(0, topicsCount);
-                randomFullTopic = _topicService.GetTopicById(index);
+                randomFullTopic = allTopics[index];
 
                 List<Question> allQuestionsByTopic = _questionService.GetAllQuestionsByTopicId(randomFullTopic.Id);
 
@@ -182,7 +197,9 @@ namespace Game.Services
                 for (int questionIndex = 0; questionIndex < GameParameterConstants.QuestionsCount; questionIndex++)
                 {
                     bool questionExists = allQuestionsByTopic
-                        .Any(question => question.TopicId == randomFullTopic.Id && question.Price == GetQuestionBasePrice(questionIndex));
+                        .Any(question =>
+                            question.TopicId == randomFullTopic.Id
+                            && question.Price == GetQuestionBasePrice(questionIndex + 1));
                     if (questionExists)
                     {
                         continue;

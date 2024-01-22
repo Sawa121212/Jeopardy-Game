@@ -30,16 +30,7 @@ namespace DataDomain.Rooms.Rounds
         public string Name => Level.GetDescription();
 
         /// <summary>
-        /// Тема
-        /// </summary>
-        public string Theme
-        {
-            get => _theme;
-            init => this.RaiseAndSetIfChanged(ref _theme, value);
-        }
-
-        /// <summary>
-        /// 
+        /// Темы вопросов
         /// </summary>
         public List<TopicModel>? Topics
         {

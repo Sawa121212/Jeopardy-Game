@@ -6,5 +6,22 @@
              mvvm:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="JeopardyGame.Views.PlayInfoView">
-  How to Play?
+
+    <Viewbox x:Name="ViewBoxControl"
+             Stretch="Uniform">
+
+        <TextBlock TextWrapping="Wrap"
+                   Text="lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                   incididunt ut labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud 
+                   exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. duis aute i
+                   rure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat null
+                   a pariatur. excepteur sint occaecat cupidatat non proident, sunt in culpa qui off
+                   icia deserunt mollit anim id est laborum he0vh efh v0hvh0vwhv 93b vlefiuv nw9evcov
+                   odvn 9w7 er9 ve8vnefu8 ehuhvwoe8v hfe dsjkfbsudf ouasdy f"
+                   TextAlignment="Center"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Margin="25"
+                   Width="400"/>
+    </Viewbox>
 </UserControl>

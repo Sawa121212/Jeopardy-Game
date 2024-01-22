@@ -5,10 +5,15 @@
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:rounds="clr-namespace:DataDomain.Rooms.Rounds;assembly=DataDomain"
              xmlns:views="clr-namespace:Game.Views"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:converters="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
              xmlns:old="clr-namespace:Common.Ui.Converters.Old;assembly=Common.Ui"
+             xmlns:data="clr-namespace:Game.Data"
+             xmlns:domain="clr-namespace:Users.Domain;assembly=Users.Domain"
+             xmlns:rooms="clr-namespace:DataDomain.Rooms;assembly=DataDomain"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Game.Views.GameView"
              x:DataType="views:GameViewModel">
@@ -31,6 +36,7 @@
                 </Grid>
             </Button.Content>
         </Button>
+
         <TextBlock Grid.Row="1"
                    Text="Игра не найдена"
                    Foreground="{DynamicResource MaterialValidationErrorBrush}"
@@ -45,73 +51,38 @@
                    HorizontalAlignment="Center"
                    IsVisible="{Binding Rounds, Converter={x:Static converters:CollectionConverter.IsNotAny}}" />
 
+        <!-- Content -->
         <Grid Grid.Row="1"
-              ColumnDefinitions="Auto, *"
-              IsVisible="{Binding Game, Converter={x:Static ObjectConverters.IsNotNull}}">
+              ColumnDefinitions="Auto,*"
+              IsVisible="{Binding Rounds, Converter={x:Static converters:CollectionConverter.IsAny}}">
 
-            <!-- Topics -->
-            <ListBox Grid.Column="0"
-                     ItemsSource="{Binding Topics, Mode=OneWay}">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="6" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
+            <DataGrid Grid.Column="0"
+                      ItemsSource="{Binding Players, Mode=OneWay}"
+                      CanUserResizeColumns="True"
+                      CanUserReorderColumns="True"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      Margin="3">
 
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="VerticalAlignment" Value="Stretch" />
-                    </Style>
-                </ListBox.Styles>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Игрок"
+                                        Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Points"
+                                        Binding="{Binding Points}" />
+                </DataGrid.Columns>
+            </DataGrid>
 
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="rounds:TopicModel">
-                        <Grid>
-                            <controls:Card>
-                                <Button Classes="Flat">
-                                    <Button.Content>
-                                        <TextBlock Text="{Binding Name}" />
-                                    </Button.Content>
-                                </Button>
-                            </controls:Card>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <ContentControl Grid.Column="1"
+                            IsVisible="{Binding IsShowedTopics, Mode=OneWay}"
+                            prism:RegionManager.RegionName="{x:Static data:GameRegionNameService.ContentRegionName}" />
 
-            <ItemsControl Grid.Column="1"
-                          ItemsSource="{Binding Topics, Mode=OneWay}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="rounds:TopicModel">
-                        <ListBox ItemsSource="{Binding Questions, Mode=OneWay}">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Rows="1" Columns="5" />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-
-                            <ListBox.Styles>
-                                <Style Selector="ListBoxItem">
-                                    <Setter Property="VerticalAlignment" Value="Stretch" />
-                                </Style>
-                            </ListBox.Styles>
-
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <controls:Card>
-                                        <Button Classes="Flat"
-                                                IsVisible="{Binding IsAsked, Mode=OneWay}">
-                                            <Button.Content>
-                                                <TextBlock Text="{Binding Price}" />
-                                            </Button.Content>
-                                        </Button>
-                                    </controls:Card>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <Button Grid.Column="1"
+                    Classes="Flat"
+                    IsVisible="{Binding !IsShowedTopics, Mode=OneWay}"
+                    Content="Показать темы раунда"
+                    Command="{Binding ShowTopicsCarouselCommand}" />
         </Grid>
     </Grid>
 </UserControl>

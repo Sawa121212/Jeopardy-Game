@@ -1,11 +1,15 @@
 ﻿using System.Resources;
 using Common.Core.Localization;
+using Game.Data;
 using Game.Mangers;
 using Game.Views;
 using Game.Properties;
 using Game.Services;
+using Game.Views.GamePages;
+using Game.Views.GamePages.Rounds;
 using Prism.Ioc;
 using Prism.Modularity;
+using Prism.Regions;
 
 namespace Game
 {
@@ -21,6 +25,8 @@ namespace Game
             containerRegistry.RegisterSingleton<IGameManager, GameManager>();
 
             // регистрируем View для навигации по Регионам
+            containerRegistry.RegisterForNavigation<BaseRoundControlView, BaseRoundControlViewModel>();
+            containerRegistry.RegisterForNavigation<TopicsNameCarouselView, TopicsNameCarouselViewModel>();
             containerRegistry.RegisterForNavigation<GameView, GameViewModel>();
             containerRegistry.RegisterForNavigation<RoomView, RoomViewModel>();
         }
@@ -29,6 +35,9 @@ namespace Game
         {
             // Добавим ресурс Локализации в "коллекцию ресурсов локализации"
             containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
+
+            /*containerProvider.Resolve<IRegionManager>()
+                .RegisterViewWithRegion(GameRegionNameService.ContentRegionName, nameof(BaseRoundControlView));*/
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles">
 
     <!-- ToggleButton.Gray -->
     <Style Selector="ToggleButton.Gray:not(:checked)">
@@ -10,7 +12,34 @@
 
     <Style Selector="ToggleButton.Gray:checked">
         <Setter Property="Foreground"
-                Value="{DynamicResource PrimaryHueMidBrush}" />
+                Value="{DynamicResource MaterialPrimaryHueMidBrush}" />
+    </Style>
+
+    <Style Selector="controls|Card.Dark">
+        <!--<Setter Property="Foreground"
+                Value="{DynamicResource MaterialPrimaryHueMidBrush}" />-->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="PART_RootPanel">
+                    <Border Background="Black"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Opacity="0.26" />
+                    <Border Name="PART_BackgroundBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            assists:ShadowAssist.ShadowDepth="{TemplateBinding assists:ShadowAssist.ShadowDepth}" />
+                    <Border Name="PART_InnerBorder"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            ClipToBounds="{TemplateBinding InsideClipping}">
+                        <ContentPresenter Name="ContentPresenter"
+                                          Padding="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
     </Style>
 
     <Style Selector="ContentControl.PlaylistMusicImage">
@@ -80,6 +109,10 @@
                 </Border>
 
                 <ContentControl Classes="PlaylistMusicImage" />
+
+                <controls:Card Classes="Dark">
+                    Text
+                </controls:Card>
             </StackPanel>
         </Border>
     </Design.PreviewWith>

@@ -11,6 +11,8 @@
 
         <!-- Custom -->
         <StyleInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
+        <StyleInclude Source="avares://Common.Resources/CustomStyles.xaml" />
+
     </Application.Styles>
 
     <Application.Resources>

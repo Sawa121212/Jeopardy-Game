@@ -7,7 +7,7 @@ namespace DataDomain.Rooms.Rounds
     {
         public TopicModel()
         {
-            Questions = new List<QuestionModel>(5);
+            Questions = new List<QuestionModel>();
         }
 
         public int Id
