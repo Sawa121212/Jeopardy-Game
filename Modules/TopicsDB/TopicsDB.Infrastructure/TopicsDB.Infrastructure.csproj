@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.6" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.6" />
+    <PackageReference Include="Avalonia" Version="11.0.7" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.0.6" />
     <PackageReference Include="Material.Avalonia.DataGrid" Version="3.2.2" />
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.11000" />

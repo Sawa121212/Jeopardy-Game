@@ -5,6 +5,7 @@ using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using Common.Core.Views;
 using DataDomain.Rooms;
+using Game.Data;
 using Game.Events;
 using Game.Mangers;
 using Infrastructure.Domain.Helpers;

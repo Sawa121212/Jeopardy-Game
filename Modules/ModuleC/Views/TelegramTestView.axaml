@@ -26,8 +26,9 @@
         <Grid Grid.Row="1" RowDefinitions="Auto, *">
             <Image Grid.Row="0"
                    Source="{Binding Bitmap, Mode=OneWay}" />
-            <TextBlock Grid.Row="1"
-                       Text="{Binding Text, Mode=OneWay}" />
+            <Viewbox Grid.Row="1">
+                <TextBlock Text="{Binding Text, Mode=OneWay}" />
+            </Viewbox>
         </Grid>
     </Grid>
 </UserControl>

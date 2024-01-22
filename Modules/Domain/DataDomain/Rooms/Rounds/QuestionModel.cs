@@ -10,10 +10,25 @@ namespace DataDomain.Rooms.Rounds
     {
         public QuestionModel(Question? question, int point)
         {
-            Price = point;
+            Id = question.Id;
+            TopicId = question.TopicId;
             Text = question.Text;
             Answer = question.CorrectAnswer;
+            Price = point;
+
             //Picture = question.Text;
+        }
+
+        public int Id
+        {
+            get => _id;
+            init => this.RaiseAndSetIfChanged(ref _id, value);
+        }
+
+        public int TopicId
+        {
+            get => _topicId;
+            init => this.RaiseAndSetIfChanged(ref _topicId, value);
         }
 
         public string Text
@@ -31,7 +46,7 @@ namespace DataDomain.Rooms.Rounds
         public int Price
         {
             get => _price;
-            set => this.RaiseAndSetIfChanged(ref _price, value); // Финальный раунд. игроки делают ставки
+            set => this.RaiseAndSetIfChanged(ref _price, value); // игроки могут делать ставки
         }
 
         /// <summary>
@@ -57,5 +72,7 @@ namespace DataDomain.Rooms.Rounds
         private int _price;
         private string _answer;
         private bool _isAsked;
+        private int _id;
+        private int _topicId;
     }
 }
