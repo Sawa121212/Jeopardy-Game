@@ -1,4 +1,5 @@
-﻿using Prism.Ioc;
+﻿using Common.Core.Components;
+using Prism.Ioc;
 using Prism.Modularity;
 using Users.Infrastructure;
 
@@ -14,8 +15,8 @@ namespace Users.Module
             containerRegistry
                 // сперва регистрируем контекст БД с вопросам
                 //.RegisterSingleton<ITopicDbManager, TopicDbManager>()
-                //.RegisterSingleton<ITopicService, TopicService>()
-                .RegisterSingleton<IUserService, UserService>();
+                .RegisterSingleton<IUserService, UserService>()
+                .RegisterSingleton<ITelegramHandlerService, TelegramHandlerService>();
 
             // регистрируем View для навигации по Регионам
             //containerRegistry.RegisterForNavigation<TopicListView, TopicListViewModel>();
@@ -26,7 +27,14 @@ namespace Users.Module
         public void OnInitialized(IContainerProvider containerProvider)
         {
             // Добавим ресурс Локализации в "коллекцию ресурсов локализации"
-            //containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
+            IUserService userService = containerProvider.Resolve<IUserService>();
+
+            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(Domain.StateUserEnum.SetName, userService.UpdateUsername);
+            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(Domain.StateUserEnum.MainMenu,
+                (m) => 
+                {
+                    return Result<Domain.StateUserEnum>.Fail("Вы в главном меню, но пока тут пусто");
+                });
         }
     }
 }

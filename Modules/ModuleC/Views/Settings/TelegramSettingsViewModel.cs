@@ -9,6 +9,8 @@ using Prism.Regions;
 using ReactiveUI;
 using TelegramAPI.Test.Managers;
 using TelegramAPI.Test.Services.Settings;
+using Users.Domain;
+using Users.Infrastructure;
 using Timer = System.Timers.Timer;
 
 namespace TelegramAPI.Test.Views.Settings
@@ -21,9 +23,13 @@ namespace TelegramAPI.Test.Views.Settings
         public TelegramSettingsViewModel(
             IRegionManager regionManager,
             ITelegramSettingsService telegramSettingsService,
-            ITelegramBotManager telegramBotManager, ITelegramBotService telegramBotService)
+            ITelegramBotManager telegramBotManager, ITelegramBotService telegramBotService,
+            IUserService userService,
+            IAdminManager adminManager)
             : base(regionManager)
         {
+            _adminManager = adminManager;
+            _userService = userService;
             _telegramSettingsService = telegramSettingsService;
             _telegramBotManager = telegramBotManager;
             _telegramBotService = telegramBotService;
@@ -109,7 +115,7 @@ namespace TelegramAPI.Test.Views.Settings
                 /*AdminIdStatus = "Введенные данные не распознаны";
                 return;*/
 
-                AdminKey = await _telegramBotService.VerifyAddAdminMode(_adminId);
+                AdminKey = await _adminManager.VerifyAddAdminMode(_adminId);
                 IsAddAdminMode = true;
                 CheckAdminUserIdTimerStart();
             }
@@ -122,7 +128,7 @@ namespace TelegramAPI.Test.Views.Settings
         private void OnCancelAddAdminMode()
         {
             AdminKey = null;
-            _telegramBotService.CancelAddAdminMode();
+            _adminManager.CancelAddAdminMode();
             IsAddAdminMode = false;
 
             AdminIdStatus = "Вы стали администратором";
@@ -140,6 +146,13 @@ namespace TelegramAPI.Test.Views.Settings
             _timer.Elapsed += OnTimedEvent;
             _timer.Enabled = true;
             _timerSecond = 0;
+
+            //настройка состояния юзера
+            if (_userService.TryGetUserById(AdminId, out User user))
+            {
+                user.State = StateUserEnum.CheckAddedAdmin;
+                _userService.UpdateUser(user);
+            }
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -165,6 +178,7 @@ namespace TelegramAPI.Test.Views.Settings
             {
                 return;
             }
+            _timer.Elapsed -= OnTimedEvent;
 
             _timer.Stop();
             _timer.Dispose();
@@ -185,6 +199,8 @@ namespace TelegramAPI.Test.Views.Settings
 
         private readonly ITelegramBotManager _telegramBotManager;
         private readonly ITelegramBotService _telegramBotService;
+        private readonly IAdminManager _adminManager;
+        private readonly IUserService _userService;
         private readonly ITelegramSettingsService _telegramSettingsService;
         private Timer _timer;
         private string _token;
