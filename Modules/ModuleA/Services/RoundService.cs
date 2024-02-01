@@ -13,7 +13,7 @@ using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace Game.Services
 {
-    public class RoundService : IRoundService
+    public partial class RoundService : IRoundService
     {
         public RoundService(ITopicService topicService, IQuestionService questionService, INotificationService notificationService)
         {
@@ -60,6 +60,8 @@ namespace Game.Services
                     }
                 }
             }
+
+            AddSpecialQuestions(rounds);
 
             return rounds;
         }
@@ -161,16 +163,16 @@ namespace Game.Services
         private List<QuestionModel> CollectQuestions(int topicLevelMultiplier, int topicId)
         {
             List<QuestionModel> questions = new();
-            int questionBasePrice = GetQuestionBasePrice(questions.Count + 1);
+
             while (questions.Count < GameParameterConstants.QuestionsCount)
             {
+                int questionBasePrice = GetQuestionBasePrice(questions.Count + 1);
                 Question? question = _questionService.GetRandomQuestionFromTopicByPrice(topicId, questionBasePrice);
                 questions.Add(new QuestionModel(question, questionBasePrice * topicLevelMultiplier));
             }
 
             return questions;
         }
-
 
         private Topic? GetRandomFullTopic()
         {

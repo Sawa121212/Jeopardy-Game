@@ -1,6 +1,7 @@
 ﻿using System.Data.Entity;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Users.Domain.Models;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace Users.Domain

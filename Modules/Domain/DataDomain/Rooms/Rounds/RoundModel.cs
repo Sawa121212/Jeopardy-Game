@@ -38,25 +38,7 @@ namespace DataDomain.Rooms.Rounds
             set => this.RaiseAndSetIfChanged(ref _topics, value);
         }
 
-        private RoundsLevelEnum _level;
-        private string _theme;
+        private readonly RoundsLevelEnum _level;
         private List<TopicModel>? _topics;
-
-        /*/// <summary>
-        /// Получить баллы за ответ на вопрос
-        /// </summary>
-        /// <param name="question">Вопрос</param>
-        /// <param name="isRightAnswer">Это правильный ответ</param>
-        /// <returns></returns>
-        public int GetQuestionPoint(Question question, bool isRightAnswer)
-        {
-            int quality = isRightAnswer ? 1 : -1;
-            if (Questions.Contains(question))
-            {
-                return question.Point * (int) Level * quality;
-            }
-
-            return 0;
-        }*/
     }
 }

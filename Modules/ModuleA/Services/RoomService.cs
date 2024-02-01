@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using Avalonia.Controls.Notifications;
 using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
 using Infrastructure.Domain.Helpers;
 using Notification.Module.Services;
 using ReactiveUI;
-using Users.Domain;
-using Users.Infrastructure;
+using Users.Infrastructure.Interfaces;
 
 namespace Game.Services
 {

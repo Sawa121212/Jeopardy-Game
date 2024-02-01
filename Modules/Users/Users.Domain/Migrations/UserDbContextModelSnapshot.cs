@@ -15,19 +15,21 @@ namespace Users.Domain.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.17");
 
-            modelBuilder.Entity("Users.Domain.User", b =>
+            modelBuilder.Entity("Users.Domain.Models.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nick")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("State")
+                    b.Property<uint>("State")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

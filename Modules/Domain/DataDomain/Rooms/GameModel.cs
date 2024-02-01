@@ -5,14 +5,17 @@ using ReactiveUI;
 
 namespace DataDomain.Rooms
 {
+    /// <summary>
+    /// Модель игры
+    /// </summary>
     public class GameModel : ReactiveObject
     {
         public GameModel()
         {
-            CurrentRound = RoundsLevelEnum.Round1;
+            CurrentRoundLevel = RoundsLevelEnum.Round1;
         }
 
-        public RoundsLevelEnum CurrentRound
+        public RoundsLevelEnum CurrentRoundLevel
         {
             get => _currentRound;
             set => this.RaiseAndSetIfChanged(ref _currentRound, value);

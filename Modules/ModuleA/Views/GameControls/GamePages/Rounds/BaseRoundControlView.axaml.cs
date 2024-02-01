@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Game.Views.GamePages.Rounds
+namespace Game.Views.GameControls.GamePages.Rounds
 {
     public partial class BaseRoundControlView : UserControl
     {

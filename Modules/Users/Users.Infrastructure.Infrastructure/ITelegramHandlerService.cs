@@ -1,9 +1,9 @@
-﻿using Common.Core.Components;
-using System;
+﻿using System;
+using Common.Core.Components;
 using Telegram.Bot.Types;
-using Users.Domain;
+using Users.Domain.Models;
 
-namespace Users.Infrastructure
+namespace Users.Infrastructure.Interfaces
 {
     /// <summary>
     /// Обработчик сообщений полученных ботом.

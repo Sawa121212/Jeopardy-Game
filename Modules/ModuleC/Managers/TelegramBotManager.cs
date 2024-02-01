@@ -10,7 +10,9 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TelegramAPI.Test.Services.Settings;
-using Users.Infrastructure;
+using Users.Domain.Models;
+using Users.Infrastructure.Interfaces;
+using User = Telegram.Bot.Types.User;
 
 namespace TelegramAPI.Test.Managers
 {
@@ -94,7 +96,7 @@ namespace TelegramAPI.Test.Managers
                     return;
                 }
 
-                if (!_userService.TryGetUserById(user.Id, out Users.Domain.User _user))
+                if (!_userService.TryGetUserById(user.Id, out Users.Domain.Models.User _user))
                 {
                     _user = _userService.CreateUser(user.Id, $"{user.FirstName} {user.LastName}", user.Username);
                     await botClient.SendTextMessageAsync(_user.Id, "Введите ваше имя");
@@ -106,7 +108,7 @@ namespace TelegramAPI.Test.Managers
                 {
                     case UpdateType.Message:
                         {
-                            Result<Users.Domain.StateUserEnum> result = _telegramHandlerService.Handle(message);
+                            Result<StateUserEnum> result = _telegramHandlerService.Handle(message);
                             if (result)
                             {
                                 _user.State = result.Value;

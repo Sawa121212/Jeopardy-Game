@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using Telegram.Bot.Types;
-using Users.Domain;
+using Users.Domain.Models;
+using Users.Infrastructure.Interfaces;
+using User = Users.Domain.Models.User;
 
 namespace Users.Infrastructure
 {
@@ -37,7 +39,7 @@ namespace Users.Infrastructure
                 return Result<StateUserEnum>.Fail("Нет юзера? Странно");
             }
 
-            if (!_userService.TryGetUserById(botUser.Id, out Domain.User user))
+            if (!_userService.TryGetUserById(botUser.Id, out User user))
             {
                 return Result<StateUserEnum>.Fail("Нет юзера? Странно");
             }

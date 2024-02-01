@@ -4,28 +4,34 @@ using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Views;
 using DataDomain.Rooms.Rounds;
+using Game.Data;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
-using TopicDb.Domain.Models;
 
-namespace Game.Views.GamePages
+namespace Game.Views.GameControls.GamePages.Topics
 {
-    public class TopicsNameCarouselViewModel : NavigationViewModelBase
+    public class TopicsNameCarouselControlViewModel : NavigationViewModelBase
     {
         /// <inheritdoc />
-        public TopicsNameCarouselViewModel(IRegionManager regionManager) : base(regionManager)
+        public TopicsNameCarouselControlViewModel(IRegionManager regionManager) : base(regionManager)
         {
             ShowNextTopicCommand = new DelegateCommand(OnShowNextTopic);
             ContinueGameCommand = new DelegateCommand(OnContinueGame);
         }
 
+        /// <summary>
+        /// Отображаемая тема
+        /// </summary>
         public TopicModel ShowedTopic
         {
             get => _showedTopic;
             set => this.RaiseAndSetIfChanged(ref _showedTopic, value);
         }
 
+        /// <summary>
+        /// Все темы показаны
+        /// </summary>
         public bool IsShowedAllTopic
         {
             get => _isShowedAllTopic;
@@ -94,7 +100,7 @@ namespace Game.Views.GamePages
         /// <inheritdoc />
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, true);
+            navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound);
         }
 
         private TopicModel _showedTopic;

@@ -10,9 +10,6 @@ namespace TopicsDB.Infrastructure.Services
 {
     public class TopicService : ITopicService
     {
-        private readonly ITopicDbManager _topicDbManager;
-        private readonly TopicDbContext _dbContext;
-
         public TopicService(ITopicDbManager topicDbManager)
         {
             _topicDbManager = topicDbManager;
@@ -85,8 +82,12 @@ namespace TopicsDB.Infrastructure.Services
             }
 
             topic.Name = updatedTopic.Name;
+
             // обновление других свойств
             _dbContext.SaveChanges();
         }
+
+        private readonly ITopicDbManager _topicDbManager;
+        private readonly TopicDbContext _dbContext;
     }
 }

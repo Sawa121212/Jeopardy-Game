@@ -4,7 +4,6 @@ using Common.Core.Signals;
 using Confirmation.Module.Enums;
 using Confirmation.Module.Models;
 using Prism.Commands;
-using Prism.Mvvm;
 using ReactiveUI;
 
 namespace Confirmation.Module.Views

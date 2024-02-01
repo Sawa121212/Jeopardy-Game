@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:converter="clr-namespace:Game.Converter"
+             xmlns:rounds="clr-namespace:Game.Views.GameControls.GamePages.Rounds"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Views.GameControls.GamePages.Rounds.RoundLevelView"
+             x:DataType="rounds:RoundLevelViewModel"
+             x:Name="RoundLevelControl">
+
+    <Design.DataContext>
+        <rounds:RoundLevelViewModel />
+    </Design.DataContext>
+
+    <UserControl.Resources>
+        <converter:RoundLevelConverter x:Key="RoundLevelConverter" />
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="*, Auto">
+        <Viewbox Grid.Row="0"
+                 Margin="15">
+            <Grid RowDefinitions="Auto, Auto"
+                  ColumnDefinitions="Auto,Auto,Auto,Auto"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Center">
+
+                <Border Background="Yellow"
+                        Grid.Row="0"
+                        Grid.Column="0" Grid.ColumnSpan="2"
+                        Margin="1">
+                    <TextBlock Text="{Binding Round.Level, Converter={StaticResource RoundLevelConverter}}"
+                               FontSize="32"
+                               Foreground="Black"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Margin="1" />
+                </Border>
+
+                <ItemsControl ItemsSource="РАУНД"
+                              Grid.Row="1"
+                              Grid.Column="1" Grid.ColumnSpan="3">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="1">
+                                <TextBlock Text="{Binding .}"
+                                           Background="Black"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Margin="1" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Viewbox>
+
+        <Button Content="Ok"
+                Command="{Binding MoveBackCommand}"
+                Grid.Row="1" />
+    </Grid>
+</UserControl>

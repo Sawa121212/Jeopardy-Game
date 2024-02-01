@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:rounds="clr-namespace:DataDomain.Rooms.Rounds;assembly=DataDomain"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:gameControls="clr-namespace:Game.Views.GameControls"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Views.GameControls.GamePages.Rounds.BaseRoundControlView"
+             x:DataType="gameControls:GameViewModel"
+             x:Name="BaseRoundControl">
+
+    <Design.DataContext>
+        <gameControls:GameViewModel />
+    </Design.DataContext>
+
+    <ListBox ItemsSource="{Binding Topics, Mode=OneWay}">
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Rows="6" />
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+
+        <ListBox.Styles>
+            <Style Selector="ListBoxItem">
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+            </Style>
+        </ListBox.Styles>
+
+        <!-- Topics -->
+        <ListBox.ItemTemplate>
+            <DataTemplate DataType="rounds:TopicModel">
+                <Grid ColumnDefinitions="*, Auto, 2*">
+                    <Button Grid.Column="0"
+                            Classes="Flat">
+                        <Button.Content>
+                            <Viewbox VerticalAlignment="Center"
+                                     HorizontalAlignment="Center"
+                                     Stretch="Uniform">
+                                <TextBlock Text="{Binding Name}"
+                                           Foreground="{DynamicResource MaterialBodyBrush}"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Width="400" />
+                            </Viewbox>
+                        </Button.Content>
+                    </Button>
+
+                    <GridSplitter Grid.Column="1" Margin="3, -1" />
+
+                    <!-- Questions -->
+                    <ItemsControl ItemsSource="{Binding Questions, Mode=OneWay}"
+                                  Grid.Column="2">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" Columns="5" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="rounds:QuestionModel">
+                                <Button
+                                    Command="{Binding DataContext.SelectQuestionAnswerCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                    CommandParameter="{Binding .}"
+                                    Classes="Outline"
+                                    IsVisible="{Binding !IsAsked, Mode=OneWay}"
+                                    Margin="3">
+                                    <TextBlock Text="{Binding Price}"
+                                               Classes="Headline6"
+                                               Foreground="{DynamicResource MaterialBodyBrush}" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</UserControl>

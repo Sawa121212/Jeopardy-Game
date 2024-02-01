@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using Users.Domain;
+using Users.Domain.Models;
+using Users.Infrastructure.Interfaces;
+using Users.Infrastructure.Interfaces.Managers;
 
 namespace Users.Infrastructure
 {
     /// <inheritdoc />
     public class UserService : IUserService
     {
-        public UserService()
+        public UserService(IUserDbManager userDbManager)
         {
-            _dbContext = new UserDbContext();
+            _userDbManager = userDbManager;
+            _dbContext = _userDbManager.DbContext;
         }
 
         /// <inheritdoc />
@@ -74,6 +78,7 @@ namespace Users.Infrastructure
             oldUser.Name = user.Name;
             oldUser.State = user.State;
             oldUser.Nick = user.Nick;
+
             // обновление других свойств
             _dbContext.SaveChanges();
         }
@@ -106,6 +111,7 @@ namespace Users.Infrastructure
             return Result<StateUserEnum>.Fail("Сообщение не текстовое");
         }
 
+        private readonly IUserDbManager _userDbManager;
         private readonly UserDbContext _dbContext;
     }
 }
