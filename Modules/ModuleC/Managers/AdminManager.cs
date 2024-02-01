@@ -4,7 +4,7 @@ using Infrastructure.Domain.Helpers;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramAPI.Test.Services.Settings;
-using Users.Domain;
+using Users.Domain.Models;
 
 namespace TelegramAPI.Test.Managers
 {

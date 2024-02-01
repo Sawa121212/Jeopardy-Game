@@ -1,4 +1,4 @@
-﻿namespace Users.Domain
+﻿namespace Users.Domain.Models
 {
     public enum StateUserEnum : uint
     {

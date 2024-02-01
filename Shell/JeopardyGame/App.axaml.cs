@@ -21,7 +21,6 @@ using Infrastructure.Module.Services;
 using Infrastructure.Module.Services.ApplicationInfo;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
-using ModuleB;
 using Notification.Module;
 using Notification.Module.Services;
 using Prism.DryIoc;
@@ -93,15 +92,14 @@ namespace JeopardyGame
                 .AddModule<ConfirmationModule>()
                 .AddModule<NotificationModule>()
                 .AddModule<InfrastructureModule>()
-                .AddModule<TopicDbModule>()
                 .AddModule<UsersModule>()
+                .AddModule<TopicDbModule>()
                 .AddModule<GameModule>()
                 //.AddModule<ModuleBModule>()
                 .AddModule<TelegramApiTestModule>();
 
             base.ConfigureModuleCatalog(moduleCatalog);
         }
-
 
         protected override void InitializeShell(AvaloniaObject shell)
         {
@@ -110,7 +108,6 @@ namespace JeopardyGame
             // Добавим локализацию
             Container.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
         }
-
 
         private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {

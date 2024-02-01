@@ -1,17 +1,15 @@
 ﻿using System.Resources;
-using System.Threading.Tasks;
-using Common.Core.Components;
 using Common.Core.Localization;
 using Infrastructure.Interfaces.Managers;
 using Prism.Ioc;
 using Prism.Modularity;
-using Telegram.Bot.Types;
 using TelegramAPI.Test.Managers;
 using TelegramAPI.Test.Properties;
 using TelegramAPI.Test.Services.Settings;
 using TelegramAPI.Test.Views;
 using TelegramAPI.Test.Views.Settings;
-using Users.Infrastructure;
+using Users.Domain.Models;
+using Users.Infrastructure.Interfaces;
 
 namespace TelegramAPI.Test
 {
@@ -45,7 +43,7 @@ namespace TelegramAPI.Test
             containerProvider.Resolve<ISettingsViewManager>().AddView<TelegramSettingsView>("Параметры бот", "Telegram бот");
             IAdminManager adminManager = containerProvider.Resolve<IAdminManager>();
 
-            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(Users.Domain.StateUserEnum.CheckAddedAdmin, adminManager.CheckAddedAdminMode);
+            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(StateUserEnum.CheckAddedAdmin, adminManager.CheckAddedAdminMode);
         }
     }
 }

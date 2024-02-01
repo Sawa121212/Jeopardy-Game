@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Game.Views
+namespace Game.Views.GameControls
 {
     public partial class GameView : UserControl
     {

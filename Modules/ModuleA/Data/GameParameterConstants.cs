@@ -9,10 +9,6 @@ namespace Game.Data
         /// </summary>
         public static int BaseQuestionPrice = 100;
 
-        /// <summary>
-        /// Количество раундов
-        /// </summary>
-        //public static int RoundsCount = 5;
 
         /// <summary>
         /// Количество тем
@@ -50,5 +46,15 @@ namespace Game.Data
         /// В ходе первого раунда студия подсвечивается золотисто-коричневым
         /// </summary>
         public static Color FinalRoundColor = Color.Purple;
+
+        /// <summary>
+        /// Количество специальных вопросов в 1 и 3 раундах
+        /// </summary>
+        public static int SpecialQuestionsCountOnBaseRound = 2;
+
+        /// <summary>
+        /// Количество специальных вопросов в 2 раунде
+        /// </summary>
+        public static int SpecialQuestionsCountOnSecondRound = 1;
     }
 }

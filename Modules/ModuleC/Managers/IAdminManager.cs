@@ -1,7 +1,7 @@
 ﻿using Common.Core.Components;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
-using Users.Domain;
+using Users.Domain.Models;
 
 namespace TelegramAPI.Test.Managers
 {

@@ -1,5 +1,5 @@
 ﻿using ReactiveUI;
-using Users.Domain;
+using Users.Domain.Models;
 
 namespace DataDomain.Rooms
 {

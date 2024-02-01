@@ -9,8 +9,8 @@ using Prism.Regions;
 using ReactiveUI;
 using TelegramAPI.Test.Managers;
 using TelegramAPI.Test.Services.Settings;
-using Users.Domain;
-using Users.Infrastructure;
+using Users.Domain.Models;
+using Users.Infrastructure.Interfaces;
 using Timer = System.Timers.Timer;
 
 namespace TelegramAPI.Test.Views.Settings

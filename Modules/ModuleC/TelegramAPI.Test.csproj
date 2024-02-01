@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\Common\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\AppModules\Infrastructure\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\TopicsDB\TopicsDB.Infrastructure.Interfaces\TopicsDB.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\Users\Users.Infrastructure.Infrastructure\Users.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\Users\Users.Infrastructure\Users.Infrastructure.csproj" />
   </ItemGroup>
 

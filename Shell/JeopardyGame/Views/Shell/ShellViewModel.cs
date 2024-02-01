@@ -6,7 +6,8 @@ namespace JeopardyGame.Views.Shell
     {
         public ShellViewModel()
         {
-           
         }
+
+        public string Title => "Своя игра";
     }
 }

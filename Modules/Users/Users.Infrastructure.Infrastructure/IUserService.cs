@@ -1,9 +1,10 @@
-﻿using Common.Core.Components;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Common.Core.Components;
 using Telegram.Bot.Types;
-using Users.Domain;
+using Users.Domain.Models;
+using User = Users.Domain.Models.User;
 
-namespace Users.Infrastructure
+namespace Users.Infrastructure.Interfaces
 {
     /// <summary>
     /// Сервис для управления пользователи
@@ -14,13 +15,13 @@ namespace Users.Infrastructure
         /// Создание нового пользователя
         /// </summary>
         /// <param name="userId"></param>
-        public Domain.User CreateUser(long userId, string name, string nick);
+        public User CreateUser(long userId, string name, string nick);
 
         /// <summary>
         /// Редактирование существующего пользователя
         /// </summary>
         /// <param name="user"></param>
-        public void UpdateUser(Domain.User user);
+        public void UpdateUser(User user);
 
         /// <summary>
         /// Редактирование имени существующего пользователя
@@ -32,7 +33,7 @@ namespace Users.Infrastructure
         /// Удаление пользователя
         /// </summary>
         /// <param name="user">Пользователь</param>
-        public void DeleteUser(Domain.User user);
+        public void DeleteUser(User user);
 
         /// <summary>
         /// Удаление пользователя
@@ -45,19 +46,19 @@ namespace Users.Infrastructure
         /// </summary>
         /// <param name="nick"></param>
         /// <returns></returns>
-        public bool TryGetUserByNiсk(string nick, out Domain.User user);
+        public bool TryGetUserByNiсk(string nick, out User user);
 
         /// <summary>
         /// Попытка получения пользователя по идентификатору
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public bool TryGetUserById(long userId, out Domain.User user);
+        public bool TryGetUserById(long userId, out User user);
 
         /// <summary>
         /// Получение всех пользователей
         /// </summary>
         /// <returns></returns>
-        public IList<Domain.User> GetAllUsers();
+        public IList<User> GetAllUsers();
     }
 }

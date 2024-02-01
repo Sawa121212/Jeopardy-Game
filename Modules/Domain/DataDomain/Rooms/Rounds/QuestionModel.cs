@@ -1,4 +1,6 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Media.Imaging;
+using DataDomain.Rooms.Rounds.Enums;
+using ReactiveUI;
 using TopicDb.Domain.Models;
 
 namespace DataDomain.Rooms.Rounds
@@ -8,15 +10,18 @@ namespace DataDomain.Rooms.Rounds
     /// </summary>
     public class QuestionModel : ReactiveObject
     {
-        public QuestionModel(Question? question, int point)
+        public QuestionModel(Question? question, int price)
         {
-            Id = question.Id;
-            TopicId = question.TopicId;
-            Text = question.Text;
-            Answer = question.CorrectAnswer;
-            Price = point;
+            if (question != null)
+            {
+                Id = question.Id;
+                TopicId = question.TopicId;
+                Text = question.Text;
+                CorrectAnswer = question.CorrectAnswer;
+            }
 
-            //Picture = question.Text;
+            Price = price;
+            SpecialQuestion = default;
         }
 
         public int Id
@@ -37,10 +42,10 @@ namespace DataDomain.Rooms.Rounds
             init => this.RaiseAndSetIfChanged(ref _text, value);
         }
 
-        public object Picture
+        public Bitmap Picture
         {
             get => _picture;
-            init => this.RaiseAndSetIfChanged(ref _picture, value);
+            set => this.RaiseAndSetIfChanged(ref _picture, value);
         }
 
         public int Price
@@ -52,7 +57,7 @@ namespace DataDomain.Rooms.Rounds
         /// <summary>
         /// Правильный ответ
         /// </summary>
-        public string Answer
+        public string CorrectAnswer
         {
             get => _answer;
             init => this.RaiseAndSetIfChanged(ref _answer, value);
@@ -67,12 +72,19 @@ namespace DataDomain.Rooms.Rounds
             set => this.RaiseAndSetIfChanged(ref _isAsked, value);
         }
 
+        public SpecialQuestionEnum SpecialQuestion
+        {
+            get => _specialQuestion;
+            set => this.RaiseAndSetIfChanged(ref _specialQuestion, value);
+        }
+
         private string _text;
-        private object _picture;
+        private Bitmap _picture;
         private int _price;
         private string _answer;
         private bool _isAsked;
         private int _id;
         private int _topicId;
+        private SpecialQuestionEnum _specialQuestion;
     }
 }

@@ -1,11 +1,10 @@
-﻿using Avalonia.Controls;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 
 namespace TelegramAPI.Test.Models
 {
     public class MessageModel
     {
-        public MessageModel(string text, Bitmap bitmap)
+        public MessageModel(string text, Bitmap bitmap = null)
         {
             Text = text;
             Bitmap = bitmap;

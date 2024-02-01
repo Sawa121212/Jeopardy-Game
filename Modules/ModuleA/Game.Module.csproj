@@ -27,9 +27,9 @@
     <ProjectReference Include="..\AppModules\Infrastructure\Infrastructure.Domain\Infrastructure.Domain.csproj" />
     <ProjectReference Include="..\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
     <ProjectReference Include="..\Domain\DataDomain\DataDomain.csproj" />
+    <ProjectReference Include="..\ModuleC\TelegramAPI.Test.csproj" />
     <ProjectReference Include="..\TopicsDB\TopicsDB.Infrastructure.Interfaces\TopicsDB.Infrastructure.Interfaces.csproj" />
-    <ProjectReference Include="..\TopicsDB\TopicsDB.Infrastructure\TopicsDB.Infrastructure.csproj" />
-    <ProjectReference Include="..\Users\Users.Infrastructure\Users.Infrastructure.csproj" />
+    <ProjectReference Include="..\Users\Users.Infrastructure.Infrastructure\Users.Infrastructure.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,16 +38,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\GamePages\TopicsNameCarouselView.axaml.cs">
-      <DependentUpon>TopicsNameCarouselView.axaml</DependentUpon>
-    </Compile>
     <EmbeddedResource Update="Properties\Language.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Mangers\" />
   </ItemGroup>
 </Project>
