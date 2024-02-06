@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Common.Core.Components;
 using Telegram.Bot.Types;
 using Users.Domain.Models;
@@ -26,8 +27,8 @@ namespace Users.Infrastructure.Interfaces
         /// <summary>
         /// Редактирование имени существующего пользователя
         /// </summary>
-        /// <param name="message"></param>
-        public Result<StateUserEnum> UpdateUsername(Message message);
+        /// <param name="update"></param>
+        public Result<Tuple<StateUserEnum, string>> UpdateUsername(Update update);
 
         /// <summary>
         /// Удаление пользователя

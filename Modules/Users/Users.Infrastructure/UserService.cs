@@ -1,10 +1,13 @@
 ﻿using Common.Core.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Telegram.Bot.Types;
 using Users.Domain;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 using Users.Infrastructure.Interfaces.Managers;
+using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace Users.Infrastructure
 {
@@ -18,9 +21,9 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
-        public User CreateUser(long userId, string name, string nick)
+        public Domain.Models.User CreateUser(long userId, string name, string nick)
         {
-            User user = new()
+            Domain.Models.User user = new()
             {
                 Id = userId,
                 Name = name,
@@ -33,7 +36,7 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
-        public void DeleteUser(User question)
+        public void DeleteUser(Domain.Models.User question)
         {
             if (_dbContext.Users.Contains(question))
             {
@@ -44,7 +47,7 @@ namespace Users.Infrastructure
         /// <inheritdoc />
         public void DeleteUser(long questionId)
         {
-            User user = _dbContext.Users.Find(questionId);
+            Domain.Models.User user = _dbContext.Users.Find(questionId);
             if (user == null)
             {
                 return;
@@ -55,21 +58,21 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
-        public IList<User> GetAllUsers()
+        public IList<Domain.Models.User> GetAllUsers()
         {
             return _dbContext.Users.ToList();
         }
 
-        public bool TryGetUserById(long userId, out User user)
+        public bool TryGetUserById(long userId, out Domain.Models.User user)
         {
             user = _dbContext.Users.Find(userId);
             return user != null;
         }
 
         /// <inheritdoc />
-        public void UpdateUser(User user)
+        public void UpdateUser(Domain.Models.User user)
         {
-            User oldUser = _dbContext.Users.Find(user.Id);
+            Domain.Models.User oldUser = _dbContext.Users.Find(user.Id);
             if (oldUser == null)
             {
                 return;
@@ -83,32 +86,34 @@ namespace Users.Infrastructure
             _dbContext.SaveChanges();
         }
 
-        public bool TryGetUserByNiсk(string nick, out User user)
+        public bool TryGetUserByNiсk(string nick, out Domain.Models.User user)
         {
             user = _dbContext.Users.FirstOrDefault(x => x.Nick == nick);
             return user != null;
         }
 
-        public Result<StateUserEnum> UpdateUsername(Telegram.Bot.Types.Message message)
+        public Result<Tuple<StateUserEnum, string>> UpdateUsername(Telegram.Bot.Types.Update update)
         {
+            Message message = update?.Message;
+
             if (message == null)
             {
-                return Result<StateUserEnum>.Fail("Сообщения нет");
+                return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
             }
 
             if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)
             {
-                if (TryGetUserById(message.From.Id, out User user))
+                if (TryGetUserById(message.From.Id, out Domain.Models.User user))
                 {
                     user.Name = message.Text;
                     UpdateUser(user);
-                    return Result<StateUserEnum>.Done(StateUserEnum.MainMenu);
+                    return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu, "Вы в главном меню"));
                 }
 
-                return Result<StateUserEnum>.Fail("Нет такого пользователя");
+                return Result<Tuple<StateUserEnum, string>>.Fail("Нет такого пользователя");
             }
 
-            return Result<StateUserEnum>.Fail("Сообщение не текстовое");
+            return Result<Tuple<StateUserEnum, string>>.Fail("Сообщение не текстовое");
         }
 
         private readonly IUserDbManager _userDbManager;

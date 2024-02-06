@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Common.Core.Components;
 using Common.Core.Interfaces.Settings;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TelegramAPI.Test.Services.Settings
 {

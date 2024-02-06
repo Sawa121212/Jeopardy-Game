@@ -5,5 +5,6 @@
         SetName,
         MainMenu,
         CheckAddedAdmin,
+        InRoom,
     }
 }

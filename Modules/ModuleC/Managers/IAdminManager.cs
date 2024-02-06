@@ -1,4 +1,5 @@
 ﻿using Common.Core.Components;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Users.Domain.Models;
@@ -25,8 +26,8 @@ namespace TelegramAPI.Test.Managers
         /// <summary>
         /// Проверка админа.
         /// </summary>
-        /// <param name="message"></param>
+        /// <param name="update"></param>
         /// <returns></returns>
-        Result<StateUserEnum> CheckAddedAdminMode(Message message);
+        Result<Tuple<StateUserEnum, string>> CheckAddedAdminMode(Update update);
     }
 }

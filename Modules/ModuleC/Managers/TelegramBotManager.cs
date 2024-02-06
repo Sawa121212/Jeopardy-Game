@@ -1,6 +1,7 @@
 ﻿using Common.Core.Components;
 using Common.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramAPI.Test.Services.Settings;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
@@ -103,23 +105,27 @@ namespace TelegramAPI.Test.Managers
                     return;
                 }
 
+                Result<Tuple<StateUserEnum, string>> result = _telegramHandlerService.Handle(update);
+                if (result)
+                {
+                    _user.State = result.Value.Item1;
+
+                    _userService.UpdateUser(_user);
+                    var resultKeyboard = _telegramHandlerService.GetKeyboardMarkup(result.Value.Item1, update);
+                    ReplyMarkupBase replyKeyboard = resultKeyboard ? resultKeyboard.Value : new ReplyKeyboardRemove();
+                    await botClient.SendTextMessageAsync(_user.Id, result.Value.Item2, replyMarkup: replyKeyboard);
+                }
+                else
+                {
+                    await botClient.SendTextMessageAsync(_user.Id, result.ErrorMessage);
+                    return;
+                }
+                return;
                 // Сразу же ставим конструкцию switch, чтобы обрабатывать приходящие Update
-                switch (update.Type)
+                /*switch (update.Type)
                 {
                     case UpdateType.Message:
                         {
-                            Result<StateUserEnum> result = _telegramHandlerService.Handle(message);
-                            if (result)
-                            {
-                                _user.State = result.Value;
-                                _userService.UpdateUser(_user);
-                            }
-                            else
-                            {
-                                await botClient.SendTextMessageAsync(_user.Id, result.ErrorMessage);
-                                return;
-                            }
-                            return;
                         }
 
                     case UpdateType.CallbackQuery:
@@ -182,7 +188,7 @@ namespace TelegramAPI.Test.Managers
 
                             return;
                         }
-                }
+                }*/
             }
             catch (Exception ex)
             {
