@@ -1,6 +1,7 @@
 ﻿using Common.Core.Components;
 using Common.Extensions;
 using Infrastructure.Domain.Helpers;
+using System;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramAPI.Test.Services.Settings;
@@ -34,11 +35,11 @@ namespace TelegramAPI.Test.Managers
             _adminModeKey = null;
         }
 
-        private Result<StateUserEnum> CheckAddedAdminMode(long chatId, string key)
+        private Result<Tuple<StateUserEnum, string>> CheckAddedAdminMode(long chatId, string key)
         {
             if (key.IsNullOrEmpty())
             {
-                return Result<StateUserEnum>.Fail("Нет текста");
+                return Result<Tuple<StateUserEnum, string>>.Fail("Нет текста");
             }
 
             if (key == _adminModeKey)
@@ -46,16 +47,18 @@ namespace TelegramAPI.Test.Managers
                 _telegramSettingsService.SetAdminUserIdToken(chatId.ToString());
                 CancelAddAdminMode();
                 _telegramBotService.SendMessageAsync(chatId, $"Вы стали администратором");
-                return Result<StateUserEnum>.Done(StateUserEnum.MainMenu);
+                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu, "Вы перешли в меню"));
             }
-            return Result<StateUserEnum>.Fail("Не правильный код");
+            return Result<Tuple<StateUserEnum, string>>.Fail("Не правильный код");
         }
 
-        public Result<StateUserEnum> CheckAddedAdminMode(Message message)
+        public Result<Tuple<StateUserEnum, string>> CheckAddedAdminMode(Update update)
         {
+            Message message = update?.Message;
+
             if (message == null)
             {
-                return Result<StateUserEnum>.Fail("Нет сообщения");
+                return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
             }
 
             if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)
@@ -64,12 +67,12 @@ namespace TelegramAPI.Test.Managers
 
                 if (user == null)
                 {
-                    return Result<StateUserEnum>.Fail("Нет юзера");
+                    return Result<Tuple<StateUserEnum, string>>.Fail("Нет юзера");
                 }
 
                 return CheckAddedAdminMode(user.Id, message.Text);
             }
-            return Result<StateUserEnum>.Fail("тип не текстовый...");
+            return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
 
         }
 

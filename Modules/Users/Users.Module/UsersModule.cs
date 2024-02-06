@@ -1,8 +1,10 @@
-﻿using System.Resources;
+﻿using System;
+using System.Resources;
 using Common.Core.Components;
 using Common.Core.Localization;
 using Prism.Ioc;
 using Prism.Modularity;
+using TelegramAPI.Test.Services.Settings;
 using Users.Domain.Models;
 using Users.Infrastructure;
 using Users.Infrastructure.Interfaces;
@@ -22,6 +24,7 @@ namespace Users.Module
                 // сперва регистрируем контекст БД с вопросам
                 .RegisterSingleton<IUserDbManager, UserDbManager>()
                 .RegisterSingleton<IUserService, UserService>()
+                .RegisterSingleton<IMainTelegramMenuService, MainTelegramMenuService>()
                 .RegisterSingleton<ITelegramHandlerService, TelegramHandlerService>();
 
             // регистрируем View для навигации по Регионам
@@ -36,10 +39,28 @@ namespace Users.Module
             //containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
 
             IUserService userService = containerProvider.Resolve<IUserService>();
+            IMainTelegramMenuService mainTelegramMenuService = containerProvider.Resolve<IMainTelegramMenuService>();
 
-            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(StateUserEnum.SetName, userService.UpdateUsername);
-            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(StateUserEnum.MainMenu,
-                (m) => { return Result<StateUserEnum>.Fail("Вы в главном меню, но пока тут пусто"); });
+            ITelegramHandlerService telegramHandlerService = containerProvider.Resolve<ITelegramHandlerService>();
+            telegramHandlerService.RegisterHandler(StateUserEnum.SetName,
+                userService.UpdateUsername,
+                (u) => 
+                {
+                    var result = telegramHandlerService.GetUser(u);
+                    if (result)
+                        return Result<Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup>.Done(new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(new Telegram.Bot.Types.ReplyMarkups.KeyboardButton($"{result.Value.FirstName} {result.Value.LastName}")));
+                    return Result<Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup>.Fail(result.ErrorMessage);
+                });
+
+            telegramHandlerService.RegisterHandler(StateUserEnum.MainMenu,
+                (u) => { if (u.Message.Text == "Войти в комнату")
+                        return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
+                    return Result<Tuple<StateUserEnum, string>>.Fail("Вы в главном меню, и я не понимаю, куда тебе нужно..."); },
+                mainTelegramMenuService.CreateMenu);
+
+            telegramHandlerService.RegisterHandler(StateUserEnum.InRoom,
+                (u) => { return Result<Tuple<StateUserEnum, string>>.Fail("Вы в игровой комнате"); },
+                null);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace TelegramAPI.Test
             containerProvider.Resolve<ISettingsViewManager>().AddView<TelegramSettingsView>("Параметры бот", "Telegram бот");
             IAdminManager adminManager = containerProvider.Resolve<IAdminManager>();
 
-            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(StateUserEnum.CheckAddedAdmin, adminManager.CheckAddedAdminMode);
+            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(StateUserEnum.CheckAddedAdmin, adminManager.CheckAddedAdminMode, null);
         }
     }
 }
