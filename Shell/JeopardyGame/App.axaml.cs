@@ -8,11 +8,10 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Common.Core.Localization;
 using Common.Core.Prism.Regions;
-using Common.Ui.Managers;
 using Common.Ui.Parameters;
 using Confirmation.Module;
 using Confirmation.Module.Services;
-using Game;
+using Game.Module;
 using Infrastructure.Interfaces.Managers;
 using Infrastructure.Interfaces.Services;
 using Infrastructure.Module;
@@ -21,6 +20,7 @@ using Infrastructure.Module.Services;
 using Infrastructure.Module.Services.ApplicationInfo;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
+using JeopardyGame.Views.Shell;
 using Notification.Module;
 using Notification.Module.Services;
 using Prism.DryIoc;
@@ -32,7 +32,6 @@ using TelegramAPI.Test;
 using TopicDb.Module;
 using Users.Module;
 using IResourceProvider = Common.Core.Localization.IResourceProvider;
-using ShellView = JeopardyGame.Views.Shell.ShellView;
 
 namespace JeopardyGame
 {
@@ -64,7 +63,6 @@ namespace JeopardyGame
                 .RegisterSingleton<IResourceProvider, ResourceProvider>(Assembly.GetExecutingAssembly().FullName)
                 .RegisterSingleton<IResourceService, ResourceService>()
                 .RegisterSingleton<IPresentationParameters, PresentationParameters>()
-                .RegisterSingleton<IDialogManager, DialogManager<ShellView>>()
                 .RegisterSingleton<IApplicationInfoService, ApplicationInfoService>()
                 .RegisterSingleton<IProtobufSerializeService, ProtobufSerializeService>()
                 .RegisterSingleton<IPathService, PathService>()
@@ -95,7 +93,6 @@ namespace JeopardyGame
                 .AddModule<UsersModule>()
                 .AddModule<TopicDbModule>()
                 .AddModule<GameModule>()
-                //.AddModule<ModuleBModule>()
                 .AddModule<TelegramApiTestModule>();
 
             base.ConfigureModuleCatalog(moduleCatalog);

@@ -1,17 +1,11 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Common.Core.Prism;
+﻿using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using Confirmation.Module.Enums;
-using Material.Dialog;
-using Material.Dialog.Icons;
 using Prism.Commands;
 using Prism.Regions;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Views.Questions;
 using TopicsDB.Infrastructure.Views.Topics;
-using DialogResult = Material.Dialog.DialogResult;
 
 namespace TopicsDB.Infrastructure.Views
 {
@@ -37,48 +31,21 @@ namespace TopicsDB.Infrastructure.Views
             RegionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewTopicView), parameter);
         }
 
-
         private async void OnDeleteTopic(Topic topic)
         {
-            /*ConfirmationResultEnum result = await _confirmationService.ShowInfoAsync("Подтверждение",
-                $"Вы действительно хотите удалить тему \"{topic.Name}\"?",
-                ConfirmationResultEnum.Yes | ConfirmationResultEnum.No).ConfigureAwait(true);
+            ConfirmationResultEnum result = await _confirmationService.ShowInfoAsync(
+                    "Подтверждение",
+                    $"Вы действительно хотите удалить тему \"{topic.Name}\"?",
+                    ConfirmationResultEnum.Yes | ConfirmationResultEnum.No)
+                .ConfigureAwait(true);
 
             if (result == ConfirmationResultEnum.Yes)
             {
                 _topicService.DeleteTopic(topic);
                 UpdateTopicsInformation();
-            }*/
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime app)
-            {
-                DialogResult result = await DialogHelper.CreateAlertDialog(new AlertDialogBuilderParams()
-                {
-                    ContentHeader = "Confirm action",
-                    SupportingText = "Are you sure to DELETE 20 FILES?",
-                    StartupLocation = WindowStartupLocation.CenterOwner,
-                    NegativeResult = new DialogResult("cancel"),
-                    DialogHeaderIcon = DialogIconKind.Help,
-                    DialogButtons = new[]
-                    {
-                        new DialogButton
-                        {
-                            Content = "CANCEL",
-                            Result = "cancel"
-                        },
-                        new DialogButton
-                        {
-                            Content = "DELETE",
-                            Result = "delete"
-                        }
-                    }
-                }).ShowDialog(app.MainWindow);
-
-                if (result.GetResult == "delete")
-                {
-                    _topicService.DeleteTopic(topic);
-                    UpdateTopicsInformation();
-                }
             }
+
+            
         }
 
         /// <summary>
@@ -108,7 +75,6 @@ namespace TopicsDB.Infrastructure.Views
 
             RegionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(AddNewQuestionView), parameter);
         }
-
 
         private async void OnDeleteQuestion(Question question)
         {

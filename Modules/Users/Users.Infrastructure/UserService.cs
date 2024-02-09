@@ -7,7 +7,6 @@ using Users.Domain;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 using Users.Infrastructure.Interfaces.Managers;
-using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace Users.Infrastructure
 {

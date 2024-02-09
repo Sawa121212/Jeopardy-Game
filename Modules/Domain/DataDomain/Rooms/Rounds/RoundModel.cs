@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Avalonia.Media;
 using Common.Extensions;
 using DataDomain.Rooms.Rounds.Enums;
+using DataDomain.Rooms.Rounds.Helpers;
 using ReactiveUI;
 
 namespace DataDomain.Rooms.Rounds
@@ -13,6 +15,7 @@ namespace DataDomain.Rooms.Rounds
         public RoundModel(RoundsLevelEnum level)
         {
             Level = level;
+            Background = RoundHelper.GetRoundColor(level);
         }
 
         /// <summary>
@@ -38,7 +41,14 @@ namespace DataDomain.Rooms.Rounds
             set => this.RaiseAndSetIfChanged(ref _topics, value);
         }
 
+        public SolidColorBrush Background
+        {
+            get => _background;
+            init => this.RaiseAndSetIfChanged(ref _background, value);
+        }
+
         private readonly RoundsLevelEnum _level;
         private List<TopicModel>? _topics;
+        private readonly SolidColorBrush _background;
     }
 }

@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.0.6" />
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
+    <PackageReference Include="Material.Avalonia" Version="3.3.0" />
+    <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Common.Ui\Common.Ui.csproj" />
+    <ProjectReference Include="..\..\AppModules\Confirmation\Confirmation.Module\Confirmation.Module.csproj" />
+    <ProjectReference Include="..\..\Domain\DataDomain\DataDomain.csproj" />
+    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Test.csproj" />
+    <ProjectReference Include="..\Game.Domain\Game.Domain.csproj" />
+    <ProjectReference Include="..\Game.Infrastructure.Interfaces\Game.Infrastructure.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

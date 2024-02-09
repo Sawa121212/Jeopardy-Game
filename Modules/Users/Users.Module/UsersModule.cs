@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Resources;
 using Common.Core.Components;
-using Common.Core.Localization;
 using Prism.Ioc;
 using Prism.Modularity;
 using TelegramAPI.Test.Services.Settings;

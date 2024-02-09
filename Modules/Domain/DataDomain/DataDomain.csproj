@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -10,10 +10,6 @@
     <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
     <ProjectReference Include="..\..\TopicsDB\TopicsDB.Domain\TopicDb.Domain.csproj" />
     <ProjectReference Include="..\..\Users\Users.Domain\Users.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Rooms\Rounds\Helpers\" />
   </ItemGroup>
 
 </Project>
