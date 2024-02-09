@@ -1,0 +1,114 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:rounds="clr-namespace:DataDomain.Rooms.Rounds;assembly=DataDomain"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:converters="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
+             xmlns:old="clr-namespace:Common.Ui.Converters.Old;assembly=Common.Ui"
+             xmlns:domain="clr-namespace:Users.Domain;assembly=Users.Domain"
+             xmlns:rooms="clr-namespace:DataDomain.Rooms;assembly=DataDomain"
+             xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
+             xmlns:data1="clr-namespace:Game.Domain.Data;assembly=Game.Domain"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Ui.Views.GameControls.GameView"
+             x:DataType="gameControls:GameViewModel"
+             x:Name="GameControl">
+
+    <Design.DataContext>
+        <gameControls:GameViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <Border Background="{Binding CurrentRound.Background}"
+                Grid.Row="0"
+                Opacity="0.62" />
+
+        <!-- Back-->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *">
+            <Button Command="{Binding MoveBackCommand}" Classes="Flat"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Grid.Column="0"
+                    Margin="3">
+                <Button.Content>
+                    <Grid ColumnDefinitions="Auto, 8, *">
+                        <avalonia:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+                        <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+                    </Grid>
+                </Button.Content>
+            </Button>
+
+            <TextBlock Text="{Binding ActivePlayer.Name, Mode=OneWay, FallbackValue='???'}"
+                       Classes="Headline4"
+                       Foreground="{DynamicResource MaterialPrimaryMidBrush}"
+                       IsVisible="{Binding IsGameStarted, Mode=OneWay}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Grid.Column="1" />
+        </Grid>
+
+
+        <!-- Content -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="Auto,*"
+              IsVisible="{Binding Rounds, Converter={x:Static converters:CollectionConverter.IsAny}}">
+
+            <DataGrid Grid.Column="0"
+                      ItemsSource="{Binding Players, Mode=OneWay}"
+                      CanUserResizeColumns="True"
+                      CanUserReorderColumns="True"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      Margin="3">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Игрок"
+                                        Binding="{Binding Name}" />
+                    <DataGridTextColumn Header="Points"
+                                        Binding="{Binding Points}" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <ContentControl Grid.Column="1"
+                            IsVisible="{Binding IsShowedTopics, Mode=OneWay}"
+                            prism:RegionManager.RegionName="{x:Static data1:GameRegionNameService.ContentRegionName}"
+                            Margin="3" />
+
+            <Button Grid.Column="1"
+                    Classes="Flat"
+                    IsVisible="{Binding !IsShowedTopics, Mode=OneWay}"
+                    Content="Показать темы раунда"
+                    Command="{Binding ShowTopicsCarouselCommand}" />
+        </Grid>
+
+        <controls:Card Grid.Row="2"
+                       Margin="3">
+            <TextBlock Text="{Binding Message, Mode=OneWay}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center" />
+
+            <!--<TextBlock Text=""
+                   Foreground="{DynamicResource MaterialValidationErrorBrush}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   IsVisible="{Binding Game, Converter={x:Static ObjectConverters.IsNull}}" />-->
+        </controls:Card>
+
+        <!-- Start game button -->
+        <Button Content="ПОЕХАЛИ"
+                Command="{Binding ShowGameTopicsCommand}"
+                IsVisible="{Binding !IsGameStarted, Mode=OneWay}"
+                Background="{DynamicResource MaterialCardBackgroundBrush}"
+                Foreground="{DynamicResource MaterialPrimaryMidBrush}"
+                Grid.Row="1" Grid.RowSpan="2" />
+    </Grid>
+</UserControl>

@@ -10,6 +10,19 @@ namespace Common.Extensions
         /// Преобразует текст к enum
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static int NamesLength<T>(this T source) where T : struct, IComparable, IFormattable, IConvertible
+        {
+            if (!typeof(T).IsEnum)
+                throw new ArgumentException($"{typeof(T)} must be an enumerated type");
+
+            return Enum.GetNames(typeof(T)).Length;
+        }
+
+        /// <summary>
+        /// Преобразует текст к enum
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="enumString"></param>
         /// <returns></returns>
         public static T ToEnum<T>(this string enumString) where T : struct, IComparable, IFormattable, IConvertible
@@ -31,19 +44,19 @@ namespace Common.Extensions
                 ? value
                 : default(T);
         }
-        
+
         /// <summary>
         /// Преобразует enum к int
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="soure"></param>
         /// <returns></returns>
-        public static int ToInt<T>(this T soure) where T :struct, IComparable, IFormattable, IConvertible
+        public static int ToInt<T>(this T soure) where T : struct, IComparable, IFormattable, IConvertible
         {
             if (!typeof(T).IsEnum)
                 throw new ArgumentException($"{typeof(T)} must be an enumerated type");
 
-            return (int)(IConvertible)soure;
+            return (int) (IConvertible) soure;
         }
 
         /// <summary>
@@ -55,7 +68,7 @@ namespace Common.Extensions
         {
             FieldInfo? fieldInfo = value.GetType().GetField(value.ToString());
             if (fieldInfo == null) return null;
-            DescriptionAttribute? attribute = (DescriptionAttribute)fieldInfo.GetCustomAttribute(typeof(DescriptionAttribute));
+            DescriptionAttribute? attribute = (DescriptionAttribute) fieldInfo.GetCustomAttribute(typeof(DescriptionAttribute));
             return attribute != null ? attribute.Description : value.ToString();
         }
 
@@ -75,7 +88,8 @@ namespace Common.Extensions
 
             if (flags.GetType() != testFlags.GetType())
             {
-                throw new ArgumentException($"Enumeration type mismatch. The flag is of type '{testFlags.GetType()}', was expecting '{flags.GetType()}'.");
+                throw new ArgumentException(
+                    $"Enumeration type mismatch. The flag is of type '{testFlags.GetType()}', was expecting '{flags.GetType()}'.");
             }
 
             Type? underlyingType = Enum.GetUnderlyingType(flags.GetType());
@@ -100,8 +114,10 @@ namespace Common.Extensions
 
             if (flags.GetType() != testFlags.GetType())
             {
-                throw new ArgumentException($"Enumeration type mismatch. The flag is of type '{testFlags.GetType()}', was expecting '{flags.GetType()}'.");
+                throw new ArgumentException(
+                    $"Enumeration type mismatch. The flag is of type '{testFlags.GetType()}', was expecting '{flags.GetType()}'.");
             }
+
             Type? underlyingType = Enum.GetUnderlyingType(flags.GetType());
             dynamic flagsType = Convert.ChangeType(flags, underlyingType);
             dynamic testFlagsType = Convert.ChangeType(testFlags, underlyingType);
@@ -123,7 +139,7 @@ namespace Common.Extensions
 
             flagsType |= addingFlagsType;
 
-            return (T)flagsType;
+            return (T) flagsType;
         }
 
         /// <summary>
@@ -141,7 +157,7 @@ namespace Common.Extensions
             dynamic removingFlagsType = Convert.ChangeType(removingFlags, underlyingType);
             flagsType &= ~removingFlagsType;
 
-            return (T)flagsType;
+            return (T) flagsType;
         }
 
         /// <summary>
@@ -161,7 +177,7 @@ namespace Common.Extensions
             {
                 dynamic? temp = flagsAsInt & bit;
                 if (temp != 0)
-                    processFlag((T)temp);
+                    processFlag((T) temp);
             }
         }
     }

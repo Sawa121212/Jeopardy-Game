@@ -1,36 +1,66 @@
 ﻿using System;
+using DataDomain.Data;
 using DataDomain.Rooms.Rounds.Enums;
+using Avalonia.Media;
 
 namespace DataDomain.Rooms.Rounds.Helpers
 {
+    /// <summary>
+    /// Помощник по раунду
+    /// </summary>
     public static class RoundHelper
     {
-        public static int GetRoundLevelMultiplier(RoundsLevelEnum levelEnum)
+        /// <summary>
+        /// Получить множитель очков в раунде
+        /// </summary>
+        /// <param name="roundLevel"></param>
+        /// <returns></returns>
+        public static int GetRoundLevelMultiplier(RoundsLevelEnum roundLevel)
         {
-            return levelEnum switch
+            return roundLevel switch
             {
                 RoundsLevelEnum.Round1 => 1,
                 RoundsLevelEnum.Round2 => 2,
                 RoundsLevelEnum.Round3 => 3,
                 RoundsLevelEnum.Shootout => 1,
                 RoundsLevelEnum.Final => 1,
-                _ => throw new ArgumentOutOfRangeException(nameof(levelEnum), levelEnum, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(roundLevel), roundLevel, null)
             };
         }
 
-        public static RoundsLevelEnum GetNextRoundLevel(RoundsLevelEnum? roundLevelEnum)
+        /// <summary>
+        /// Получить следующий раунд
+        /// </summary>
+        /// <param name="roundLevel"></param>
+        /// <returns></returns>
+        public static RoundsLevelEnum GetNextRoundLevel(RoundsLevelEnum? roundLevel)
         {
-            roundLevelEnum = roundLevelEnum switch
+            roundLevel = roundLevel switch
             {
                 RoundsLevelEnum.Round1 => RoundsLevelEnum.Round2,
                 RoundsLevelEnum.Round2 => RoundsLevelEnum.Round3,
-                RoundsLevelEnum.Round3 => RoundsLevelEnum.Shootout,
-                RoundsLevelEnum.Shootout => RoundsLevelEnum.Final,
-                RoundsLevelEnum.Final => null,
+                RoundsLevelEnum.Round3 => RoundsLevelEnum.Final,
+                RoundsLevelEnum.Final => RoundsLevelEnum.Shootout,
+                RoundsLevelEnum.Shootout => RoundsLevelEnum.Shootout,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
-            return (RoundsLevelEnum) roundLevelEnum;
+            return (RoundsLevelEnum) roundLevel;
         }
+
+        /// <summary>
+        /// Получить цвет комнаты для раунда
+        /// </summary>
+        /// <param name="roundLevel"></param>
+        /// <returns></returns>
+        public static SolidColorBrush GetRoundColor(RoundsLevelEnum roundLevel) => roundLevel switch
+        {
+            RoundsLevelEnum.Round1 => GameParameterConstants.FirstRoundColor,
+            RoundsLevelEnum.Round2 => GameParameterConstants.SecondRoundColor,
+            RoundsLevelEnum.Round3 => GameParameterConstants.ThirdRoundColor,
+            RoundsLevelEnum.Shootout => GameParameterConstants.ThirdRoundColor, // ToDo: find color
+            RoundsLevelEnum.Final => GameParameterConstants.FinalRoundColor,
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

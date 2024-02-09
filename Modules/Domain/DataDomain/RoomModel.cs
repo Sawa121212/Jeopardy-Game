@@ -12,16 +12,16 @@ namespace DataDomain
         public RoomModel(string key)
         {
             Key = key;
-            Players = new List<PlayerModel>();
+            Players = new List<PlayerModel?>();
         }
 
-        public List<PlayerModel> Players
+        public List<PlayerModel?> Players
         {
             get => _players;
             private set => this.RaiseAndSetIfChanged(ref _players, value);
         }
 
-        public PlayerModel Host
+        public PlayerModel? Host
         {
             get => _host;
             set => this.RaiseAndSetIfChanged(ref _host, value);
@@ -39,8 +39,8 @@ namespace DataDomain
             private set => this.RaiseAndSetIfChanged(ref _key, value);
         }
 
-        private List<PlayerModel> _players;
-        private PlayerModel _host;
+        private List<PlayerModel?> _players;
+        private PlayerModel? _host;
         private GameModel? _game;
         private string _key;
     }

@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Extensions\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\..\Domain\DataDomain\DataDomain.csproj" />
+  </ItemGroup>
+
+</Project>
