@@ -49,7 +49,14 @@ namespace Common.Core.Views
             if (_journal.CanGoBack)
             {
                 _journal.GoBack();
+                return;
             }
+
+            GoBackOrder();
+        }
+
+        public virtual void GoBackOrder()
+        {
         }
 
         public ICommand MoveBackCommand { get; }

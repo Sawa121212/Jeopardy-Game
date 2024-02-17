@@ -5,9 +5,10 @@ namespace Users.Infrastructure.Managers
 {
     public class UserDbManager : IUserDbManager
     {
-        public UserDbManager()
+        public UserDbManager(UserDbContext userDbContext)
         {
-            _topicDbContext = new UserDbContext();
+            //_topicDbContext = new UserDbContext();
+            _topicDbContext = userDbContext;
         }
 
         /// <inheritdoc />

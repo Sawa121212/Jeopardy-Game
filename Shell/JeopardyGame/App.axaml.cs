@@ -32,6 +32,7 @@ using TelegramAPI.Test;
 using TopicDb.Module;
 using Users.Module;
 using IResourceProvider = Common.Core.Localization.IResourceProvider;
+using PlayInfoView = JeopardyGame.Views.PlayInfoPages.PlayInfoView;
 
 namespace JeopardyGame
 {
@@ -87,9 +88,13 @@ namespace JeopardyGame
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             moduleCatalog
+
+                // App
                 .AddModule<ConfirmationModule>()
                 .AddModule<NotificationModule>()
                 .AddModule<InfrastructureModule>()
+
+                // modules
                 .AddModule<UsersModule>()
                 .AddModule<TopicDbModule>()
                 .AddModule<GameModule>()

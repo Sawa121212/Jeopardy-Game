@@ -1,6 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
+using DataDomain.Rooms.Rounds.Enums;
 using Game.Domain.Data;
 using Game.Ui.Views.GameControls.GamePages;
 using Game.Ui.Views.GameControls.GamePages.Rounds;
@@ -35,7 +37,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Отобразить название текущего раунда
         /// </summary>
-        private void OnShowRoundLevel()
+        private void OnShowRoundLevelInformation()
         {
             NavigationParameters parameter = new()
             {
@@ -67,7 +69,21 @@ namespace Game.Ui.Views.GameControls
         /// </summary>
         private void OnShowCurrentRound()
         {
-            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(BaseRoundControlView));
+            if (_game == null)
+            {
+                return;
+            }
+
+            if (_game.CurrentRoundLevel == RoundsLevelEnum.Final)
+            {
+                PrepareFinalRound();
+                RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundControlView));
+                return;
+            }
+            else
+            {
+                RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(BaseRoundControlView));
+            }
         }
 
         /// <summary>
@@ -77,6 +93,12 @@ namespace Game.Ui.Views.GameControls
         {
             if (_displayedQuestion == null)
             {
+                return;
+            }
+            
+            if (_currentRound?.Level == RoundsLevelEnum.Final)
+            {
+                RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundDisplayedQuestionView));
                 return;
             }
 
@@ -98,6 +120,14 @@ namespace Game.Ui.Views.GameControls
             }
 
             RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(CorrectAnswerView));
+        }
+
+        /// <summary>
+        /// Показать ставки игроков
+        /// </summary>
+        private void OnShowPlayersBet()
+        {
+            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundDisplayedQuestionView));
         }
 
         /// <summary>

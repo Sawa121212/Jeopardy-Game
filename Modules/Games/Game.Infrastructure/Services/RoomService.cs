@@ -100,12 +100,12 @@ namespace Game.Infrastructure.Services
 
             foreach (PlayerModel? player in room.Players.OfType<PlayerModel>())
             {
-                await KickPlayer(room.Key, player.Id);
+                await KickPlayer(room.Key, player.Id).ConfigureAwait(true);
             }
 
             if (room.Host != null)
             {
-                await KickPlayer(room.Key, room.Host.Id);
+                await KickPlayer(room.Key, room.Host.Id).ConfigureAwait(true);
             }
 
             return Rooms.Remove(room);

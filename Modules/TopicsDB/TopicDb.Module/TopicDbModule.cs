@@ -14,7 +14,7 @@ using TopicsDB.Infrastructure.Views.Topics;
 namespace TopicDb.Module
 {
     /// <summary>
-    /// Модуль A
+    /// Модуль управления БД тем с вопросами
     /// </summary>
     public class TopicDbModule : IModule
     {

@@ -8,6 +8,7 @@ using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace TopicsDB.Infrastructure.Services
 {
+    /// <inheritdoc />
     public class TopicService : ITopicService
     {
         public TopicService(ITopicDbManager topicDbManager)

@@ -23,9 +23,9 @@ namespace Game.Ui.Converter
                         case RoundsLevelEnum.Round3:
                             return levelEnum.ToInt().ToString();
                         case RoundsLevelEnum.Final:
-                            return "Финальный";
+                            return "ФИНАЛЬНЫЙ";
                         case RoundsLevelEnum.Shootout:
-                            return "Перестрелочный))";
+                            return "ПЕРЕСТРЕЛОЧНЫЙ))";
                         default:
                             throw new ArgumentOutOfRangeException();
                     }

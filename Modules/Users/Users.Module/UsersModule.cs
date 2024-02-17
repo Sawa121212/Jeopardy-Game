@@ -3,6 +3,7 @@ using Common.Core.Components;
 using Prism.Ioc;
 using Prism.Modularity;
 using TelegramAPI.Test.Services.Settings;
+using Users.Domain;
 using Users.Domain.Models;
 using Users.Infrastructure;
 using Users.Infrastructure.Interfaces;
@@ -12,7 +13,7 @@ using Users.Infrastructure.Managers;
 namespace Users.Module
 {
     /// <summary>
-    /// Модуль A
+    /// Модуль управления БД пользователей
     /// </summary>
     public class UsersModule : IModule
     {
@@ -20,6 +21,7 @@ namespace Users.Module
         {
             containerRegistry
                 // сперва регистрируем контекст БД с вопросам
+                .RegisterSingleton<UserDbContext>()
                 .RegisterSingleton<IUserDbManager, UserDbManager>()
                 .RegisterSingleton<IUserService, UserService>()
                 .RegisterSingleton<IMainTelegramMenuService, MainTelegramMenuService>()

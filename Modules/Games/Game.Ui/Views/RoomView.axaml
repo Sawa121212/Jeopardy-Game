@@ -34,6 +34,19 @@
             </Button.Content>
         </Button>
 
+        <Button Command="{Binding SendAnInvitationCommand}"
+                IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                HorizontalAlignment="Right"
+                Grid.Row="0"
+                Margin="3">
+            <Button.Content>
+                <Grid ColumnDefinitions="Auto, 8, *">
+                    <avalonia:MaterialIcon Grid.Column="0" Kind="EmailSendOutline" />
+                    <TextBlock Grid.Column="2" Text="Пригласить" />
+                </Grid>
+            </Button.Content>
+        </Button>
+
         <controls:Card Grid.Row="1"
                        IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNullOrEmpty}}"
                        HorizontalAlignment="Center"
@@ -184,7 +197,7 @@
                                 <MenuItem.Icon>
                                     <avalonia:MaterialIcon Kind="AccountCancelOutline"
                                                            Width="24"
-                                                           Height="24"/>
+                                                           Height="24" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </MenuItem>

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Common.Extensions;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
@@ -33,11 +34,11 @@ namespace Game.Ui.Views.GameControls
         public ICommand CloseQuestionCommand { get; }
 
         /// <summary>
-        /// Выбрать вопрос для отображения
+        /// Выбрать вопрос и отобразить на экране
         /// </summary>
         /// <param name="questionModel"></param>
         /// <returns></returns>
-        private async Task OnSelectQuestionAnswer(QuestionModel? questionModel)
+        private async Task OnSelectAndShowQuestionAnswer(QuestionModel? questionModel)
         {
             if (questionModel is null)
             {
@@ -149,6 +150,12 @@ namespace Game.Ui.Views.GameControls
             DisplayedQuestion.IsAsked = true;
             DisplayedQuestion = null;
 
+            if (_currentRound?.Level == RoundsLevelEnum.Final)
+            {
+                OnShowPlayersBet();
+                return;
+            }
+
             GameIsReadyToReceiveAnswers(false);
             Message = $"Вопрос выбирает игрок {_activePlayer?.Name}";
 
@@ -228,7 +235,7 @@ namespace Game.Ui.Views.GameControls
 
             _game.CurrentRoundLevel = RoundHelper.GetNextRoundLevel(_game.CurrentRoundLevel);
 
-            ActivePlayer = GetPlayerFirstChoosingTopic();
+            SetPlayerFirstChoosingTopic();
             OnChangeRound();
         }
 
@@ -255,6 +262,33 @@ namespace Game.Ui.Views.GameControls
         }
 
         #endregion
+
+        /// <summary>
+        /// Получить игрока с минимальным количеством очков
+        /// </summary>
+        /// <param name="playerList"></param>
+        /// <returns></returns>
+        private PlayerModel GetPlayerWithMinPoint(List<PlayerModel?> playerList = null)
+        {
+            List<PlayerModel?> players = new();
+
+            if (playerList != null && !playerList.Any())
+            {
+                if (_players == null || !playerList.Any())
+                {
+                    return null;
+                }
+
+                players = new List<PlayerModel?>(_players);
+            }
+            else
+            {
+                players = playerList;
+            }
+
+            int? minPoint = players?.Min(p => p.Points);
+            return players?.FirstOrDefault(p => p.Points == minPoint);
+        }
 
         /// <summary>
         /// Очистить все данные

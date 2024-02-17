@@ -66,7 +66,7 @@
                         <Button.Content>
                             <Grid ColumnDefinitions="Auto, 8, *">
                                 <avalonia:MaterialIcon Grid.Column="0" Kind="Info" />
-                                <TextBlock Grid.Column="2" Text="Как играть?" />
+                                <TextBlock Grid.Column="2" Text="Информация" />
                             </Grid>
                         </Button.Content>
                     </Button>

@@ -7,6 +7,7 @@ using Users.Domain;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 using Users.Infrastructure.Interfaces.Managers;
+using User = Users.Domain.Models.User;
 
 namespace Users.Infrastructure
 {
@@ -20,9 +21,9 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
-        public Domain.Models.User CreateUser(long userId, string name, string nick)
+        public User CreateUser(long userId, string name, string nick)
         {
-            Domain.Models.User user = new()
+            User user = new()
             {
                 Id = userId,
                 Name = name,
@@ -35,7 +36,7 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
-        public void DeleteUser(Domain.Models.User question)
+        public void DeleteUser(User question)
         {
             if (_dbContext.Users.Contains(question))
             {
@@ -46,7 +47,7 @@ namespace Users.Infrastructure
         /// <inheritdoc />
         public void DeleteUser(long questionId)
         {
-            Domain.Models.User user = _dbContext.Users.Find(questionId);
+            User user = _dbContext.Users.Find(questionId);
             if (user == null)
             {
                 return;
@@ -57,21 +58,21 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
-        public IList<Domain.Models.User> GetAllUsers()
+        public IList<User> GetAllUsers()
         {
             return _dbContext.Users.ToList();
         }
 
-        public bool TryGetUserById(long userId, out Domain.Models.User user)
+        public bool TryGetUserById(long userId, out User user)
         {
             user = _dbContext.Users.Find(userId);
             return user != null;
         }
 
         /// <inheritdoc />
-        public void UpdateUser(Domain.Models.User user)
+        public void UpdateUser(User user)
         {
-            Domain.Models.User oldUser = _dbContext.Users.Find(user.Id);
+            User oldUser = _dbContext.Users.Find(user.Id);
             if (oldUser == null)
             {
                 return;
@@ -85,13 +86,13 @@ namespace Users.Infrastructure
             _dbContext.SaveChanges();
         }
 
-        public bool TryGetUserByNiсk(string nick, out Domain.Models.User user)
+        public bool TryGetUserByNiсk(string nick, out User user)
         {
             user = _dbContext.Users.FirstOrDefault(x => x.Nick == nick);
             return user != null;
         }
 
-        public Result<Tuple<StateUserEnum, string>> UpdateUsername(Telegram.Bot.Types.Update update)
+        public Result<Tuple<StateUserEnum, string>> UpdateUsername(Update update)
         {
             Message message = update?.Message;
 
@@ -102,11 +103,12 @@ namespace Users.Infrastructure
 
             if (message.Type == Telegram.Bot.Types.Enums.MessageType.Text)
             {
-                if (TryGetUserById(message.From.Id, out Domain.Models.User user))
+                if (TryGetUserById(message.From.Id, out User user))
                 {
                     user.Name = message.Text;
                     UpdateUser(user);
-                    return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu, "Вы в главном меню"));
+                    return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu,
+                        "Вы в главном меню"));
                 }
 
                 return Result<Tuple<StateUserEnum, string>>.Fail("Нет такого пользователя");

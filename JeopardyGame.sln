@@ -14,9 +14,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Core", "Common\Common.Core\Common.Core.csproj", "{AC7A420C-A27F-4505-A3FF-2474F0F839CB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9B162CB6-846F-4C62-948F-EF2CC66BF398}"
-	ProjectSection(SolutionItems) = preProject
-		CreateBot.txt = CreateBot.txt
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataDomain", "Modules\Domain\DataDomain\DataDomain.csproj", "{30CC2C3B-958B-4307-8D02-7827C8F490A9}"
 EndProject
@@ -70,13 +67,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Games", "Games", "{B028B1D5
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Module", "Modules\Games\Game.Module\Game.Module.csproj", "{00CFAEB2-F9DA-4D39-876F-D3E29158ABC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Ui", "Modules\Games\Game.Ui\Game.Ui.csproj", "{C475CE92-A9B9-4278-9CD4-5CE08590A18C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Ui", "Modules\Games\Game.Ui\Game.Ui.csproj", "{C475CE92-A9B9-4278-9CD4-5CE08590A18C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Domain", "Modules\Games\Game.Domain\Game.Domain.csproj", "{E3073F2D-BC81-4AB6-A8B2-4A543A6C4C34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Domain", "Modules\Games\Game.Domain\Game.Domain.csproj", "{E3073F2D-BC81-4AB6-A8B2-4A543A6C4C34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Infrastructure", "Modules\Games\Game.Infrastructure\Game.Infrastructure.csproj", "{6999458E-8EC2-42EC-932E-D441E5E6C319}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Infrastructure", "Modules\Games\Game.Infrastructure\Game.Infrastructure.csproj", "{6999458E-8EC2-42EC-932E-D441E5E6C319}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Infrastructure.Interfaces", "Modules\Games\Game.Infrastructure.Interfaces\Game.Infrastructure.Interfaces.csproj", "{62E196E6-DF79-48A4-8A94-9E344FD15355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Infrastructure.Interfaces", "Modules\Games\Game.Infrastructure.Interfaces\Game.Infrastructure.Interfaces.csproj", "{62E196E6-DF79-48A4-8A94-9E344FD15355}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
