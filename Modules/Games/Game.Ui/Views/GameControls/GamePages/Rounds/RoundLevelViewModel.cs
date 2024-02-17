@@ -1,4 +1,5 @@
 ﻿using Common.Core.Prism;
+using Common.Core.Prism.Regions;
 using Common.Core.Views;
 using DataDomain.Rooms.Rounds;
 using Game.Domain.Data;
@@ -36,6 +37,18 @@ namespace Game.Ui.Views.GameControls.GamePages.Rounds
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
             navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound);
+        }
+
+        public override void GoBackOrder()
+        {
+            NavigationParameters parameter = new()
+            {
+                {
+                    NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound
+                }
+            };
+
+            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
         }
 
         private RoundModel _round;

@@ -108,7 +108,7 @@ namespace Game.Infrastructure.Mangers
                 return false;
             }
 
-            return await _roomService.Remove(roomKey);
+            return await _roomService.Remove(roomKey).ConfigureAwait(true);
         }
 
         /// <summary>

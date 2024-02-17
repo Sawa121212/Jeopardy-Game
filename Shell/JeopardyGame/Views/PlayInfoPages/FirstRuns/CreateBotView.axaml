@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:playInfoPages="clr-namespace:JeopardyGame.Views.PlayInfoPages"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JeopardyGame.Views.PlayInfoPages.FirstRuns.CreateBotView">
+
+    <ScrollViewer Classes="Modern">
+        <ItemsControl>
+
+            <TextBlock TextWrapping="Wrap"
+                       ClipToBounds="False">
+                Для начала, чтобы играть в игру, вам требуется создать вашего Telegram бота.
+            </TextBlock>
+
+            <TextBlock Text="Создание бота"
+                       Classes="Headline6"
+                       Margin="0,10,0,0" />
+
+            <TextBlock TextWrapping="Wrap"
+                       ClipToBounds="False">
+                Для начала нам требуется зарегистрировать вашего бота Telegram. Делается это через "Ботобатю" (https://t.me/BotFather) в самом Telegram.
+                <LineBreak /><LineBreak />1. Переходим по ссылке и попадаем в диалог с <Bold>BotFather</Bold> и жмем
+                <Bold>"Запустить"</Bold>. BotFather - это официальный бот Telegram`а, через которого проходит регистрация и настройка ваших ботов.
+                <LineBreak /><LineBreak />2. От вашего лица должна отправиться команда
+                <Italic>
+                    <Bold>/start</Bold>
+                </Italic>
+                , на которую бот ответит большим списком команд с описаниями. Подробно изучить каждую Вы можете сами, а мы двигаемся к шагу 3.
+                <LineBreak /><LineBreak />3. Используем команду
+                <Bold>
+                    <Italic>/newbot</Italic>
+                </Bold>
+                . На этом шаге бот попросит в ответ имя Вашего будущего бота. Например, пусть это будет "JeopardyGame". Напишите имя и отправьте ответ.
+                <LineBreak /><LineBreak />4. Далее нас попросят ввести
+                <Bold>
+                    <Italic>username</Italic>
+                </Bold>
+                бота, учтите, что он должен быть написан строго на латинице, а также содержать
+                <Bold>
+                    <Italic>bot</Italic>
+                </Bold>
+                или
+                <Bold>
+                    <Italic>_bot</Italic>
+                </Bold>
+                в конце. <Bold>Username</Bold> - это уникальный идентификатор аккаунта (вашего или бота), по которому люди могут найти аккаунт в поиске.
+                В случае, если <Bold>Username</Bold> уже занят, вас попросят использовать другой.
+                <LineBreak /><LineBreak />5. После всех выполнений действий, Ботобатя присылает нам небольшое сообщение, в котором говорится об успешном создании бота.
+                Из этого сообщения нам нужен token (уникальный ключ), с помощью которого мы будем авторизировать нашего бота в дальнейшем.
+                <LineBreak />Ключ имеет примерно такой вид:
+                <Bold>
+                    <Italic>23593457:AFAgd_DDFG6sd0f6asdf17asdf38</Italic>
+                </Bold>
+                <LineBreak />
+                <LineBreak />
+                <Bold>Учтите, что абсолютно никому нельзя присылать этот token! Это ваш секретный ключ для доступа к боту.</Bold>
+            </TextBlock>
+        </ItemsControl>
+    </ScrollViewer>
+
+</UserControl>

@@ -26,6 +26,7 @@
 
     <TabControl>
         <TabControl.Items>
+
             <TabItem Header="Темы">
                 <Grid RowDefinitions="Auto,Auto,Auto,Auto,*"
                       Margin="5">
@@ -115,6 +116,7 @@
 
                     <!-- Список тем -->
                     <ScrollViewer Grid.Row="4"
+                                  Classes="Modern"
                                   VerticalScrollBarVisibility="Visible"
                                   HorizontalScrollBarVisibility="Disabled"
                                   IsVisible="{Binding !!Topics.Count}">
@@ -275,7 +277,7 @@
             </TabItem>
 
             <TabItem Header="Вопросы">
-                <DataGrid ItemsSource="{Binding Questions, Mode=OneWay}"
+                <DataGrid ItemsSource="{Binding Questions}"
                           CanUserResizeColumns="True"
                           CanUserReorderColumns="True"
                           AutoGenerateColumns="False"

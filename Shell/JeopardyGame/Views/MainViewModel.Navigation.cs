@@ -23,7 +23,7 @@ namespace JeopardyGame.Views
 
         private void OnShowPlayInformation()
         {
-            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(PlayInfoView));
+            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(PlayInfoPages.PlayInfoView));
         }
 
         private void OnShowTelegramTest()

@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace JeopardyGame.Views
+namespace JeopardyGame.Views.PlayInfoPages
 {
     public partial class PlayInfoView : UserControl
     {

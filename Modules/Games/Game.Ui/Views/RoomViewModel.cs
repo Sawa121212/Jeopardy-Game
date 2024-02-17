@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
@@ -17,6 +18,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using ReactiveUI;
+using TelegramAPI.Test.Managers;
 
 namespace Game.Ui.Views
 {
@@ -27,19 +29,20 @@ namespace Game.Ui.Views
             IRegionManager regionManager,
             IEventAggregator eventAggregator,
             IConfirmationService confirmationService,
+            ITelegramBotManager telegramBotManager,
             IGameManager gameManager)
             : base(regionManager)
         {
             _eventAggregator = eventAggregator;
             _confirmationService = confirmationService;
+            _telegramBotManager = telegramBotManager;
             _gameManager = gameManager;
-
-            Players = new ObservableCollection<PlayerModel?>();
 
             MoveGoBackCommand = new DelegateCommand(OnMoveGoBack);
 
-            CreateRoomCommand = new DelegateCommand(OnCreateRoom);
+            CreateRoomCommand = new DelegateCommand(async () => await OnCreateRoom());
 
+            SendAnInvitationCommand = new DelegateCommand(OnSendAnInvitation);
             AddPlayerCommand = new DelegateCommand(OnAddPlayer);
             KickOutPlayerCommand = new DelegateCommand<PlayerModel>(OnKickOutPlayer);
             SetPlayerToHostCommand = new DelegateCommand<PlayerModel>(OnSetPlayerToHost);
@@ -86,12 +89,23 @@ namespace Game.Ui.Views
         public ICommand CreateRoomCommand { get; }
         public ICommand StartGameCommand { get; }
         public ICommand MoveGoBackCommand { get; }
+        public ICommand SendAnInvitationCommand { get; }
 
         /// <summary>
         /// Создать комнату
         /// </summary>
-        private void OnCreateRoom()
+        private async Task OnCreateRoom()
         {
+            // Uncomment
+            /*if (_telegramBotManager.TelegramBotClient == null)
+            {
+                await _confirmationService.ShowInfoAsync("Ошибка",
+                    $"TelegramBotClient не запущен!",
+                    ConfirmationResultEnum.Ok);
+                return;
+            }*/
+
+            Players = new ObservableCollection<PlayerModel?>();
             RoomKey = _gameManager.CreateRoom();
         }
 
@@ -183,6 +197,18 @@ namespace Game.Ui.Views
             RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
         }
 
+        private void OnSendAnInvitation()
+        {
+            NavigationParameters parameter = new()
+            {
+                {
+                    NavigationParameterService.InitializeParameter, _players
+                }
+            };
+
+            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(SendAnInvitationControlView), parameter);
+        }
+
         private async void OnMoveGoBack()
         {
             // ToDo: Close game event
@@ -193,6 +219,10 @@ namespace Game.Ui.Views
             if (result == ConfirmationResultEnum.Yes)
             {
                 await _gameManager.CloseRoom(_roomKey);
+
+                RoomKey = null;
+                Players = null;
+                Host = null;
             }
 
             RegionManager.RequestNavigate(RegionNameService.ShellRegionName, "MainView");
@@ -200,6 +230,7 @@ namespace Game.Ui.Views
 
         private readonly IEventAggregator _eventAggregator;
         private readonly IConfirmationService _confirmationService;
+        private readonly ITelegramBotManager _telegramBotManager;
         private readonly IGameManager _gameManager;
         private string _roomKey;
         private ObservableCollection<PlayerModel?> _players;
