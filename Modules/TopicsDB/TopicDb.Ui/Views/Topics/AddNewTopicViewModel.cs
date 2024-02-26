@@ -9,7 +9,7 @@ using ReactiveUI;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Interfaces.Services;
 
-namespace TopicsDB.Infrastructure.Views.Topics
+namespace TopicDb.Ui.Views.Topics
 {
     public class AddNewTopicViewModel : NavigationViewModelBase, IInitializable
     {

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using DataDomain.Rooms.Rounds.Enums;
@@ -76,6 +75,7 @@ namespace Game.Ui.Views.GameControls
 
             if (_game.CurrentRoundLevel == RoundsLevelEnum.Final)
             {
+                // Подготовь финальный раунд
                 PrepareFinalRound();
                 RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundControlView));
                 return;
@@ -95,7 +95,7 @@ namespace Game.Ui.Views.GameControls
             {
                 return;
             }
-            
+
             if (_currentRound?.Level == RoundsLevelEnum.Final)
             {
                 RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundDisplayedQuestionView));
@@ -127,7 +127,7 @@ namespace Game.Ui.Views.GameControls
         /// </summary>
         private void OnShowPlayersBet()
         {
-            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundDisplayedQuestionView));
+            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(GameWinnerView));
         }
 
         /// <summary>
@@ -143,8 +143,6 @@ namespace Game.Ui.Views.GameControls
             };
 
             RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(GameWinnerView), parameter);
-
-            ClearAllParameters();
         }
     }
 }

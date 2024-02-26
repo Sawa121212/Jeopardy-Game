@@ -10,7 +10,6 @@
         <materialIcons:MaterialIconStyles />
 
         <!-- Custom -->
-        <StyleInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
         <StyleInclude Source="avares://Common.Resources/CustomStyles.xaml" />
 
     </Application.Styles>
@@ -20,6 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://Common.Resources/CustomToolKit.xaml" />
                 <ResourceInclude Source="avares://Common.Resources/Geometries.axaml" />
+                <ResourceInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

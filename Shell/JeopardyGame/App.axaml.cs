@@ -3,8 +3,6 @@ using System.Reflection;
 using System.Resources;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Common.Core.Localization;
 using Common.Core.Prism.Regions;
@@ -41,14 +39,14 @@ namespace JeopardyGame
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-            base.Initialize(); // <-- Required
+
+            // Initializes Prism.Avalonia
+            base.Initialize();
         }
 
         protected override Window CreateShell()
         {
-            MainWindow = Container.Resolve<ShellView>();
-            MainWindow.Loaded += MainWindow_Loaded;
-            return MainWindow;
+            return Container.Resolve<ShellView>();
         }
 
         /// <summary>
@@ -99,24 +97,14 @@ namespace JeopardyGame
                 .AddModule<TopicDbModule>()
                 .AddModule<GameModule>()
                 .AddModule<TelegramApiTestModule>();
-
-            base.ConfigureModuleCatalog(moduleCatalog);
         }
 
         protected override void InitializeShell(AvaloniaObject shell)
         {
-            base.InitializeShell(shell);
-
             // Добавим локализацию
             Container.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
-        }
 
-        private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime {MainWindow: not null} desktop)
-            {
-                Container.Resolve<INotificationService>().SetHostWindow(desktop.MainWindow);
-            }
+            base.InitializeShell(shell);
         }
 
         /// <summary>Called after <seealso cref="Initialize"/>.</summary>
@@ -149,7 +137,5 @@ namespace JeopardyGame
 
             ViewModelLocationProvider.SetDefaultViewModelFactory(type => Container.Resolve(type));
         }
-
-        private Window MainWindow { get; set; }
     }
 }

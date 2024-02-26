@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:models="clr-namespace:TopicDb.Domain.Models;assembly=TopicDb.Domain"
+             xmlns:views="clr-namespace:TopicDb.Ui.Views"
+             x:Class="TopicDb.Ui.Views.QuestionDataGridPage"
+             mc:Ignorable="d"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             x:Name="QuestionDataGridControl"
+             x:DataType="views:MainTopicDbViewModel"
+             d:DesignWidth="800" d:DesignHeight="450">
+
+  <Design.DataContext>
+    <views:MainTopicDbViewModel />
+  </Design.DataContext>
+
+  <DataGrid ItemsSource="{Binding Questions}"
+            CanUserResizeColumns="True"
+            CanUserReorderColumns="True"
+            AutoGenerateColumns="False"
+            IsReadOnly="True"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+            Margin="3">
+    <DataGrid.Columns>
+      <DataGridTextColumn Header="TopicId"
+                          Binding="{Binding TopicId}" />
+
+      <DataGridTemplateColumn Header="Text"
+                              Width="*">
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate DataType="models:Question">
+            <TextBlock Text="{Binding Text}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center" />
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
+
+      <DataGridTemplateColumn Header="CorrectAnswer"
+                              Width="*">
+        <DataGridTemplateColumn.CellTemplate>
+          <DataTemplate DataType="models:Question">
+            <TextBlock Text="{Binding CorrectAnswer}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center" />
+          </DataTemplate>
+        </DataGridTemplateColumn.CellTemplate>
+      </DataGridTemplateColumn>
+
+      <DataGridTextColumn Header="Price"
+                          Binding="{Binding Price}" />
+
+      <DataGridTextColumn Header="Picture Id"
+                          Binding="{Binding Picture.MessageId}" />
+
+      <DataGridTextColumn Header="Message Id"
+                          Binding="{Binding Music.MessageId}" />
+    </DataGrid.Columns>
+  </DataGrid>
+
+
+</UserControl>

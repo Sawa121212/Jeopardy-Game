@@ -21,7 +21,7 @@ using TopicDb.Domain.Models.QuestionAttachments;
 using TopicsDB.Infrastructure.Interfaces.Services;
 using File = System.IO.File;
 
-namespace TopicsDB.Infrastructure.Views.Questions
+namespace TopicDb.Ui.Views.Questions
 {
     public class AddNewQuestionViewModel : NavigationViewModelBase
     {
@@ -240,6 +240,7 @@ namespace TopicsDB.Infrastructure.Views.Questions
             {
                 Title = "Выберите картинку",
                 AllowMultiple = false
+
                 // ToDo: Filter
             }).ConfigureAwait(true);
 
@@ -274,6 +275,7 @@ namespace TopicsDB.Infrastructure.Views.Questions
             {
                 Title = "Выберите музыку",
                 AllowMultiple = false
+
                 // ToDo: Filter
             }).ConfigureAwait(true);
 
