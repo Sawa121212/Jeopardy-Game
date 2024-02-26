@@ -7,7 +7,6 @@
         xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
         xmlns:viewModel="clr-namespace:JeopardyGame.Views"
         xmlns:controls="clr-namespace:Common.Resources.HamburgerMenus;assembly=Common.Resources"
-        xmlns:views="clr-namespace:TopicsDB.Infrastructure.Views;assembly=TopicsDB.Infrastructure"
         xmlns:converters1="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
         xmlns:controls1="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"

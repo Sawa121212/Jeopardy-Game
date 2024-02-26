@@ -4,7 +4,7 @@ using Game.Ui.Views;
 using Infrastructure.Module.Views;
 using Prism.Regions;
 using TelegramAPI.Test.Views;
-using TopicsDB.Infrastructure.Views;
+using TopicDb.Ui.Views;
 
 namespace JeopardyGame.Views
 {
@@ -18,7 +18,7 @@ namespace JeopardyGame.Views
 
         private void OnShowTopics()
         {
-            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(TopicListView));
+            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(MainTopicDbView));
         }
 
         private void OnShowPlayInformation()
