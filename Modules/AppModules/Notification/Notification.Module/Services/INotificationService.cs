@@ -1,5 +1,5 @@
 ﻿using System;
-using Avalonia.Controls;
+using Avalonia;
 using Avalonia.Controls.Notifications;
 
 namespace Notification.Module.Services
@@ -17,8 +17,8 @@ namespace Notification.Module.Services
         /// <summary>
         /// Установить главное окно для сообщений
         /// </summary>
-        /// <param name="hostWindow">Родительское окно</param>
-        void SetHostWindow(TopLevel hostWindow);
+        /// <param name="window">Родительское окно</param>
+        void SetHostWindow(AvaloniaObject window);
 
         /// <summary>
         /// Показать уведомление

@@ -4,12 +4,12 @@ using Confirmation.Module.Enums;
 using Prism.Commands;
 using Prism.Regions;
 using TopicDb.Domain.Models;
-using TopicDb.Ui.Views.Questions;
-using TopicDb.Ui.Views.Topics;
+using TopicsDB.Infrastructure.Views.Questions;
+using TopicsDB.Infrastructure.Views.Topics;
 
-namespace TopicDb.Ui.Views
+namespace TopicsDB.Infrastructure.Views
 {
-    public partial class MainTopicDbViewModel
+    public partial class TopicListViewModel
     {
         /// <summary>
         /// 

@@ -8,8 +8,6 @@
              xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:models="clr-namespace:Game.Ui.Models"
-             xmlns:rounds1="clr-namespace:Game.Ui.Views.GameControls.GamePages.Rounds"
-             xmlns:players="clr-namespace:Game.Ui.Views.GameControls.GamePages.Players"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Game.Ui.Views.GameControls.GamePages.Rounds.FinalRoundControlView"
@@ -95,8 +93,67 @@
             </Grid>
         </controls:Card>
 
-        <!-- Players Bet-->
-        <players:FinalRoundPlayersPlaceBetPage IsVisible="{Binding !IsRemoveMode}" />
+        <!-- Players -->
+        <controls:Card HorizontalAlignment="Center"
+                       IsVisible="{Binding !IsRemoveMode}"
+                       MinWidth="250">
+
+            <Grid RowDefinitions="Auto,*, Auto">
+                <TextBlock Grid.Row="0"
+                           Text="Выставление ставок "
+                           Classes="Headline6"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0 ,3" />
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding PlayerBetModels}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:PlayerBetModel">
+                                <Grid Margin="10">
+                                    <Image Stretch="Fill" Height="64" Width="64"
+                                           Source="{StaticResource PrisonerDrawingImage}"
+                                           VerticalAlignment="Top"
+                                           Margin="10,5" />
+                                    <TextBlock Classes="Subtitle2"
+                                               Text="{Binding PlayerModel.Name}"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"
+                                               Margin="0,68,0, 0" />
+
+                                    <TextBlock Classes="Subtitle1"
+                                               Text="{Binding PlayerModel.Name}"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"
+                                               Margin="0,86,0, 0" />
+
+                                    <avalonia:MaterialIcon Kind="CheckBold"
+                                                           Foreground="Green"
+                                                           Width="24"
+                                                           Height="24"
+                                                           VerticalAlignment="Top"
+                                                           HorizontalAlignment="Left"
+                                                           IsVisible="{Binding IsMadeBet}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <Button Grid.Row="2"
+                        Command="{Binding EndPlaceBetsCommand}"
+                        Margin="3,15,3,3"/>
+            </Grid>
+        </controls:Card>
     </Grid>
 
 </UserControl>

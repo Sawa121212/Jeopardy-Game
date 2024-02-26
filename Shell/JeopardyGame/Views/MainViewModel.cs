@@ -7,6 +7,8 @@ namespace JeopardyGame.Views
 {
     public partial class MainViewModel : BindableBase
     {
+        private readonly ILocalizer _localizer;
+
         public MainViewModel(IRegionManager regionManager, ILocalizer localizer)
         {
             _localizer = localizer;
@@ -17,10 +19,6 @@ namespace JeopardyGame.Views
             OnShowTelegramTestCommand = new DelegateCommand(OnShowTelegramTest);
             ShowSettingsCommand = new DelegateCommand(OnShowSettings);
             PlayCommand = new DelegateCommand(OnPlay);
-
-
         }
-
-        private readonly ILocalizer _localizer;
     }
 }

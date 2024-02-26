@@ -34,7 +34,6 @@ namespace Game.Module
             containerRegistry.RegisterForNavigation<AllTopicsNameView, AllTopicsNameViewModel>();
             containerRegistry.RegisterForNavigation<RoundLevelView, RoundLevelViewModel>();
             containerRegistry.RegisterForNavigation<CorrectAnswerView>();
-            containerRegistry.RegisterForNavigation<FinalRoundDisplayedQuestionView>();
             containerRegistry.RegisterForNavigation<DisplayedQuestionView>();
             containerRegistry.RegisterForNavigation<FinalRoundControlView>();
             containerRegistry.RegisterForNavigation<BaseRoundControlView>();

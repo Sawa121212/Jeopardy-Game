@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Material.Avalonia.Dialogs" Version="3.4.1" />
+    <PackageReference Include="Material.Avalonia.Dialogs" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>

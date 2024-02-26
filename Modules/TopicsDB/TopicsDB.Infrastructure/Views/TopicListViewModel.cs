@@ -7,11 +7,11 @@ using ReactiveUI;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Interfaces.Services;
 
-namespace TopicDb.Ui.Views
+namespace TopicsDB.Infrastructure.Views
 {
-    public partial class MainTopicDbViewModel : NavigationViewModelBase
+    public partial class TopicListViewModel : NavigationViewModelBase
     {
-        public MainTopicDbViewModel(
+        public TopicListViewModel(
             IRegionManager regionManager,
             IConfirmationService confirmationService,
             ITopicService topicService,

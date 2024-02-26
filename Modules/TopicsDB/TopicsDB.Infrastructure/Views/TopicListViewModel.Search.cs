@@ -5,9 +5,9 @@ using System.Windows.Input;
 using ReactiveUI;
 using TopicDb.Domain.Models;
 
-namespace TopicDb.Ui.Views
+namespace TopicsDB.Infrastructure.Views
 {
-    public partial class MainTopicDbViewModel
+    public partial class TopicListViewModel
     {
         private string _filterText;
 

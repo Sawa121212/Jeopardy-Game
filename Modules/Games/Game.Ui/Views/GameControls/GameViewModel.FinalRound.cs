@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Common.Extensions;
 using Common.Extensions.Collections;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
@@ -75,35 +77,22 @@ namespace Game.Ui.Views.GameControls
             SetPlayerFirstChoosingTopic(SortedPlayers);
         }
 
-        /// <summary>
-        /// Убрать тему из финального раунда.
-        /// </summary>
-        /// <param name="topicModel">Тема.</param>
-        /// <returns></returns>
         private async Task OnRemoveTopicFromFinalRound(TopicModel? topicModel)
         {
-            if (topicModel == null || TopicsFromFinalRound == null || SortedPlayers == null)
+            if (topicModel != null && TopicsFromFinalRound != null && TopicsFromFinalRound.Contains(topicModel))
             {
-                return;
-            }
-
-            if (TopicsFromFinalRound.Contains(topicModel))
-            {
-                // удалить тему из финального раунда
                 TopicsFromFinalRound.Remove(topicModel);
             }
 
-            // если в списке осталась только 1 тема, то переходим к выставлению ставок
-            if (TopicsFromFinalRound.Count == 1)
+            if (_topicsFromFinalRound.Count == 1)
             {
-                TopicModel topic = TopicsFromFinalRound.First();
+                TopicModel topic = _topicsFromFinalRound.First();
                 int questionIndex = RandomGenerator.GetRandom().Next(0, topic.Questions.Count);
 
                 FinalQuestion = topic.Questions[questionIndex];
                 ActivePlayer = null;
                 Message = null;
 
-                // Начать выставление ставок
                 OnPlayersPlaceBets();
                 return;
             }
@@ -114,7 +103,6 @@ namespace Game.Ui.Views.GameControls
                 return;
             }
 
-            // даем право убрать тему следующему игроку
             int? nextActivePlayerIndex = SortedPlayers?.GetIndex(_activePlayer);
             nextActivePlayerIndex++;
             if (nextActivePlayerIndex is null || nextActivePlayerIndex == SortedPlayers.Count)
@@ -122,7 +110,7 @@ namespace Game.Ui.Views.GameControls
                 nextActivePlayerIndex = 0;
             }
 
-            ActivePlayer = SortedPlayers?[(int) nextActivePlayerIndex];
+            ActivePlayer = SortedPlayers[(int) nextActivePlayerIndex];
 
             if (ActivePlayer != null)
             {
@@ -146,18 +134,12 @@ namespace Game.Ui.Views.GameControls
             {
                 if (playerModel != null)
                 {
-                    PlayerBetModels.Add(
-                        new PlayerBetModel(playerModel)
-                        {
-                            Bet = RandomGenerator.GetRandom().Next(50, 1000), // Test. Remove
-                            IsMadeBet = true // Test. Remove
-                        }
-                    );
+                    PlayerBetModels.Add(new PlayerBetModel(playerModel));
                 }
             }
         }
 
-        private void PlayerPlaceBet(int playerId)
+        private void PlayerPlaceBets(int playerId)
         {
             if (SortedPlayers == null)
             {

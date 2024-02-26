@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Common.Extensions;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
@@ -141,13 +142,6 @@ namespace Game.Ui.Views.GameControls
         /// <returns></returns>
         private async Task OnCloseQuestion()
         {
-            if (_currentRound?.Level == RoundsLevelEnum.Final)
-            {
-                // если Финальный раунд, переходим к 
-                OnShowPlayersBet();
-                return;
-            }
-
             if (DisplayedQuestion == null)
             {
                 return;
@@ -155,6 +149,12 @@ namespace Game.Ui.Views.GameControls
 
             DisplayedQuestion.IsAsked = true;
             DisplayedQuestion = null;
+
+            if (_currentRound?.Level == RoundsLevelEnum.Final)
+            {
+                OnShowPlayersBet();
+                return;
+            }
 
             GameIsReadyToReceiveAnswers(false);
             Message = $"Вопрос выбирает игрок {_activePlayer?.Name}";
@@ -209,7 +209,6 @@ namespace Game.Ui.Views.GameControls
             if (CurrentRound?.Topics != null &&
                 CurrentRound?.Topics.FirstOrDefault(t => t.Questions.Exists(q => q.IsAsked == false)) == null)
             {
-                // если все вопрос заданы, переходим в следующий раунд
                 OnGoNextRound();
             }
         }
@@ -224,22 +223,16 @@ namespace Game.Ui.Views.GameControls
                 return;
             }
 
-            // если этот раунд был Финальным
             if (_game.CurrentRoundLevel is RoundsLevelEnum.Final)
             {
-                if (_players != null)
+                int maxPoint = _players.Max(p => p.Points);
+                List<PlayerModel?> playerModels = _players.Where(p => p.Points == maxPoint).ToList();
+                if (playerModels.Count == 1)
                 {
-                    int maxPoint = _players.Max(p => p.Points);
-                    List<PlayerModel?> playerModels = _players.Where(p => p.Points == maxPoint).ToList();
-                    if (playerModels.Count == 1)
-                    {
-                        // Показать победителя игры
-                        OnShowGameWinner();
-                    }
+                    OnShowGameWinner();
                 }
             }
 
-            // Установить следующий раунд
             _game.CurrentRoundLevel = RoundHelper.GetNextRoundLevel(_game.CurrentRoundLevel);
 
             SetPlayerFirstChoosingTopic();

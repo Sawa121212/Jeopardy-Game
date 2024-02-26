@@ -16,7 +16,7 @@ namespace Notification.Module.Services
         }
 
         /// <inheritdoc/>
-        public void SetHostWindow(TopLevel hostWindow)
+        public void SetHostWindow(AvaloniaObject hostWindow)
         {
             if (hostWindow is not Window window)
             {
@@ -36,9 +36,9 @@ namespace Notification.Module.Services
         /// <inheritdoc/>
         public void Show(string title, string message, NotificationType notificationType, Action? onClick = null)
         {
-            if (_notificationManager is { } notificationManager)
+            if (_notificationManager is { } window)
             {
-                notificationManager.Show(
+                window.Show(
                     new Avalonia.Controls.Notifications.Notification(
                         title,
                         message,
@@ -51,6 +51,7 @@ namespace Notification.Module.Services
                 //throw new Exception("Host window not set");
             }
         }
+
 
         private int _notificationTimeout = 10;
         private WindowNotificationManager? _notificationManager;

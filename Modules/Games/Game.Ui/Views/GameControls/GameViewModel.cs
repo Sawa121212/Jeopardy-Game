@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Views;
 using DataDomain.Rooms;
@@ -216,7 +217,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Получить игрока, который будет выбирать вопрос первым
         /// </summary>
-        /// <param name="players"></param>
+        /// <param name="sortedPlayers"></param>
         /// <returns></returns>
         private void SetPlayerFirstChoosingTopic(List<PlayerModel?> players = null)
         {
@@ -249,7 +250,7 @@ namespace Game.Ui.Views.GameControls
                 case RoundsLevelEnum.Round2:
                 case RoundsLevelEnum.Round3:
                 case RoundsLevelEnum.Final:
-                    // раунд начинает игрок с наименьшим количеством очков
+                    // раунд начинает игрок с наименьшим на начало раунда количеством очков
                     if (_currentRound is {Level: not RoundsLevelEnum.Round1})
                     {
                         ActivePlayer = GetPlayerWithMinPoint(players);

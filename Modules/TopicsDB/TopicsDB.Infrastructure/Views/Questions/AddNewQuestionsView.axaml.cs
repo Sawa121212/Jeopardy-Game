@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace TopicDb.Ui.Views.Questions
+namespace TopicsDB.Infrastructure.Views.Questions
 {
     public partial class AddNewQuestionView : UserControl
     {

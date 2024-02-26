@@ -24,15 +24,6 @@ namespace Game.Ui.Models
             get => _bet;
             set => this.RaiseAndSetIfChanged(ref _bet, value);
         }
-        
-        /// <summary>
-        /// Ответ на вопрос
-        /// </summary>
-        public string Answer
-        {
-            get => _answer;
-            set => this.RaiseAndSetIfChanged(ref _answer, value);
-        }
 
         /// <summary>
         /// Игрок сделал ставку
@@ -46,6 +37,5 @@ namespace Game.Ui.Models
         private readonly PlayerModel? _playerModel;
         private int _bet;
         private bool _isInvited;
-        private string _answer;
     }
 }

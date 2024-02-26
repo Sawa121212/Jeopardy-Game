@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
     <Version>0.0.1</Version>
@@ -10,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.0.6" />
-    <PackageReference Include="Material.Avalonia" Version="3.4.1" />
+    <PackageReference Include="Material.Avalonia" Version="3.3.0" />
     <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" />
   </ItemGroup>
 
@@ -20,13 +21,20 @@
 
   <ItemGroup>
     <Compile Update="Properties\Language.Designer.cs">
+      <DependentUpon>Language.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Language.resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Update="Properties\Language.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Language.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Language.ru.resx">
+      <SubType>Designer</SubType>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 
