@@ -24,7 +24,7 @@ namespace JeopardyGame
                 })
                 .With(new Win32PlatformOptions
                 {
-                    OverlayPopups = true,
+                    //OverlayPopups = true,
                 })
                 .UseSkia()
                 .UseReactiveUI()

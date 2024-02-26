@@ -6,6 +6,7 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
+             xmlns:players="clr-namespace:Game.Ui.Views.GameControls.GamePages.Players"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Game.Ui.Views.GameControls.GamePages.FinalRoundDisplayedQuestionView"
@@ -16,20 +17,28 @@
         <gameControls:GameViewModel />
     </Design.DataContext>
 
+    <Grid RowDefinitions="Auto, Auto, *, Auto, Auto">
+        <TextBlock Grid.Row="0"
+                   Text="Финальный вопрос"
+                   Classes="Headline6"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Margin="0 ,3" />
 
-    <Grid RowDefinitions="Auto, *, Auto">
         <Image Source="{Binding DisplayedQuestion.Picture, Mode=OneWay}"
-               Grid.Row="0" />
-        <Viewbox Grid.Row="1">
+               Grid.Row="1" />
+        <Viewbox Grid.Row="2">
             <TextBlock Text="{Binding DisplayedQuestion.Text, Mode=OneWay}"
                        TextWrapping="Wrap"
                        MaxWidth="800" />
         </Viewbox>
 
-        <Button Content="Завершить"
-                Classes="Flat"
+        <!-- PlayersAnswering -->
+        <players:FinalRoundPlayersAnsweringPage Grid.Row="3" />
+
+        <Button Content="Закрыть вопрос"
                 Command="{Binding CloseQuestionCommand}"
-                Grid.Row="2"
+                Grid.Row="4"
                 Margin="5,3,3,3" />
     </Grid>
 </UserControl>

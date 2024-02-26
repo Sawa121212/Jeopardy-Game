@@ -44,6 +44,6 @@
         <Button Content="Закрыть"
                 Command="{Binding ContinueGameCommand}"
                 Grid.Row="1"
-                Margin="3" />
+                Margin="5" />
     </Grid>
 </UserControl>

@@ -3,13 +3,13 @@ using Common.Core.Localization;
 using Prism.Ioc;
 using Prism.Modularity;
 using TopicDb.Module.Properties;
+using TopicDb.Ui.Views;
+using TopicDb.Ui.Views.Questions;
+using TopicDb.Ui.Views.Topics;
 using TopicsDB.Infrastructure.Interfaces.Managers;
 using TopicsDB.Infrastructure.Interfaces.Services;
 using TopicsDB.Infrastructure.Managers;
 using TopicsDB.Infrastructure.Services;
-using TopicsDB.Infrastructure.Views;
-using TopicsDB.Infrastructure.Views.Questions;
-using TopicsDB.Infrastructure.Views.Topics;
 
 namespace TopicDb.Module
 {
@@ -21,13 +21,14 @@ namespace TopicDb.Module
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry
+
                 // сперва регистрируем контекст БД с вопросам
                 .RegisterSingleton<ITopicDbManager, TopicDbManager>()
                 .RegisterSingleton<ITopicService, TopicService>()
                 .RegisterSingleton<IQuestionService, QuestionService>();
 
             // регистрируем View для навигации по Регионам
-            containerRegistry.RegisterForNavigation<TopicListView, TopicListViewModel>();
+            containerRegistry.RegisterForNavigation<MainTopicDbView, MainTopicDbViewModel>();
             containerRegistry.RegisterForNavigation<AddNewTopicView, AddNewTopicViewModel>();
             containerRegistry.RegisterForNavigation<AddNewQuestionView, AddNewQuestionViewModel>();
         }

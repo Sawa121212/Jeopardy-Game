@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:rounds="clr-namespace:DataDomain.Rooms.Rounds;assembly=DataDomain"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:models="clr-namespace:Game.Ui.Models"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Ui.Views.GameControls.GamePages.Players.FinalRoundPlayersPlaceBetPage"
+             x:DataType="gameControls:GameViewModel">
+
+    <Design.DataContext>
+        <gameControls:GameViewModel />
+    </Design.DataContext>
+
+    <!-- Players Bet -->
+    <controls:Card HorizontalAlignment="Center"
+                   MinWidth="250">
+
+        <Grid RowDefinitions="Auto,*, Auto">
+            <TextBlock Grid.Row="0"
+                       Text="Выставление ставок "
+                       Classes="Headline6"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0 ,3" />
+
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding PlayerBetModels}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:PlayerBetModel">
+                            <Grid Margin="10">
+                                <Image Stretch="Fill" Height="64" Width="64"
+                                       Source="{StaticResource PrisonerDrawingImage}"
+                                       VerticalAlignment="Top"
+                                       Margin="10,5" />
+                                <TextBlock Classes="Subtitle2"
+                                           Text="{Binding PlayerModel.Name}"
+                                           FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Top"
+                                           Margin="0,68,0, 0" />
+
+                                <avalonia:MaterialIcon Kind="CheckBold"
+                                                       Foreground="Green"
+                                                       Width="24"
+                                                       Height="24"
+                                                       VerticalAlignment="Top"
+                                                       HorizontalAlignment="Left"
+                                                       IsVisible="{Binding IsMadeBet}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <Button Grid.Row="2"
+                    Content="Завершить прием ставок"
+                    Command="{Binding EndPlaceBetsCommand}"
+                    Margin="3,15,3,3" />
+        </Grid>
+    </controls:Card>
+
+</UserControl>
