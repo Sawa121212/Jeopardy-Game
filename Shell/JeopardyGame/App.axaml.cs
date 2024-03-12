@@ -8,29 +8,22 @@ using Common.Core.Localization;
 using Common.Core.Prism.Regions;
 using Common.Ui.Parameters;
 using Confirmation.Module;
-using Confirmation.Module.Services;
 using Game.Module;
-using Infrastructure.Interfaces.Managers;
-using Infrastructure.Interfaces.Services;
 using Infrastructure.Module;
-using Infrastructure.Module.Managers;
-using Infrastructure.Module.Services;
-using Infrastructure.Module.Services.ApplicationInfo;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
+using JeopardyGame.Views.PlayInfoPages;
 using JeopardyGame.Views.Shell;
 using Notification.Module;
-using Notification.Module.Services;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
-using TelegramAPI.Test;
+using TelegramAPI.Module;
 using TopicDb.Module;
 using Users.Module;
 using IResourceProvider = Common.Core.Localization.IResourceProvider;
-using PlayInfoView = JeopardyGame.Views.PlayInfoPages.PlayInfoView;
 
 namespace JeopardyGame
 {
@@ -62,14 +55,7 @@ namespace JeopardyGame
                 .RegisterSingleton<IResourceProvider, ResourceProvider>(Assembly.GetExecutingAssembly().FullName)
                 .RegisterSingleton<IResourceService, ResourceService>()
                 .RegisterSingleton<IPresentationParameters, PresentationParameters>()
-                .RegisterSingleton<IApplicationInfoService, ApplicationInfoService>()
-                .RegisterSingleton<IProtobufSerializeService, ProtobufSerializeService>()
-                .RegisterSingleton<IPathService, PathService>()
-                .RegisterSingleton<ISerializableSettingsManager, SerializableSettingsManager>()
-
-                // Notification
-                .RegisterSingleton<INotificationService, NotificationService>()
-                .RegisterSingleton<IConfirmationService, ConfirmationService>();
+                ;
 
             // Views - Generic
             containerRegistry.Register<ShellView>();
@@ -132,6 +118,7 @@ namespace JeopardyGame
                         ? "{0}Model, {1}"
                         : "{0}ViewModel, {1}",
                     viewName, viewAssemblyName);
+
                 return Type.GetType(viewModelName);
             });
 

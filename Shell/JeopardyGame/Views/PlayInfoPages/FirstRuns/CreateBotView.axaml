@@ -11,14 +11,14 @@
     <ScrollViewer Classes="Modern">
         <ItemsControl>
 
+            <TextBlock Text="Создание бота"
+                       Classes="Headline4"
+                       Margin="0,10" />
+
             <TextBlock TextWrapping="Wrap"
                        ClipToBounds="False">
                 Для начала, чтобы играть в игру, вам требуется создать вашего Telegram бота.
             </TextBlock>
-
-            <TextBlock Text="Создание бота"
-                       Classes="Headline6"
-                       Margin="0,10,0,0" />
 
             <TextBlock TextWrapping="Wrap"
                        ClipToBounds="False">

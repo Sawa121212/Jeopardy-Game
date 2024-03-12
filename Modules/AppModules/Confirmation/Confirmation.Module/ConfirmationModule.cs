@@ -8,8 +8,7 @@ namespace Confirmation.Module
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry
-                .RegisterSingleton<IConfirmationService, ConfirmationService>();
+            containerRegistry.RegisterSingleton<IConfirmationService, ConfirmationService>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)

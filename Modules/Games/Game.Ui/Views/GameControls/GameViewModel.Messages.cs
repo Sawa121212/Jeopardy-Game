@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using DataDomain.Rooms;
 using Telegram.Bot.Types;
-using TelegramAPI.Test.Managers;
-using TelegramAPI.Test.Models;
+using TelegramAPI.Domain.Models;
+using TelegramAPI.Infrastructure.Interfaces.Managers;
 using TopicDb.Domain.Models;
 
 namespace Game.Ui.Views.GameControls

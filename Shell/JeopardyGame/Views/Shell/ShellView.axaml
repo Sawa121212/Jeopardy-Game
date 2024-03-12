@@ -5,8 +5,6 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
         xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
-        xmlns:viewModel="clr-namespace:JeopardyGame.Views"
-        xmlns:controls="clr-namespace:Common.Resources.HamburgerMenus;assembly=Common.Resources"
         xmlns:converters1="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
         xmlns:controls1="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
         xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
@@ -15,10 +13,12 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
         x:Class="JeopardyGame.Views.Shell.ShellView"
         WindowStartupLocation="CenterScreen"
-        Title="{Binding Title}" Height="650" Width="800"
+        Title="{Binding Title}" 
+        Height="650" Width="800"
+        MinHeight="650" MinWidth="800"
         x:DataType="shell:ShellViewModel">
 
-    <ContentControl
+    <TransitioningContentControl
         prism:RegionManager.RegionName="{x:Static regions:RegionNameService.ShellRegionName}" />
 
 </Window>

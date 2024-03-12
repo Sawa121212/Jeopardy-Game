@@ -8,7 +8,7 @@ using Game.Infrastructure.Interfaces.Services;
 using Infrastructure.Domain.Helpers;
 using Notification.Module.Services;
 using ReactiveUI;
-using TelegramAPI.Test.Managers;
+using TelegramAPI.Infrastructure.Interfaces.Managers;
 using Users.Infrastructure.Interfaces;
 
 namespace Game.Infrastructure.Services

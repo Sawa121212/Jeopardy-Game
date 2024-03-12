@@ -5,6 +5,7 @@
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:gamePages="clr-namespace:Game.Ui.Views.GameControls.GamePages"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              prism:ViewModelLocator.AutoWireViewModel="True"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Game.Ui.Views.GameControls.GamePages.GameWinnerView"
@@ -19,12 +20,39 @@
         <TabControl Grid.Row="0">
             <TabItem Header="Победитель">
                 <Viewbox>
-                    <TextBlock Text="{Binding PlayerWinner.Name, Mode=OneWay}" />
+                    <Grid RowDefinitions="*,*,*">
+                        <avalonia:MaterialIcon Kind="License"
+                                               Foreground="Gold"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Width="48"
+                                               Height="48"
+                                               Grid.Row="0" />
+
+                        <TextBlock Text="{Binding PlayerWinner.Name}"
+                                   Classes="Headline4"
+                                   Margin="0,10"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Grid.Row="1" />
+
+                        <StackPanel Margin="20"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Grid.Row="2">
+                            <avalonia:MaterialIcon Kind="StarFourPointsCircleOutline"
+                                                   Foreground="{DynamicResource MaterialPrimaryMidBrush}" />
+                            <TextBlock Text="{Binding PlayerWinner.Points}"
+                                       Classes="Headline6"
+                                       Margin="5,0" />
+                        </StackPanel>
+                    </Grid>
                 </Viewbox>
             </TabItem>
 
             <TabItem Header="Статистика">
-                <DataGrid ItemsSource="{Binding Players, Mode=OneWay}"
+                <DataGrid ItemsSource="{Binding Players}"
                           CanUserResizeColumns="True"
                           CanUserReorderColumns="True"
                           AutoGenerateColumns="False"

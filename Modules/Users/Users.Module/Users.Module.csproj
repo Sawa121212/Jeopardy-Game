@@ -12,7 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
-    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Test.csproj" />
+    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Infrastructure.Interfaces\TelegramAPI.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Infrastructure\TelegramAPI.Infrastructure.csproj" />
     <ProjectReference Include="..\Users.Infrastructure\Users.Infrastructure.csproj" />
   </ItemGroup>
 

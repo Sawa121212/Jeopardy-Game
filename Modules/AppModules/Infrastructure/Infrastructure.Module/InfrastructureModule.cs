@@ -3,6 +3,7 @@ using Infrastructure.Interfaces.Services;
 using Infrastructure.Interfaces.Services.Settings;
 using Infrastructure.Module.Managers;
 using Infrastructure.Module.Services;
+using Infrastructure.Module.Services.ApplicationInfo;
 using Infrastructure.Module.Services.Settings;
 using Infrastructure.Module.Views;
 using Infrastructure.Module.Views.Settings;
@@ -16,10 +17,10 @@ namespace Infrastructure.Module
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry
-                .RegisterSingleton<ISerializableSettingsManager, SerializableSettingsManager>()
-                ;
+                .RegisterSingleton<ISerializableSettingsManager, SerializableSettingsManager>();
 
             containerRegistry
+                .RegisterSingleton<IApplicationInfoService, ApplicationInfoService>()
                 .RegisterSingleton<ISettingsViewManager, SettingsViewManager>()
                 .RegisterSingleton<IPathService, PathService>()
                 .RegisterSingleton<IProtobufSerializeService, ProtobufSerializeService>()

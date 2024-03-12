@@ -11,7 +11,7 @@
 
     <TabControl>
         <TabItem Header="Правила игры">
-            <playInfoPages:ProgressGamePage />
+            <playInfoPages:GameRulesPage />
         </TabItem>
         <TabItem Header="Первый запуск">
             <firstRuns:FirstRunView />

@@ -15,6 +15,7 @@ namespace Game.Ui.Views.GameControls
     public partial class GameViewModel
     {
         public ICommand RemoveTopicFromFinalRoundCommand { get; }
+        public ICommand SetPlayerBetsCommand { get; }
         public ICommand EndPlaceBetsCommand { get; }
 
         /// <summary>
@@ -50,6 +51,7 @@ namespace Game.Ui.Views.GameControls
 
             // отображаемые темы
             TopicsFromFinalRound = new ObservableCollection<TopicModel>(_currentRound?.Topics);
+
             if (_players == null)
             {
                 return;
@@ -89,6 +91,12 @@ namespace Game.Ui.Views.GameControls
 
             if (TopicsFromFinalRound.Contains(topicModel))
             {
+                // установить флаг всем вопросам, что уже были заданы
+                foreach (QuestionModel topicModelQuestion in topicModel.Questions)
+                {
+                    topicModelQuestion.IsAsked = true;
+                }
+
                 // удалить тему из финального раунда
                 TopicsFromFinalRound.Remove(topicModel);
             }
@@ -103,20 +111,30 @@ namespace Game.Ui.Views.GameControls
                 ActivePlayer = null;
                 Message = null;
 
+                // Кроме текущего вопроса установить флаг всем, что уже были заданы
+                foreach (QuestionModel topicModelQuestion in topic.Questions
+                             .Where(topicModelQuestion => topicModelQuestion.Id != FinalQuestion.Id))
+                {
+                    topicModelQuestion.IsAsked = true;
+                }
+
                 // Начать выставление ставок
                 OnPlayersPlaceBets();
+
                 return;
             }
 
             if (_activePlayer == null)
             {
                 Message = $"Error. Метод {nameof(OnRemoveTopicFromFinalRound)}: не найден {ActivePlayer}";
+
                 return;
             }
 
             // даем право убрать тему следующему игроку
             int? nextActivePlayerIndex = SortedPlayers?.GetIndex(_activePlayer);
             nextActivePlayerIndex++;
+
             if (nextActivePlayerIndex is null || nextActivePlayerIndex == SortedPlayers.Count)
             {
                 nextActivePlayerIndex = 0;
@@ -137,6 +155,7 @@ namespace Game.Ui.Views.GameControls
         {
             IsRemoveMode = false;
             PlayerBetModels = new ObservableCollection<PlayerBetModel>();
+
             if (_players == null)
             {
                 return;
@@ -150,11 +169,44 @@ namespace Game.Ui.Views.GameControls
                         new PlayerBetModel(playerModel)
                         {
                             Bet = RandomGenerator.GetRandom().Next(50, 1000), // Test. Remove
+                            Answer = RandomGenerator.GenerateRandomString(15), // Test. Remove
                             IsMadeBet = true // Test. Remove
                         }
                     );
                 }
             }
+        }
+
+        /// <summary>
+        /// Установить игрокам очки со ставок
+        /// </summary>
+        private void OnSetPlayerBets()
+        {
+            if (PlayerBetModels == null || _players == null)
+            {
+                return;
+            }
+
+            foreach (PlayerBetModel playerBetModel in PlayerBetModels)
+            {
+                PlayerModel? playerModel = _players.FirstOrDefault(p => p.Id == playerBetModel.PlayerModel.Id);
+
+                if (playerModel == null)
+                {
+                    continue;
+                }
+
+                if (playerBetModel.IsCorrectAnswer)
+                {
+                    playerModel.AddPoint(playerBetModel.Bet);
+                }
+                else
+                {
+                    playerModel.AddPoint(playerBetModel.Bet * -1);
+                }
+            }
+
+            CheckRoundIsOver();
         }
 
         private void PlayerPlaceBet(int playerId)

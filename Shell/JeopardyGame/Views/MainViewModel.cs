@@ -17,8 +17,6 @@ namespace JeopardyGame.Views
             OnShowTelegramTestCommand = new DelegateCommand(OnShowTelegramTest);
             ShowSettingsCommand = new DelegateCommand(OnShowSettings);
             PlayCommand = new DelegateCommand(OnPlay);
-
-
         }
 
         private readonly ILocalizer _localizer;

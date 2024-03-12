@@ -10,7 +10,7 @@ using DataDomain.Rooms.Rounds.Enums;
 using DataDomain.Rooms.Rounds.Helpers;
 using Game.Domain.Events.Questions;
 using ReactiveUI;
-using TelegramAPI.Test.Models;
+using TelegramAPI.Domain.Models;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Interfaces.Services;
 
@@ -42,19 +42,23 @@ namespace Game.Ui.Views.GameControls
             if (questionModel is null)
             {
                 Message = "Ошибка. Не удалось получить вопрос";
+
                 return;
             }
 
             if (questionModel.IsAsked)
             {
                 Message = "Ошибка. Вопрос уже был задан";
+
                 return;
             }
 
             Question? questionById = _questionService.GetQuestionById(questionModel.Id);
+
             if (questionById is null)
             {
                 Message = "Ошибка. Не удалось найти вопрос в БД";
+
                 return;
             }
 
@@ -112,6 +116,7 @@ namespace Game.Ui.Views.GameControls
 
                     // Показать сразу ответ
                     OnShowCorrectAnswer();
+
                     break;
                 case false:
                     // Неправильный ответ. Ждем еще ответ.
@@ -119,6 +124,7 @@ namespace Game.Ui.Views.GameControls
 
                     // очищаем
                     ActivePlayer = null;
+
                     break;
             }
         }
@@ -143,8 +149,9 @@ namespace Game.Ui.Views.GameControls
         {
             if (_currentRound?.Level == RoundsLevelEnum.Final)
             {
-                // если Финальный раунд, переходим к 
+                // если Финальный раунд, покажем ставки и ответы
                 OnShowPlayersBet();
+
                 return;
             }
 
@@ -167,6 +174,7 @@ namespace Game.Ui.Views.GameControls
         private void GameIsReadyToReceiveAnswers(bool isReady)
         {
             IsReadyGameToReceiveAnswers = isReady;
+
             if (isReady)
             {
                 Message = $"Ответы принимаются";
@@ -188,9 +196,11 @@ namespace Game.Ui.Views.GameControls
             }
 
             PlayerModel? player = Players.FirstOrDefault(p => p.Id == playerIsReadyAnswer.PlayerId);
+
             if (player == null)
             {
                 Message = $"Ошибка. Не найден игрок с ИД: {playerIsReadyAnswer.PlayerId}";
+
                 return;
             }
 
@@ -231,10 +241,12 @@ namespace Game.Ui.Views.GameControls
                 {
                     int maxPoint = _players.Max(p => p.Points);
                     List<PlayerModel?> playerModels = _players.Where(p => p.Points == maxPoint).ToList();
+
                     if (playerModels.Count == 1)
                     {
                         // Показать победителя игры
                         OnShowGameWinner();
+                        return;
                     }
                 }
             }
@@ -262,6 +274,7 @@ namespace Game.Ui.Views.GameControls
             CurrentRound = Rounds.FirstOrDefault(r => r != null && r.Level == _game.CurrentRoundLevel);
 
             IList<TopicModel>? topicModels = CurrentRound?.Topics;
+
             if (topicModels != null)
             {
                 Topics = new ObservableCollection<TopicModel>(topicModels);
@@ -294,6 +307,7 @@ namespace Game.Ui.Views.GameControls
             }
 
             int? minPoint = players?.Min(p => p.Points);
+
             return players?.FirstOrDefault(p => p.Points == minPoint);
         }
 

@@ -9,6 +9,8 @@ using Game.Module.Properties;
 using Game.Ui.Views;
 using Game.Ui.Views.GameControls;
 using Game.Ui.Views.GameControls.GamePages;
+using Game.Ui.Views.GameControls.GamePages.Players;
+using Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer;
 using Game.Ui.Views.GameControls.GamePages.Rounds;
 using Game.Ui.Views.GameControls.GamePages.Topics;
 using Prism.Ioc;
@@ -29,11 +31,12 @@ namespace Game.Module
             containerRegistry.RegisterSingleton<IGameManager, GameManager>();
 
             // регистрируем View для навигации по Регионам
+            containerRegistry.RegisterForNavigation<FinalRoundPlayersBetAndAnswerView, FinalRoundPlayersBetAndAnswerViewModel>();
             containerRegistry.RegisterForNavigation<SendAnInvitationControlView, SendAnInvitationControlViewModel>();
             containerRegistry.RegisterForNavigation<GameWinnerView, GameWinnerViewModel>();
             containerRegistry.RegisterForNavigation<AllTopicsNameView, AllTopicsNameViewModel>();
             containerRegistry.RegisterForNavigation<RoundLevelView, RoundLevelViewModel>();
-            containerRegistry.RegisterForNavigation<CorrectAnswerView>();
+            containerRegistry.RegisterForNavigation<BaseCorrectAnswerView>();
             containerRegistry.RegisterForNavigation<FinalRoundDisplayedQuestionView>();
             containerRegistry.RegisterForNavigation<DisplayedQuestionView>();
             containerRegistry.RegisterForNavigation<FinalRoundControlView>();

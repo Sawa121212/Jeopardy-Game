@@ -3,7 +3,7 @@ using Common.Core.Prism.Regions;
 using Game.Ui.Views;
 using Infrastructure.Module.Views;
 using Prism.Regions;
-using TelegramAPI.Test.Views;
+using TelegramAPI.Ui.Views;
 using TopicDb.Ui.Views;
 
 namespace JeopardyGame.Views

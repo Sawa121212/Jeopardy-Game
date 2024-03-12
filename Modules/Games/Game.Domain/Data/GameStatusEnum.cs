@@ -18,5 +18,11 @@ namespace Game.Domain.Data
 
         [Description("Перейти к следущему раунду")]
         GoNextRound,
+
+        [Description("Учесть ставки игроков")]
+        SetPlayerBets,
+
+        [Description("Конец игры. Показать победителя")]
+        EndGame_ShowWinner
     }
 }

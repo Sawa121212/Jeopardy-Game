@@ -14,7 +14,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using ReactiveUI;
-using TelegramAPI.Test.Managers;
+using TelegramAPI.Infrastructure.Interfaces.Managers;
 using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace Game.Ui.Views.GameControls
@@ -48,7 +48,8 @@ namespace Game.Ui.Views.GameControls
 
             // Final round
             RemoveTopicFromFinalRoundCommand = new DelegateCommand<TopicModel>(async (t) => await OnRemoveTopicFromFinalRound(t));
-            EndPlaceBetsCommand = new DelegateCommand(async() => await OnEndPlaceBets());
+            SetPlayerBetsCommand = new DelegateCommand(OnSetPlayerBets);
+            EndPlaceBetsCommand = new DelegateCommand(async () => await OnEndPlaceBets());
         }
 
         /// <summary>
@@ -153,6 +154,7 @@ namespace Game.Ui.Views.GameControls
 
             // result parameter
             object resultParameter = navigationContext.Parameters[NavigationParameterService.ResultParameter];
+
             if (resultParameter is GameStatusEnum gameStatus)
             {
                 switch (gameStatus)
@@ -170,6 +172,13 @@ namespace Game.Ui.Views.GameControls
                     case GameStatusEnum.GoNextRound:
                         OnGoNextRound();
                         return;
+                    case GameStatusEnum.SetPlayerBets:
+                        OnSetPlayerBets();
+                        return;
+                    case GameStatusEnum.EndGame_ShowWinner:
+                        OnGoNextRound();
+                        return;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -178,6 +187,7 @@ namespace Game.Ui.Views.GameControls
             // Initialize parameter
             object parameter = navigationContext.Parameters[NavigationParameterService.InitializeParameter];
             string? value = parameter?.ToString();
+
             if (string.IsNullOrEmpty(value))
             {
                 return;
@@ -193,13 +203,14 @@ namespace Game.Ui.Views.GameControls
             if (_game is null)
             {
                 Message = "Ошибка. Игра не найдена";
+
                 return;
             }
-
 
             if (_game?.Rounds is null || _game.Rounds.Count == 0)
             {
                 Message = "Ошибка. Не удалось собрать раунд";
+
                 return;
             }
 
@@ -237,6 +248,7 @@ namespace Game.Ui.Views.GameControls
                     if (_players.Count is 1 or 2)
                     {
                         ActivePlayer = _players[0];
+
                         return;
                     }
 
@@ -245,6 +257,7 @@ namespace Game.Ui.Views.GameControls
 
                     Message = $"Выбор темы и стоимости вопроса первым осуществляет игрок {playerModel?.Name}";
                     ActivePlayer = playerModel;
+
                     break;
                 case RoundsLevelEnum.Round2:
                 case RoundsLevelEnum.Round3:
@@ -253,6 +266,7 @@ namespace Game.Ui.Views.GameControls
                     if (_currentRound is {Level: not RoundsLevelEnum.Round1})
                     {
                         ActivePlayer = GetPlayerWithMinPoint(players);
+
                         return;
                     }
 

@@ -18,7 +18,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using ReactiveUI;
-using TelegramAPI.Test.Managers;
+using TelegramAPI.Infrastructure.Interfaces.Managers;
 
 namespace Game.Ui.Views
 {

@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
+             xmlns:players="clr-namespace:Game.Ui.Views.GameControls.GamePages.Players"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer.FinalRoundDisplayedQuestionView"
+             x:DataType="gameControls:GameViewModel"
+             x:Name="FinalRoundDisplayedQuestionControl">
+
+    <Design.DataContext>
+        <gameControls:GameViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, Auto, *, Auto, Auto">
+        <TextBlock Grid.Row="0"
+                   Text="Финальный вопрос"
+                   Classes="Headline6"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Margin="0 ,3" />
+
+        <Image Source="{Binding DisplayedQuestion.Picture, Mode=OneWay}"
+               Grid.Row="1" />
+        <Viewbox Grid.Row="2">
+            <TextBlock Text="{Binding DisplayedQuestion.Text, Mode=OneWay}"
+                       TextWrapping="Wrap"
+                       MaxWidth="800" />
+        </Viewbox>
+
+        <!-- PlayersAnswering -->
+        <players:FinalRoundPlayersAnsweringPage Grid.Row="3" />
+
+        <Button Content="Закрыть вопрос. Показать правильный ответ"
+                Command="{Binding CloseQuestionCommand}"
+                Grid.Row="4"
+                Margin="5,3,3,3" />
+    </Grid>
+</UserControl>

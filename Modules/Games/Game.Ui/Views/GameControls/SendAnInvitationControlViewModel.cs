@@ -10,7 +10,7 @@ using Game.Ui.Models;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
-using TelegramAPI.Test.Managers;
+using TelegramAPI.Infrastructure.Interfaces.Managers;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 

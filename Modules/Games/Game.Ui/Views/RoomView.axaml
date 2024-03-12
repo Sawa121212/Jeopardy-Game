@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d"
+             mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="300"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
@@ -19,7 +19,8 @@
         <views:RoomViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto, *"
+          Margin="5,0">
         <!-- Back-->
         <Button Grid.Row="0"
                 Classes="Flat"
@@ -37,12 +38,13 @@
         <Button Command="{Binding SendAnInvitationCommand}"
                 IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                 HorizontalAlignment="Right"
+                VerticalAlignment="Center"
                 Grid.Row="0"
                 Margin="3">
             <Button.Content>
                 <Grid ColumnDefinitions="Auto, 8, *">
                     <avalonia:MaterialIcon Grid.Column="0" Kind="EmailSendOutline" />
-                    <TextBlock Grid.Column="2" Text="Пригласить" />
+                    <TextBlock Grid.Column="2" Text="Пригласить в комнату" />
                 </Grid>
             </Button.Content>
         </Button>
@@ -64,11 +66,11 @@
         </controls:Card>
 
         <Grid Grid.Row="1" RowDefinitions="*, Auto, Auto"
-              IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-              Margin="3">
+              IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
 
             <!-- Players -->
-            <controls:Card Grid.Row="0">
+            <controls:Card Grid.Row="0"
+                           Margin="5, 0">
                 <Grid RowDefinitions="Auto,*">
                     <TextBlock Grid.Row="0"
                                Text="Игроки"
@@ -205,20 +207,21 @@
                 </Grid>
             </Grid>
 
+            <!-- Room key -->
             <controls:Card Grid.Row="1"
                            HorizontalAlignment="Right"
                            VerticalAlignment="Center"
                            Margin="0, 0, 15, 0">
                 <Grid RowDefinitions="Auto,*,Auto">
                     <TextBlock Grid.Row="0"
-                               Classes="Subtitle1"
+                               Classes="Subtitle2"
                                Text="Код комнаты"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Margin="0 ,3" />
 
                     <TextBlock Grid.Row="1"
-                               Classes="Headline5"
+                               Classes="Subtitle1"
                                Text="{Binding RoomKey}"
                                Foreground="{DynamicResource MaterialPrimaryMidBrush}"
                                HorizontalAlignment="Center"
