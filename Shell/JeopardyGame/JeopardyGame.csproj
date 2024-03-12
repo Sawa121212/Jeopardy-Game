@@ -13,13 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.9" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.9" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.9" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.9" />
+    <PackageReference Include="Avalonia" Version="11.0.10" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.0.10" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
     <PackageReference Include="Prism.DryIoc.Avalonia" Version="8.1.97.11072" />
-    <PackageReference Include="Material.Avalonia" Version="3.4.1" />
+    <PackageReference Include="Material.Avalonia" Version="3.4.2" />
     <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.17">
       <PrivateAssets>all</PrivateAssets>
@@ -33,6 +33,7 @@
     <ProjectReference Include="..\..\Modules\AppModules\Infrastructure\Infrastructure.Module\Infrastructure.Module.csproj" />
     <ProjectReference Include="..\..\Modules\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
     <ProjectReference Include="..\..\Modules\Games\Game.Module\Game.Module.csproj" />
+    <ProjectReference Include="..\..\Modules\TelegramAPI\TelegramAPI.Module\TelegramAPI.Module.csproj" />
     <ProjectReference Include="..\..\Modules\TopicsDB\TopicDb.Module\TopicDb.Module.csproj" />
     <ProjectReference Include="..\..\Modules\TopicsDB\TopicDb.Ui\TopicDb.Ui.csproj" />
     <ProjectReference Include="..\..\Modules\TopicsDB\TopicsDB.Domain\TopicDb.Domain.csproj" />
@@ -44,6 +45,9 @@
       <DependentUpon>Language.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Views\PlayInfoPages\GameRulesPage.axaml.cs">
+      <DependentUpon>GameRulesPage.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

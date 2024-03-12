@@ -49,11 +49,11 @@
                         <StackPanel Orientation="Horizontal" Height="32">
                             <RadioButton GroupName="Lang"
                                          Content="Русский"
-                                         IsChecked="{Binding CultureInfo, Converter={StaticResource  EnumToBooleanConverter}, ConverterParameter={x:Static localization1:LanguagesEnum.ru}}"
+                                         IsChecked="{Binding CultureInfo, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localization1:LanguagesEnum.ru}}"
                                          Command="{Binding Path=ChangeLanguageCommand}" />
                             <RadioButton GroupName="Lang"
                                          Content=" English "
-                                         IsChecked="{Binding CultureInfo, Converter={StaticResource  EnumToBooleanConverter}, ConverterParameter={x:Static localization1:LanguagesEnum.en}}"
+                                         IsChecked="{Binding CultureInfo, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static localization1:LanguagesEnum.en}}"
                                          Command="{Binding Path=ChangeLanguageCommand}" />
                         </StackPanel>
                     </controls:Card>

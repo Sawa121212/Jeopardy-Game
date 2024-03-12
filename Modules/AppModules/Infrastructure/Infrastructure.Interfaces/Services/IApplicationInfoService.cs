@@ -24,12 +24,6 @@
         string GetFullApplicationName();
 
         /// <summary>
-        /// Получить заголовок приложения.
-        /// </summary>
-        /// <returns></returns>
-        string GetApplicationTitle();
-
-        /// <summary>
         /// Задать название приложения.
         /// </summary>
         /// <param name="applicationName"></param>

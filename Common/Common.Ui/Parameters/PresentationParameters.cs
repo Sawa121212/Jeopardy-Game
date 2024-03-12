@@ -6,7 +6,7 @@ namespace Common.Ui.Parameters
     public class PresentationParameters : ReactiveObject, IPresentationParameters
     {
         private const double MIN_SCALE = 0.5;
-        private const double MAX_SCALE = 3;
+        private const double MAX_SCALE = 2;
         private const double DEFAULT_SCALE = 1.0;
 
         private double _scaleFactor;

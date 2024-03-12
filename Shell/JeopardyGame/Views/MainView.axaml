@@ -6,7 +6,6 @@
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
              xmlns:viewModel="clr-namespace:JeopardyGame.Views"
-             xmlns:converters1="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
              xmlns:controls1="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:regions="clr-namespace:Common.Core.Prism.Regions;assembly=Common.Core"
@@ -89,9 +88,15 @@
             </Grid>
         </controls1:Card>
 
-        <ContentControl Grid.Column="1"
-                        prism:RegionManager.RegionName="{x:Static regions:RegionNameService.ContentRegionName}"
-                        Margin="3" />
+        <!-- Content -->
+        <TransitioningContentControl Grid.Column="1"
+                                     prism:RegionManager.RegionName="{x:Static regions:RegionNameService.ContentRegionName}"
+                                     Margin="3">
+            <TransitioningContentControl.PageTransition>
+                <PageSlide Orientation="Horizontal"
+                           Duration="0:00:00.250" />
+            </TransitioningContentControl.PageTransition>
+        </TransitioningContentControl>
 
     </Grid>
 

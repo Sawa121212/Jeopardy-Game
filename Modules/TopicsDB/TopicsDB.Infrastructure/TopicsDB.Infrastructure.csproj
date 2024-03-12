@@ -12,7 +12,6 @@
     <ProjectReference Include="..\..\AppModules\Infrastructure\Infrastructure.Domain\Infrastructure.Domain.csproj" />
     <ProjectReference Include="..\..\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
     <ProjectReference Include="..\..\Domain\DataDomain\DataDomain.csproj" />
-    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Test.csproj" />
     <ProjectReference Include="..\TopicsDB.Infrastructure.Interfaces\TopicsDB.Infrastructure.Interfaces.csproj" />
   </ItemGroup>
 

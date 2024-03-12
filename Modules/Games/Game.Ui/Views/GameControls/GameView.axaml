@@ -9,7 +9,6 @@
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:converters="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
-             xmlns:old="clr-namespace:Common.Ui.Converters.Old;assembly=Common.Ui"
              xmlns:domain="clr-namespace:Users.Domain;assembly=Users.Domain"
              xmlns:rooms="clr-namespace:DataDomain.Rooms;assembly=DataDomain"
              xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
@@ -45,8 +44,8 @@
                 </Button.Content>
             </Button>
 
-            <TextBlock Text="{Binding ActivePlayer.Name, Mode=OneWay, FallbackValue='???'}"
-                       Classes="Headline4"
+            <TextBlock Text="{Binding ActivePlayer.Name, Mode=OneWay}"
+                       Classes="Headline3"
                        Foreground="{DynamicResource MaterialPrimaryMidBrush}"
                        IsVisible="{Binding IsGameStarted, Mode=OneWay}"
                        VerticalAlignment="Center"
@@ -73,15 +72,15 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Игрок"
                                         Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Points"
+                    <DataGridTextColumn Header="Счет"
                                         Binding="{Binding Points}" />
                 </DataGrid.Columns>
             </DataGrid>
 
-            <ContentControl Grid.Column="1"
-                            IsVisible="{Binding IsShowedTopics, Mode=OneWay}"
-                            prism:RegionManager.RegionName="{x:Static data1:GameRegionNameService.ContentRegionName}"
-                            Margin="3" />
+            <TransitioningContentControl Grid.Column="1"
+                                         IsVisible="{Binding IsShowedTopics, Mode=OneWay}"
+                                         prism:RegionManager.RegionName="{x:Static data1:GameRegionNameService.ContentRegionName}"
+                                         Margin="3" />
 
             <Button Grid.Column="1"
                     Classes="Flat"

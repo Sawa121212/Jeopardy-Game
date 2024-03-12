@@ -29,14 +29,6 @@ namespace Infrastructure.Module.Services.ApplicationInfo
         }
 
         /// <inheritdoc />
-        public string GetApplicationTitle()
-        {
-            /*if(_licenseInformationService == null)
-                return GetFullApplicationName();*/
-            return $"{_applicationName} v{_applicationVersion} ";
-        }
-
-        /// <inheritdoc />
         public void SetApplicationName(string applicationName)
         {
             _applicationName = applicationName;

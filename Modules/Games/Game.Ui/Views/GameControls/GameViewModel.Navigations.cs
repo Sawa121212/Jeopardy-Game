@@ -4,9 +4,13 @@ using Common.Core.Prism.Regions;
 using DataDomain.Rooms.Rounds.Enums;
 using Game.Domain.Data;
 using Game.Ui.Views.GameControls.GamePages;
+using Game.Ui.Views.GameControls.GamePages.Players;
 using Game.Ui.Views.GameControls.GamePages.Rounds;
 using Game.Ui.Views.GameControls.GamePages.Topics;
 using Prism.Regions;
+using BaseCorrectAnswerView = Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer.BaseCorrectAnswerView;
+using DisplayedQuestionView = Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer.DisplayedQuestionView;
+using FinalRoundDisplayedQuestionView = Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer.FinalRoundDisplayedQuestionView;
 
 namespace Game.Ui.Views.GameControls
 {
@@ -78,6 +82,7 @@ namespace Game.Ui.Views.GameControls
                 // Подготовь финальный раунд
                 PrepareFinalRound();
                 RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundControlView));
+
                 return;
             }
             else
@@ -99,6 +104,7 @@ namespace Game.Ui.Views.GameControls
             if (_currentRound?.Level == RoundsLevelEnum.Final)
             {
                 RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundDisplayedQuestionView));
+
                 return;
             }
 
@@ -119,7 +125,7 @@ namespace Game.Ui.Views.GameControls
                 return;
             }
 
-            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(CorrectAnswerView));
+            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(BaseCorrectAnswerView));
         }
 
         /// <summary>
@@ -127,7 +133,17 @@ namespace Game.Ui.Views.GameControls
         /// </summary>
         private void OnShowPlayersBet()
         {
-            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(GameWinnerView));
+            NavigationParameters parameter = new()
+            {
+                {
+                    NavigationParameterService.InitializeParameter, _playerBetModels
+                },
+                {
+                    NavigationParameterService.InitializeSecondParameter, _displayedQuestion
+                }
+            };
+
+            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundPlayersBetAndAnswerView), parameter);
         }
 
         /// <summary>

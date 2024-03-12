@@ -43,9 +43,19 @@ namespace Game.Ui.Models
             set => this.RaiseAndSetIfChanged(ref _isInvited, value);
         }
 
+        /// <summary>
+        /// Ответ правильный
+        /// </summary>
+        public bool IsCorrectAnswer
+        {
+            get => _isCorrectAnswer;
+            set => this.RaiseAndSetIfChanged(ref _isCorrectAnswer, value);
+        }
+
         private readonly PlayerModel? _playerModel;
         private int _bet;
         private bool _isInvited;
         private string _answer;
+        private bool _isCorrectAnswer;
     }
 }
