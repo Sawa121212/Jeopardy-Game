@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using Common.Core.Prism.Regions;
 using Game.Ui.Views;
-using Infrastructure.Module.Views;
+using Infrastructure.Ui.Views;
 using Prism.Regions;
 using TelegramAPI.Ui.Views;
 using TopicDb.Ui.Views;

@@ -6,28 +6,21 @@ using Prism.Modularity;
 using TelegramAPI.Infrastructure.Interfaces.Managers;
 using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
 using TelegramAPI.Infrastructure.Managers;
-using TelegramAPI.Infrastructure.Services.Settings;
 using TelegramAPI.Module.Properties;
 using TelegramAPI.Ui.Views;
 using TelegramAPI.Ui.Views.Settings;
-using Users.Domain.Models;
-using Users.Infrastructure.Interfaces;
 
 namespace TelegramAPI.Module
 {
     /// <summary>
-    /// Модуль C
+    /// Модуль Telegram API
     /// </summary>
-    public class TelegramApiTestModule : IModule
+    public class TelegramApiModule : IModule
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            // регистрируем View для навигации по Регионам
-            containerRegistry.RegisterSingleton<ITelegramSettingsRepositoryService, TelegramSettingsRepositoryService>();
-            containerRegistry.RegisterSingleton<ITelegramSettingsService, TelegramSettingsService>();
-            containerRegistry.RegisterSingleton<ITelegramBotManager, TelegramBotManager>(); 
-            containerRegistry.RegisterSingleton<IAdminManager, AdminManager>();
-            containerRegistry.RegisterSingleton<ITelegramBotService, TelegramBotService>();
+            containerRegistry
+                .RegisterSingleton<ITelegramBotService, TelegramBotService>();
 
             // views
             containerRegistry.RegisterForNavigation<TelegramTestView, TelegramTestViewModel>();
@@ -40,14 +33,9 @@ namespace TelegramAPI.Module
             containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
 
             // Применить загруженные настройки
-            containerProvider.Resolve<ITelegramSettingsService>()?.ApplySavedSettings();
+            //containerProvider.Resolve<ITelegramSettingsService>()?.ApplySavedSettings();
 
-            // Зарегистрировать View к региону. Теперь при запуске ПО View будет показано
-            //_regionManager.RegisterViewWithRegion("RegionC", typeof(TabCView));
-            containerProvider.Resolve<ISettingsViewManager>().AddView<TelegramSettingsView>("Параметры бот", "Telegram бот");
-            IAdminManager adminManager = containerProvider.Resolve<IAdminManager>();
-
-            containerProvider.Resolve<ITelegramHandlerService>().RegisterHandler(StateUserEnum.CheckAddedAdmin, adminManager.CheckAddedAdminMode, null);
+            containerProvider.Resolve<ISettingsViewManager>().AddView<TelegramSettingsView>("Параметры бота", "Telegram бот");
         }
     }
 }

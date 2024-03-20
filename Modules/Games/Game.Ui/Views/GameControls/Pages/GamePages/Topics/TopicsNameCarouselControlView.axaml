@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:topics="clr-namespace:Game.Ui.Views.GameControls.Pages.GamePages.Topics"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Topics.TopicsNameCarouselControlView"
+             x:DataType="topics:TopicsNameCarouselControlViewModel">
+
+    <Design.DataContext>
+        <topics:TopicsNameCarouselControlViewModel />
+    </Design.DataContext>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Bottom"
+              ColumnDefinitions="Auto, *">
+            <Button Content="Пропустить"
+                    Command="{Binding ContinueGameCommand}"
+                    DockPanel.Dock="Bottom"
+                    Classes="Flat"
+                    Grid.Column="0"
+                    Margin="3" />
+            <Button Content="Следующая тема"
+                    DockPanel.Dock="Bottom"
+                    Command="{Binding ShowNextTopicCommand}"
+                    IsVisible="{Binding !IsShowedAllTopic, Mode=OneWay}"
+                    Grid.Column="1"
+                    Margin="3" />
+            <Button Content="Начать игру"
+                    DockPanel.Dock="Bottom"
+                    Command="{Binding ContinueGameCommand}"
+                    IsVisible="{Binding IsShowedAllTopic, Mode=OneWay}"
+                    Grid.Column="1"
+                    Margin="3" />
+        </Grid>
+
+        <Viewbox x:Name="ViewBoxControl"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Center"
+                 Stretch="Uniform">
+            <TextBlock Text="{Binding ShowedTopic.Name, Mode=OneWay}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Width="400"
+                       Margin="25" />
+        </Viewbox>
+    </DockPanel>
+</UserControl>

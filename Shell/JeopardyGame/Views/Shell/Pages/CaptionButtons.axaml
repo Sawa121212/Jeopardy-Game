@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="JeopardyGame.Views.Shell.Pages.CaptionButtons">
+
+    <Grid Classes="caption_button_box">
+        <StackPanel Orientation="Horizontal">
+            <Button Classes="caption_button"
+                    Click="MinimizeWindow">
+                <Path Data="{StaticResource WindowMinimize}" />
+            </Button>
+            <Button Classes="caption_button"
+                    Click="MaximizeOrRestoreWindow">
+                <Path Data="{Binding $parent[Window].WindowState, Converter={x:Static converters:WindowStateConverters.ToMaxOrRestoreIcon}}" />
+            </Button>
+            <Button Classes="caption_button"
+                    Click="CloseWindow">
+                <Path Data="{StaticResource WindowClose}" />
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

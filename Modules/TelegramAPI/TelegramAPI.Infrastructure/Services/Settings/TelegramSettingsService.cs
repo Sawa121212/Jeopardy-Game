@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using Common.Core.Interfaces.Settings;
-using Common.Core.Localization;
 using TelegramAPI.Domain.Settings;
 using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
 
@@ -13,20 +12,21 @@ namespace TelegramAPI.Infrastructure.Services.Settings
         private readonly ITelegramSettingsRepositoryService _telegramSettingsRepositoryService;
         private readonly TelegramSettings _currentTelegramSettings;
 
-        public TelegramSettingsService(
-            ITelegramSettingsRepositoryService telegramSettingsRepositoryService,
-            IResourceService resourceService)
+        public TelegramSettingsService(ITelegramSettingsRepositoryService telegramSettingsRepositoryService)
         {
             _telegramSettingsRepositoryService = telegramSettingsRepositoryService;
             _currentTelegramSettings = new TelegramSettings();
+
+            Task.Run(async () => await ApplySavedSettings().ConfigureAwait(true));
         }
 
         /// <inheritdoc/>
-        public async void ApplySavedSettings()
+        public async Task ApplySavedSettings()
         {
             try
             {
-                ISettings? settings = await _telegramSettingsRepositoryService.Get();
+                ISettings? settings = await _telegramSettingsRepositoryService.Get().ConfigureAwait(true);
+
                 if (settings is not TelegramSettings telegramSettings)
                 {
                     return;
@@ -39,7 +39,6 @@ namespace TelegramAPI.Infrastructure.Services.Settings
                     _currentTelegramSettings.AdminUserId = telegramSettings.AdminUserId;
                 }, DispatcherPriority.SystemIdle);
 
-
                 // lang
                 /*await Dispatcher.UIThread.InvokeAsync(
                     () => { OnChangeCulture(); },
@@ -50,7 +49,6 @@ namespace TelegramAPI.Infrastructure.Services.Settings
                 //_exceptionService.ShowException(e);
             }
         }
-
 
         /// <summary>
         /// Обновить настройки в файле

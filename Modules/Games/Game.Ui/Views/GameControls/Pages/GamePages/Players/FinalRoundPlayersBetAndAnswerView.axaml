@@ -1,0 +1,124 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:models="clr-namespace:Game.Ui.Models"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
+             xmlns:players1="clr-namespace:Game.Ui.Views.GameControls.Pages.GamePages.Players"
+             xmlns:questionsAndAnswer1="clr-namespace:Game.Ui.Views.GameControls.Pages.GamePages.QuestionsAndAnswer"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Players.FinalRoundPlayersBetAndAnswerView"
+             x:DataType="players1:FinalRoundPlayersBetAndAnswerViewModel">
+
+    <Design.DataContext>
+        <players1:FinalRoundPlayersBetAndAnswerViewModel />
+    </Design.DataContext>
+
+    <UserControl.Resources>
+        <system:Boolean x:Key="Boolean_True">True</system:Boolean>
+        <system:Boolean x:Key="Boolean_False">False</system:Boolean>
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="*, 2*">
+        <!-- Answer -->
+        <questionsAndAnswer1:CorrectAnswerPage Grid.Row="0" />
+
+        <!-- Players Bet -->
+        <controls:Card HorizontalAlignment="Center"
+                       MinWidth="250"
+                       Grid.Row="1">
+
+            <Grid RowDefinitions="Auto,*, Auto">
+                <TextBlock Grid.Row="0"
+                           Text="Ставки и ответы"
+                           Classes="Headline6"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="0 ,3" />
+
+                <DockPanel Grid.Row="1">
+                    <controls:Card DockPanel.Dock="Bottom"
+                                   Background="Transparent"
+                                   Padding="0"
+                                   InsideClipping="True"
+                                   Margin="3">
+                        <controls:Card.Styles>
+                            <Style Selector="RadioButton">
+                                <Setter Property="Theme" Value="{StaticResource MaterialButtonlikeRadioButton}" />
+                            </Style>
+                        </controls:Card.Styles>
+
+                        <StackPanel Orientation="Horizontal" Height="32">
+                            <RadioButton Content="Правильно"
+                                         GroupName="AnsweredQuestion"
+                                         IsChecked="{Binding ShowedPlayerBetModel.IsCorrectAnswer, Mode=TwoWay}"
+                                         Command="{Binding Path=AnsweredQuestionCommand}"
+                                         CommandParameter="{StaticResource Boolean_True}"
+                                         HorizontalContentAlignment="Center" />
+                            <RadioButton Content="Не правильно"
+                                         GroupName="AnsweredQuestion"
+                                         IsChecked="{Binding !ShowedPlayerBetModel.IsCorrectAnswer, Mode=TwoWay}"
+                                         Command="{Binding Path=AnsweredQuestionCommand}"
+                                         CommandParameter="{StaticResource Boolean_False}"
+                                         HorizontalContentAlignment="Center" />
+                        </StackPanel>
+                    </controls:Card>
+
+                    <Viewbox x:Name="ViewBoxControl"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Stretch="Uniform">
+                        <Grid Margin="10">
+                            <TextBlock Classes="Subtitle2"
+                                       Text="{Binding ShowedPlayerBetModel.PlayerModel.Name}"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Top"
+                                       Margin="0,0,0, 0" />
+
+                            <Image Stretch="Fill" Height="64" Width="64"
+                                   Source="{StaticResource PrisonerDrawingImage}"
+                                   VerticalAlignment="Top"
+                                   Margin="10,20" />
+
+                            <TextBlock Classes="Subtitle2"
+                                       Text="{Binding ShowedPlayerBetModel.Bet}"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Top"
+                                       Margin="0,85,0, 0" />
+
+                            <TextBlock Classes="Subtitle1"
+                                       Text="{Binding ShowedPlayerBetModel.Answer}"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Top"
+                                       Margin="0,105,0, 0" />
+                        </Grid>
+                    </Viewbox>
+                </DockPanel>
+
+                <Grid Grid.Row="2"
+                      ColumnDefinitions="Auto, *"
+                      Margin="0, 15,0,0">
+                    <Button Content="Следующий игрок"
+                            DockPanel.Dock="Bottom"
+                            Command="{Binding ShowNextPlayerCommand}"
+                            IsVisible="{Binding !IsShowedAllTopic, Mode=OneWay}"
+                            Grid.Column="1"
+                            Margin="3" />
+                    <Button Content="Показать победителя"
+                            DockPanel.Dock="Bottom"
+                            Command="{Binding ContinueGameCommand}"
+                            IsVisible="{Binding IsShowedAllTopic, Mode=OneWay}"
+                            Grid.Column="1"
+                            Margin="3" />
+                </Grid>
+            </Grid>
+        </controls:Card>
+    </Grid>
+</UserControl>

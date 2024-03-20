@@ -1,13 +1,25 @@
-﻿using Prism.Mvvm;
+﻿using System.Threading.Tasks;
+using Common.Core.Views;
+using TelegramAPI.Infrastructure.Interfaces.Managers;
+using ReactiveUI;
 
 namespace JeopardyGame.Views.Shell
 {
-    public partial class ShellViewModel : BindableBase
+    public partial class ShellViewModel : ViewModelBase
     {
-        public ShellViewModel()
+        public ShellViewModel(ITelegramBotManager telegramBotManager)
         {
+            _telegramBotManager = telegramBotManager;
         }
 
         public string Title => "Своя игра";
+
+        public ITelegramBotManager TelegramBotManager
+        {
+            get => _telegramBotManager;
+            set => this.RaiseAndSetIfChanged(ref _telegramBotManager, value);
+        }
+
+        private ITelegramBotManager _telegramBotManager;
     }
 }

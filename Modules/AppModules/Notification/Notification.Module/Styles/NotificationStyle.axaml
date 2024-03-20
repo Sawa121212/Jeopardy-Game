@@ -4,9 +4,6 @@
                     xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
                     x:CompileBindings="True">
 
-    <SolidColorBrush x:Key="WarningColorBrush" Color="#FFCC00" />
-    <SolidColorBrush x:Key="SuccessColorBrush" Color="#89D185" />
-
     <ControlTheme x:Key="{x:Type NotificationCard}" TargetType="NotificationCard">
         <Setter Property="UseLayoutRounding" Value="True" />
         <Setter Property="Width" Value="350" />

@@ -8,6 +8,10 @@ namespace TelegramAPI.Infrastructure.Interfaces.Managers
     {
         TelegramBotClient TelegramBotClient { get; }
 
+        bool IsConnected { get; }
+
+        Task<Result<bool>> StartTelegramBot();
+
         Task<Result<bool>> StartTelegramBot(string token);
     }
 }

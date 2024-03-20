@@ -4,5 +4,4 @@
     <ResourceDictionary.MergedDictionaries>
         <!-- <ResourceInclude Source="/HamburgerMenus/HamburgerMenu.xaml" /> -->
     </ResourceDictionary.MergedDictionaries>
-
 </ResourceDictionary>

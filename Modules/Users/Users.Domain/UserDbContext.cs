@@ -11,9 +11,18 @@ namespace Users.Domain
     {
         public UserDbContext()
         {
+            if (Database is null)
+            {
+                Debug.WriteLine($"[Debug] {nameof(UserDbContext)}: База данных не найдена");
+                return;
+            }
+
             // при создании контекста автоматически проверит наличие базы данных и, если она отсутствует, создаст ее.
             bool isCreated = Database.EnsureCreated();
-            Debug.WriteLine(isCreated ? "База данных была создана" : "База данных уже существует");
+
+            Debug.WriteLine(isCreated
+                ? $"[Debug] {nameof(UserDbContext)}: База данных была создана"
+                : $"[Debug] {nameof(UserDbContext)}: База данных уже существует");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

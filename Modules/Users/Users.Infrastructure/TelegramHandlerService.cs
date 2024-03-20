@@ -78,10 +78,12 @@ namespace Users.Infrastructure
                     botUser = update.ChatJoinRequest.From;
                     break;
             }
+
             if (botUser == null)
             {
                 return Result<Telegram.Bot.Types.User>.Fail("Не найден юзер");
             }
+
             return Result<Telegram.Bot.Types.User>.Done(botUser);
         }
 
@@ -114,6 +116,7 @@ namespace Users.Infrastructure
 
                 return action(update);
             }
+
             return Result<Tuple<StateUserEnum, string>>.Fail("Нет подходящего действия");
         }
 
@@ -123,6 +126,7 @@ namespace Users.Infrastructure
             {
                 return Result<ReplyKeyboardMarkup>.Fail("нет такого");
             }
+
             return generator.Invoke(update);
         }
     }

@@ -16,7 +16,7 @@ namespace Users.Infrastructure.Interfaces
         /// </summary>
         /// <param name="stateUser"></param>
         /// <param name="handler"></param>
-        /// <param name="replyKeyboardMarkup"></param>
+        /// <param name="replyKeyboardMarkupGenerator"></param>
         /// <returns></returns>
         ITelegramHandlerService RegisterHandler(StateUserEnum stateUser,
             Func<Update, Result<Tuple<StateUserEnum, string>>> handler,

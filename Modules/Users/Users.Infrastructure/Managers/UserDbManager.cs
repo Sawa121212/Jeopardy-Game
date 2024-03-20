@@ -7,13 +7,12 @@ namespace Users.Infrastructure.Managers
     {
         public UserDbManager(UserDbContext userDbContext)
         {
-            //_topicDbContext = new UserDbContext();
             _topicDbContext = userDbContext;
         }
 
         /// <inheritdoc />
         public UserDbContext DbContext => _topicDbContext;
 
-        private readonly UserDbContext _topicDbContext;
+        private UserDbContext _topicDbContext;
     }
 }
