@@ -13,7 +13,8 @@ namespace JeopardyGame.Views.Shell.Pages
 
         private void MinimizeWindow(object sender, RoutedEventArgs e)
         {
-            var window = this.FindAncestorOfType<Window>();
+            Window? window = this.FindAncestorOfType<Window>();
+
             if (window != null)
             {
                 window.WindowState = WindowState.Minimized;
@@ -22,7 +23,8 @@ namespace JeopardyGame.Views.Shell.Pages
 
         private void MaximizeOrRestoreWindow(object sender, RoutedEventArgs e)
         {
-            var window = this.FindAncestorOfType<Window>();
+            Window? window = this.FindAncestorOfType<Window>();
+
             if (window != null)
             {
                 window.WindowState = window.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
@@ -31,7 +33,8 @@ namespace JeopardyGame.Views.Shell.Pages
 
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
-            var window = this.FindAncestorOfType<Window>();
+            Window? window = this.FindAncestorOfType<Window>();
+
             if (window != null)
             {
                 window.Close();

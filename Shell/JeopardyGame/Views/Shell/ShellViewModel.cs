@@ -12,7 +12,7 @@ namespace JeopardyGame.Views.Shell
             _telegramBotManager = telegramBotManager;
         }
 
-        private string Title => "Своя игра";
+        public string Title => "Своя игра";
 
         public ITelegramBotManager TelegramBotManager
         {

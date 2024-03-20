@@ -10,8 +10,10 @@
         xmlns:regions="clr-namespace:Common.Core.Prism.Regions;assembly=Common.Core"
         xmlns:shell="clr-namespace:JeopardyGame.Views.Shell"
         xmlns:pages="clr-namespace:JeopardyGame.Views.Shell.Pages"
+        xmlns:c="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
         prism:ViewModelLocator.AutoWireViewModel="True"
         x:Class="JeopardyGame.Views.Shell.ShellView"
+        x:Name="ThisWindow"
         x:DataType="shell:ShellViewModel"
         Title="{Binding Title}"
         Height="650" Width="800"
@@ -25,13 +27,19 @@
         <shell:ShellViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid Margin="{Binding #ThisWindow.WindowState, Converter={x:Static c:WindowStateConverters.ToContentMargin}}">
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="{Binding #ThisWindow.WindowState, Converter={x:Static c:WindowStateConverters.ToTitleBarHeight}}" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *, Auto, Auto">
             <avalonia:MaterialIcon Kind="Brain"
                                    Height="18"
                                    Width="18"
-                                   Margin="5,0"
+                                   Margin="10,0,5,0"
                                    Grid.Column="0" />
 
             <TextBlock Classes="Body2"
@@ -39,7 +47,6 @@
                        VerticalAlignment="Center"
                        Text="{Binding Title}"
                        Margin="0,0" />
-
 
             <!-- TelegramBot status -->
             <StackPanel Orientation="Horizontal"

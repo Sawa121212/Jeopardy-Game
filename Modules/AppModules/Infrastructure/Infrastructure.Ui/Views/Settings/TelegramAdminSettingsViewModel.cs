@@ -36,6 +36,9 @@ namespace Infrastructure.Ui.Views.Settings
                 .ObservesProperty(() => IsAddAdminMode);
             CancelAddAdminModeCommand = new DelegateCommand(OnCancelAddAdminMode);
             ApplySettingsCommand = new DelegateCommand(OnSaveSettings);
+
+            // Инициализируем таймер
+            _timer = new Timer(2000); // Промежуток времени в миллисекундах - 2000 мс = 2 секунды
         }
 
         public long AdminId
@@ -107,11 +110,9 @@ namespace Infrastructure.Ui.Views.Settings
 
         private void CheckAdminUserIdTimerStart()
         {
-            // Инициализируем таймер
-            _timer = new Timer(2000); // Промежуток времени в миллисекундах - 2000 мс = 2 секунды
+            _timerSecond = 0;
             _timer.Elapsed += OnTimedEvent;
             _timer.Enabled = true;
-            _timerSecond = 0;
 
             //настройка состояния юзера
             if (_userService.TryGetUserById(AdminId, out User user))
@@ -141,15 +142,8 @@ namespace Infrastructure.Ui.Views.Settings
 
         private void StopTimer()
         {
-            if (_timer is null)
-            {
-                return;
-            }
-
             _timer.Elapsed -= OnTimedEvent;
-
             _timer.Stop();
-            _timer.Dispose();
         }
 
         /// <inheritdoc />

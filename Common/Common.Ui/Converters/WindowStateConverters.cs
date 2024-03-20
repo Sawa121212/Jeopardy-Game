@@ -9,37 +9,26 @@ namespace Common.Ui.Converters
     public static class WindowStateConverters
     {
         public static FuncValueConverter<WindowState, Thickness> ToContentMargin =
-            new FuncValueConverter<WindowState, Thickness>(state =>
+            new(state =>
             {
                 if (OperatingSystem.IsWindows() && state == WindowState.Maximized)
                 {
                     return new Thickness(6);
                 }
-                else if (OperatingSystem.IsLinux() && state != WindowState.Maximized)
+
+                if (OperatingSystem.IsLinux() && state != WindowState.Maximized)
                 {
                     return new Thickness(6);
                 }
-                else
-                {
-                    return new Thickness(0);
-                }
+
+                return new Thickness(0);
             });
 
         public static FuncValueConverter<WindowState, GridLength> ToTitleBarHeight =
-            new FuncValueConverter<WindowState, GridLength>(state =>
-            {
-                if (state == WindowState.Maximized)
-                {
-                    return new GridLength(30);
-                }
-                else
-                {
-                    return new GridLength(38);
-                }
-            });
+            new(_ => new GridLength(30));
 
         public static FuncValueConverter<WindowState, StreamGeometry> ToMaxOrRestoreIcon =
-            new FuncValueConverter<WindowState, StreamGeometry>(state =>
+            new(state =>
             {
                 if (state == WindowState.Maximized)
                 {
