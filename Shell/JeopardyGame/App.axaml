@@ -17,6 +17,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Common.Resources/GeneralResources.xaml" />
                 <ResourceInclude Source="avares://Common.Resources/CustomToolKit.xaml" />
                 <ResourceInclude Source="avares://Common.Resources/Geometries.axaml" />
                 <ResourceInclude Source="avares://Notification.Module/Styles/NotificationStyle.axaml" />

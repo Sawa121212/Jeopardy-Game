@@ -9,6 +9,13 @@ using Common.Core.Prism.Regions;
 using Common.Ui.Parameters;
 using Confirmation.Module;
 using Game.Module;
+using Infrastructure.Environment.Managers;
+using Infrastructure.Environment.Services;
+using Infrastructure.Environment.Services.ApplicationInfo;
+using Infrastructure.Environment.Services.Settings;
+using Infrastructure.Interfaces.Managers;
+using Infrastructure.Interfaces.Services;
+using Infrastructure.Interfaces.Services.Settings;
 using Infrastructure.Module;
 using JeopardyGame.Properties;
 using JeopardyGame.Views;
@@ -20,8 +27,17 @@ using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Mvvm;
 using Prism.Regions;
+using TelegramAPI.Infrastructure.Interfaces.Managers;
+using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
+using TelegramAPI.Infrastructure.Managers;
+using TelegramAPI.Infrastructure.Services.Settings;
 using TelegramAPI.Module;
 using TopicDb.Module;
+using Users.Domain;
+using Users.Infrastructure;
+using Users.Infrastructure.Interfaces;
+using Users.Infrastructure.Interfaces.Managers;
+using Users.Infrastructure.Managers;
 using Users.Module;
 using IResourceProvider = Common.Core.Localization.IResourceProvider;
 
@@ -55,6 +71,29 @@ namespace JeopardyGame
                 .RegisterSingleton<IResourceProvider, ResourceProvider>(Assembly.GetExecutingAssembly().FullName)
                 .RegisterSingleton<IResourceService, ResourceService>()
                 .RegisterSingleton<IPresentationParameters, PresentationParameters>()
+
+                // InfrastructureModule
+                .RegisterSingleton<ISerializableSettingsManager, SerializableSettingsManager>()
+                .RegisterSingleton<IApplicationInfoService, ApplicationInfoService>()
+                .RegisterSingleton<ISettingsViewManager, SettingsViewManager>()
+                .RegisterSingleton<IPathService, PathService>()
+                .RegisterSingleton<IProtobufSerializeService, ProtobufSerializeService>()
+                .RegisterSingleton<IApplicationSettingsService, ApplicationSettingsService>()
+                .RegisterSingleton<IApplicationSettingsRepositoryService, ApplicationSettingsRepositoryService>()
+
+                // Telegram settings
+                .RegisterSingleton<ITelegramSettingsRepositoryService, TelegramSettingsRepositoryService>()
+                .RegisterSingleton<ITelegramSettingsService, TelegramSettingsService>()
+                .RegisterSingleton<ITelegramBotManager, TelegramBotManager>()
+                .RegisterSingleton<ITelegramHandlerService, TelegramHandlerService>()
+
+                // сперва регистрируем контекст БД с вопросам
+                .RegisterScoped<UserDbContext>()
+                .RegisterSingleton<IUserDbManager, UserDbManager>()
+                .RegisterSingleton<IUserService, UserService>()
+
+                // Infrastructure
+                .RegisterSingleton<IAdminManager, AdminManager>()
                 ;
 
             // Views - Generic
@@ -79,10 +118,10 @@ namespace JeopardyGame
                 .AddModule<InfrastructureModule>()
 
                 // modules
+                .AddModule<TelegramApiModule>()
                 .AddModule<UsersModule>()
                 .AddModule<TopicDbModule>()
-                .AddModule<GameModule>()
-                .AddModule<TelegramApiTestModule>();
+                .AddModule<GameModule>();
         }
 
         protected override void InitializeShell(AvaloniaObject shell)

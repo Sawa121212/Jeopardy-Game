@@ -38,6 +38,7 @@ namespace TelegramAPI.Ui.Views
         private async Task OnSendMessage()
         {
             Question? question = _questionService.GetAllQuestions().FirstOrDefault(q => q.Picture != null);
+
             if (question?.Picture is {ChatId: > 0})
             {
                 // 825819569 - pink
@@ -46,6 +47,7 @@ namespace TelegramAPI.Ui.Views
                     = await _telegramBotService.ForwardMessageAsync(938969260, question.Picture.ChatId, question.Picture.MessageId);
 
                 MessageModel? messageModel = await _telegramBotService.ParseMessageAsync(message);
+
                 if (messageModel != null)
                 {
                     Text = messageModel.Text;
@@ -53,7 +55,6 @@ namespace TelegramAPI.Ui.Views
                 }
             }
         }
-
 
         private readonly ITelegramBotService _telegramBotService;
         private readonly IQuestionService _questionService;

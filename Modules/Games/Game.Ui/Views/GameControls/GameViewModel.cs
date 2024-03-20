@@ -218,8 +218,8 @@ namespace Game.Ui.Views.GameControls
             Players = new ObservableCollection<PlayerModel?>(_gameManager.GetPlayersFromRoom(_roomKey));
             Host = _gameManager.GetHostPlayerFromRoom(_roomKey);
 
-            // Test.Remove
-            _game.CurrentRoundLevel = RoundsLevelEnum.Final;
+            // ToDo: Test. Remove
+            //_game.CurrentRoundLevel = RoundsLevelEnum.Final;
 
             OnChangeRound();
         }

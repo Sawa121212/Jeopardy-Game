@@ -13,6 +13,7 @@ using Game.Domain.Events.Players;
 using Game.Domain.Events.Rooms;
 using Game.Infrastructure.Interfaces.Mangers;
 using Game.Ui.Views.GameControls;
+using Game.Ui.Views.GameControls.Pages;
 using Infrastructure.Domain.Helpers;
 using Prism.Commands;
 using Prism.Events;
@@ -46,6 +47,7 @@ namespace Game.Ui.Views
             AddPlayerCommand = new DelegateCommand(OnAddPlayer);
             KickOutPlayerCommand = new DelegateCommand<PlayerModel>(OnKickOutPlayer);
             SetPlayerToHostCommand = new DelegateCommand<PlayerModel>(OnSetPlayerToHost);
+
             StartGameCommand = new DelegateCommand(OnStartGame, () => Host != null && Players.Any())
                 .ObservesProperty(() => Host)
                 .ObservesProperty(() => Players);
@@ -96,12 +98,16 @@ namespace Game.Ui.Views
         /// </summary>
         private async Task OnCreateRoom()
         {
-            // Uncomment
-            /*if (_telegramBotManager.TelegramBotClient == null)
+            // ToDo: Uncomment
+            /*
+            if (!_telegramBotManager.IsConnected)
             {
-                await _confirmationService.ShowInfoAsync("Ошибка",
-                    $"TelegramBotClient не запущен!",
-                    ConfirmationResultEnum.Ok);
+                await _telegramBotManager.StartTelegramBot().ConfigureAwait(true);
+            }
+
+            if (!_telegramBotManager.IsConnected == null)
+            {
+                await _confirmationService.ShowInfoAsync("Ошибка", $"TelegramBotClient не запущен!", ConfirmationResultEnum.Ok);
                 return;
             }*/
 
@@ -109,7 +115,7 @@ namespace Game.Ui.Views
             RoomKey = _gameManager.CreateRoom();
         }
 
-        // Test
+        // Test method
         private void OnAddPlayer()
         {
             PlayerModel player = new()

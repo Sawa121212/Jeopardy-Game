@@ -7,15 +7,13 @@
 
   <ItemGroup>
     <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
-    <PackageReference Include="Material.Avalonia" Version="3.4.2" />
-    <PackageReference Include="Material.Icons.Avalonia" Version="2.1.0" />
-    <PackageReference Include="protobuf-net" Version="3.2.30" />
-    <PackageReference Include="protobuf-net.Core" Version="3.2.30" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\Common.Ui\Common.Ui.csproj" />
     <ProjectReference Include="..\..\..\..\Common\Extensions\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Infrastructure.Environment\Infrastructure.Environment.csproj" />
     <ProjectReference Include="..\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\Infrastructure.Ui\Infrastructure.Ui.csproj" />
   </ItemGroup>
 </Project>

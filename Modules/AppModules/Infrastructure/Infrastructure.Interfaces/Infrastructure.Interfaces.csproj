@@ -6,8 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\Common.Core\Common.Core.csproj" />
+    <ProjectReference Include="..\..\..\Users\Users.Domain\Users.Domain.csproj" />
     <ProjectReference Include="..\Infrastructure.Domain\Infrastructure.Domain.csproj" />
   </ItemGroup>
+
 
 </Project>

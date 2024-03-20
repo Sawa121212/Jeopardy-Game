@@ -3,7 +3,6 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
@@ -45,9 +44,6 @@
       <DependentUpon>Language.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Views\PlayInfoPages\GameRulesPage.axaml.cs">
-      <DependentUpon>GameRulesPage.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

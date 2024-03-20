@@ -7,7 +7,7 @@ namespace Common.Core.Interfaces.Settings
         /// <summary>
         /// Применить сохраненные настройки из файла
         /// </summary>
-        void ApplySavedSettings();
+        Task ApplySavedSettings();
 
         /// <summary>
         /// Сохранить настройки в файла

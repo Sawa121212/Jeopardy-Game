@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
+             xmlns:models="clr-namespace:Users.Domain.Models;assembly=Users.Domain"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:models1="clr-namespace:Game.Ui.Models"
+             xmlns:pages="clr-namespace:Game.Ui.Views.GameControls.Pages"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             x:Class="Game.Ui.Views.GameControls.Pages.SendAnInvitationControlView"
+             x:DataType="pages:SendAnInvitationControlViewModel">
+    <Design.DataContext>
+        <pages:SendAnInvitationControlViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *">
+
+        <!-- Back-->
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *">
+            <Button Command="{Binding MoveBackCommand}" Classes="Flat"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Grid.Column="0"
+                    Margin="3">
+                <Button.Content>
+                    <Grid ColumnDefinitions="Auto, 8, *">
+                        <avalonia:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
+                        <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+                    </Grid>
+                </Button.Content>
+            </Button>
+        </Grid>
+
+        <controls:Card Grid.Row="1"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       MinWidth="250">
+
+            <Grid RowDefinitions="Auto, *"
+                  Margin="5">
+
+                <!-- Header -->
+                <Grid ColumnDefinitions="*, Auto"
+                      Grid.Row="0"
+                      Margin="0,0,0,3">
+                    <TextBlock Text="Отправка приглашений"
+                               Classes="Headline6"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Grid.Column="0"
+                               Margin="3 ,3,5,3" />
+
+                    <Button
+                        Command="{Binding SendAnInvitationEveryoneCommand}"
+                        ToolTip.Tip="Отправить приглашение всем"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1"
+                        Margin="3">
+                        <Button.Content>
+                            <avalonia:MaterialIcon Kind="ShareAllOutline" />
+                        </Button.Content>
+                    </Button>
+                </Grid>
+
+                <Grid ColumnDefinitions="Auto, *"
+                      IsVisible="{Binding !Users.Count}"
+                      Grid.Row="1">
+                    <avalonia:MaterialIcon Kind="InformationOutline"
+                                           Grid.Column="0" />
+                    <TextBlock Text="Список игроков пуст"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Margin="3" />
+                </Grid>
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Users}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="models1:InvitationModelExtended">
+                                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, *">
+
+                                    <Separator Grid.Row="0"
+                                               Grid.ColumnSpan="2"
+                                               Margin="3" />
+
+                                    <TextBlock Text="{Binding User.Name}"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left"
+                                               Grid.Column="0"
+                                               Grid.Row="1"
+                                               Margin="3" />
+                                    <Button ToolTip.Tip="Отправить приглашение"
+                                            Command="{Binding DataContext.SendAnInvitationCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            CommandParameter="{Binding .}"
+                                            IsEnabled="{Binding !IsInvited}"
+                                            Classes="Outline"
+                                            Grid.Column="1"
+                                            Grid.Row="1"
+                                            Margin="3">
+                                        <Button.Content>
+                                            <avalonia:MaterialIcon Kind="EmailSendOutline" />
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </controls:Card>
+    </Grid>
+</UserControl>

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Core.Components;
 using Common.Extensions;
+using Prism.Common;
+using ReactiveUI;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -18,16 +21,16 @@ using User = Telegram.Bot.Types.User;
 
 namespace TelegramAPI.Infrastructure.Managers
 {
-    public class TelegramBotManager : ITelegramBotManager
+    public class TelegramBotManager : ReactiveObject, ITelegramBotManager
     {
-        public TelegramBotManager(ITelegramSettingsService telegramSettingsService,
-                                  ITelegramHandlerService telegramHandlerService,
-                                  IUserService userService)
+        public TelegramBotManager(
+            ITelegramSettingsService telegramSettingsService,
+            ITelegramHandlerService telegramHandlerService,
+            IUserService userService)
         {
             _userService = userService;
             _telegramSettingsService = telegramSettingsService;
             _telegramHandlerService = telegramHandlerService;
-            _token = _telegramSettingsService.GetGameBotToken();
 
             _receiverOptions = new ReceiverOptions // Также присваиваем значение настройкам бота
             {
@@ -36,17 +39,38 @@ namespace TelegramAPI.Infrastructure.Managers
                 {
                     UpdateType.Message, // Сообщения (текст, фото/видео, голосовые/видео сообщения и т.д.)
                 },
+
                 // Параметр, отвечающий за обработку сообщений, пришедших за то время, когда ваш бот был оффлайн
                 // True - не обрабатывать, False (стоит по умолчанию) - обрабатывать
                 ThrowPendingUpdates = true,
             };
 
-            Task.Run(async () => await StartTelegramBot(_token));
+            //Task.Run(async () => await StartTelegramBot(_token).ConfigureAwait(true));
+        }
+
+        /// <inheritdoc />
+        public async Task<Result<bool>> StartTelegramBot()
+        {
+            string errorMessage = null;
+            _token = _telegramSettingsService.GetGameBotToken();
+
+            try
+            {
+                await StartTelegramBot(_token);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                errorMessage = $"TelegramBot: {e.Message}";
+            }
+
+            return Result<bool>.Fail(errorMessage);
         }
 
         public async Task<Result<bool>> StartTelegramBot(string token)
         {
             string errorMessage = null;
+
             try
             {
                 if (token.IsNullOrEmpty())
@@ -64,12 +88,14 @@ namespace TelegramAPI.Infrastructure.Managers
 
                 // Создаем переменную, в которую помещаем информацию о нашем боте.
                 User me = await _telegramBotClient.GetMeAsync(cancellationToken: cts.Token);
+
                 //Messages.Add($"{me.FirstName} запущен!");
-                Debug.Write($"{me.FirstName} запущен!");
+                Debug.Write($"[Debug] TelegramBot: {me.FirstName} запущен!");
 
                 // Устанавливаем бесконечную задержку, чтобы наш бот работал постоянно
                 //await Task.Delay(-1, cts.Token);
-
+                //this.RaisePropertyChanged(nameof(IsConnected));
+                IsConnected = true;
                 return Result<bool>.Done(true);
             }
             catch (Exception e)
@@ -91,8 +117,10 @@ namespace TelegramAPI.Infrastructure.Managers
             {
                 // Эта переменная будет содержать в себе все связанное с сообщениями
                 Message? message = update?.Message;
+
                 // From - это от кого пришло сообщение (или любой другой Update)
                 User? user = message?.From;
+
                 if (user == null)
                 {
                     return;
@@ -106,6 +134,7 @@ namespace TelegramAPI.Infrastructure.Managers
                 }
 
                 Result<Tuple<StateUserEnum, string>> result = _telegramHandlerService.Handle(update);
+
                 if (result)
                 {
                     _user.State = result.Value.Item1;
@@ -120,7 +149,9 @@ namespace TelegramAPI.Infrastructure.Managers
                     await botClient.SendTextMessageAsync(_user.Id, result.ErrorMessage);
                     return;
                 }
+
                 return;
+
                 // Сразу же ставим конструкцию switch, чтобы обрабатывать приходящие Update
                 /*switch (update.Type)
                 {
@@ -196,14 +227,15 @@ namespace TelegramAPI.Infrastructure.Managers
             }
         }
 
-
-        public bool IsConnected()
+        /// <inheritdoc />
+        public bool IsConnected
         {
-            return false;
+            get => _isConnected;
+            set => this.RaiseAndSetIfChanged(ref _isConnected, value);
         }
 
         /// <inheritdoc />
-        public TelegramBotClient TelegramBotClient => (TelegramBotClient)_telegramBotClient;
+        public TelegramBotClient TelegramBotClient => (TelegramBotClient) _telegramBotClient;
 
         private Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
         {
@@ -222,7 +254,7 @@ namespace TelegramAPI.Infrastructure.Managers
 
         private readonly ITelegramSettingsService _telegramSettingsService;
         private readonly ITelegramHandlerService _telegramHandlerService;
-        private readonly string? _token;
+        private string? _token;
 
         // Это клиент для работы с Telegram Bot API, который позволяет отправлять сообщения, управлять ботом, подписываться на обновления и многое другое.
         private ITelegramBotClient _telegramBotClient;
@@ -230,5 +262,6 @@ namespace TelegramAPI.Infrastructure.Managers
 
         // Это объект с настройками работы бота. Здесь мы будем указывать, какие типы Update мы будем получать, Timeout бота и так далее.
         private readonly ReceiverOptions _receiverOptions;
+        private bool _isConnected;
     }
 }

@@ -3,14 +3,12 @@ using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using DataDomain.Rooms.Rounds.Enums;
 using Game.Domain.Data;
-using Game.Ui.Views.GameControls.GamePages;
-using Game.Ui.Views.GameControls.GamePages.Players;
-using Game.Ui.Views.GameControls.GamePages.Rounds;
-using Game.Ui.Views.GameControls.GamePages.Topics;
+using Game.Ui.Views.GameControls.Pages.GamePages;
+using Game.Ui.Views.GameControls.Pages.GamePages.Players;
+using Game.Ui.Views.GameControls.Pages.GamePages.QuestionsAndAnswer;
+using Game.Ui.Views.GameControls.Pages.GamePages.Rounds;
+using Game.Ui.Views.GameControls.Pages.GamePages.Topics;
 using Prism.Regions;
-using BaseCorrectAnswerView = Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer.BaseCorrectAnswerView;
-using DisplayedQuestionView = Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer.DisplayedQuestionView;
-using FinalRoundDisplayedQuestionView = Game.Ui.Views.GameControls.GamePages.QuestionsAndAnswer.FinalRoundDisplayedQuestionView;
 
 namespace Game.Ui.Views.GameControls
 {

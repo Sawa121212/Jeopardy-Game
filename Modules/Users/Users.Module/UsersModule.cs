@@ -1,5 +1,6 @@
 ﻿using System;
 using Common.Core.Components;
+using Infrastructure.Interfaces.Managers;
 using Prism.Ioc;
 using Prism.Modularity;
 using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
@@ -22,17 +23,8 @@ namespace Users.Module
         {
             containerRegistry
 
-                // сперва регистрируем контекст БД с вопросам
-                .RegisterSingleton<UserDbContext>()
-                .RegisterSingleton<IUserDbManager, UserDbManager>()
-                .RegisterSingleton<IUserService, UserService>()
-                .RegisterSingleton<IMainTelegramMenuService, MainTelegramMenuService>()
-                .RegisterSingleton<ITelegramHandlerService, TelegramHandlerService>();
-
-            // регистрируем View для навигации по Регионам
-            //containerRegistry.RegisterForNavigation<TopicListView, TopicListViewModel>();
-            //containerRegistry.RegisterForNavigation<AddNewTopicView, AddNewTopicViewModel>();
-            //containerRegistry.RegisterForNavigation<AddNewQuestionView, AddNewQuestionViewModel>();
+                
+                .RegisterSingleton<IMainTelegramMenuService, MainTelegramMenuService>();
         }
 
         public void OnInitialized(IContainerProvider containerProvider)
@@ -45,6 +37,11 @@ namespace Users.Module
 
             ITelegramHandlerService telegramHandlerService = containerProvider.Resolve<ITelegramHandlerService>();
 
+            //
+            IAdminManager adminManager = containerProvider.Resolve<IAdminManager>();
+            telegramHandlerService.RegisterHandler(StateUserEnum.CheckAddedAdmin, adminManager.CheckAddedAdminMode, null);
+
+            //
             telegramHandlerService.RegisterHandler(StateUserEnum.SetName,
                 userService.UpdateUsername,
                 (u) =>
@@ -71,10 +68,7 @@ namespace Users.Module
                 mainTelegramMenuService.CreateMenu);
 
             telegramHandlerService.RegisterHandler(StateUserEnum.InRoom,
-                (u) =>
-                {
-                    return Result<Tuple<StateUserEnum, string>>.Fail("Вы в игровой комнате");
-                },
+                (u) => { return Result<Tuple<StateUserEnum, string>>.Fail("Вы в игровой комнате"); },
                 null);
         }
     }
