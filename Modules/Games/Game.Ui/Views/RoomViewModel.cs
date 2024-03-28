@@ -48,7 +48,7 @@ namespace Game.Ui.Views
             KickOutPlayerCommand = new DelegateCommand<PlayerModel>(OnKickOutPlayer);
             SetPlayerToHostCommand = new DelegateCommand<PlayerModel>(OnSetPlayerToHost);
 
-            StartGameCommand = new DelegateCommand(OnStartGame, () => Host != null && Players.Any())
+            StartGameCommand = new DelegateCommand(OnStartGame, () => Host != null && (Players != null && Players.Any()))
                 .ObservesProperty(() => Host)
                 .ObservesProperty(() => Players);
 
@@ -218,13 +218,14 @@ namespace Game.Ui.Views
         private async void OnMoveGoBack()
         {
             // ToDo: Close game event
-            ConfirmationResultEnum result = await _confirmationService.ShowInfoAsync("Подтверждение",
-                $"Вы действительно хотите удалить вопрос?",
+            ConfirmationResultEnum result = await _confirmationService.ShowInfoAsync(
+                "Подтверждение",
+                "Закрыть комнату?",
                 ConfirmationResultEnum.Yes | ConfirmationResultEnum.No);
 
             if (result == ConfirmationResultEnum.Yes)
             {
-                await _gameManager.CloseRoom(_roomKey);
+                await _gameManager.CloseRoom(_roomKey).ConfigureAwait(true);
 
                 RoomKey = null;
                 Players = null;

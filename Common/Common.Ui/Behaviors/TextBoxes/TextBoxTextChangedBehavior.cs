@@ -1,7 +1,6 @@
 ﻿using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Xaml.Interactivity;
 
 namespace Common.Ui.Behaviors.TextBoxes
@@ -9,10 +8,12 @@ namespace Common.Ui.Behaviors.TextBoxes
     public class TextBoxTextChangedBehavior : Behavior<TextBox>
     {
         public static readonly StyledProperty<ICommand> CommandProperty =
-            AvaloniaProperty.Register<TextBoxTextChangedBehavior, ICommand>(nameof(Command), default, true);
+            AvaloniaProperty.Register<TextBoxTextChangedBehavior, ICommand>(
+                nameof(Command), default, true);
 
         public static readonly StyledProperty<object> CommandParameterProperty =
-            AvaloniaProperty.Register<TextBoxTextChangedBehavior, object>(nameof(CommandParameter), default, true);
+            AvaloniaProperty.Register<TextBoxTextChangedBehavior, object>(
+                nameof(CommandParameter), default, true);
 
         public object CommandParameter
         {
@@ -30,10 +31,10 @@ namespace Common.Ui.Behaviors.TextBoxes
         protected override void OnAttached()
         {
             base.OnAttached();
+
             if (AssociatedObject != null)
             {
-                //ToDo: Проверить. в Авалонии на 08.2022 у TextBox пока нет событие TextChanged. Делаем через нажатие кнопки
-                AssociatedObject.KeyUp += OnKeyUp;
+                AssociatedObject.TextChanged += OnTextChanged;
             }
         }
 
@@ -42,15 +43,20 @@ namespace Common.Ui.Behaviors.TextBoxes
         {
             if (AssociatedObject != null)
             {
-                AssociatedObject.KeyUp -= OnKeyUp;
+                AssociatedObject.TextChanged -= OnTextChanged;
             }
 
             base.OnDetaching();
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs e)
+        private void OnTextChanged(object? sender, TextChangedEventArgs e)
+        {
+            Command?.Execute(CommandParameter);
+        }
+
+        /*private void OnKeyUp(object sender, KeyEventArgs e)
         {
             Command?.Execute(CommandParameter ?? null);
-        }
+        }*/
     }
 }

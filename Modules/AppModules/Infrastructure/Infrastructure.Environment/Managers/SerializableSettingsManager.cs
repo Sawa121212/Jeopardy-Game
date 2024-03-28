@@ -2,9 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using Common.Extensions;
-using Infrastructure.Domain.Logging.Enums;
-using Infrastructure.Environment.Services.Logging;
-using Infrastructure.Interfaces.Logging;
 using Infrastructure.Interfaces.Managers;
 using Infrastructure.Interfaces.Services;
 
@@ -13,7 +10,6 @@ namespace Infrastructure.Environment.Managers
     /// <inheritdoc />
     public class SerializableSettingsManager : ISerializableSettingsManager
     {
-        private readonly ILogService _logService;
         private readonly IPathService _pathService;
         private readonly ISerializeService _serializeService;
 
@@ -22,10 +18,10 @@ namespace Infrastructure.Environment.Managers
         /// </summary>
         private readonly Dictionary<string, string> _settingsFilesCache;
 
-        public SerializableSettingsManager( /*ILogService logService,*/ IPathService pathService,
+        public SerializableSettingsManager(
+            IPathService pathService,
             IProtobufSerializeService serializeService)
         {
-            //_logService = logService;
             _pathService = pathService;
             _serializeService = serializeService;
             _settingsFilesCache = new Dictionary<string, string>();
@@ -64,8 +60,8 @@ namespace Infrastructure.Environment.Managers
                     settings = _serializeService.Deserialize<TSettings>(filename);
                 }, exp =>
                 {
-                    _logService?.AddLog(new LogItem($"Отсутствует файл настроек {filename}",
-                        LogItemCategoryEnum.Warning));
+                    // _logService?.AddLog(new LogItem($"Отсутствует файл настроек {filename}",
+                    //     LogItemCategoryEnum.Warning));
                     Debug.Fail($"=Warning= Отсутствует файл настроек {filename}");
                 });
             }
@@ -78,6 +74,7 @@ namespace Infrastructure.Environment.Managers
             where TSettings : class
         {
             string settingsName = typeof(TSettings).Name;
+
             if (!string.IsNullOrEmpty(filename) || _settingsFilesCache.TryGetValue(settingsName, out filename))
             {
                 if (!truePath)
@@ -86,15 +83,8 @@ namespace Infrastructure.Environment.Managers
                 ProcessException.TryCatch(() => _serializeService.Serialize(filename, instance),
                     exp =>
                     {
-                        if (_logService != null)
-                        {
-                            _logService.AddLog(new LogItem(
-                                $"Ошибка при сохранении файла настроек {settingsName}.", LogItemCategoryEnum.Warning));
-                            _logService.AddLog(new LogItem($"{exp.Flatten()}", LogItemCategoryEnum.Debug));
-
-                            Debug.Fail($"=Warning= Ошибка при сохранении файла настроек {settingsName}.");
-                            Debug.Fail($"=Warning= {exp.Flatten()}.");
-                        }
+                        Debug.Fail($"=Warning= Ошибка при сохранении файла настроек {settingsName}.");
+                        Debug.Fail($"=Warning= {exp.Flatten()}.");
                     });
             }
         }

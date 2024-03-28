@@ -11,12 +11,13 @@
              xmlns:regions="clr-namespace:Common.Core.Prism.Regions;assembly=Common.Core"
              prism:ViewModelLocator.AutoWireViewModel="True"
              x:Class="JeopardyGame.Views.MainView"
-             x:DataType="viewModel:MainViewModel">
+             x:DataType="viewModel:MainViewModel"
+             d:DesignHeight="400">
 
     <Grid ColumnDefinitions="Auto, *">
 
         <!-- Buttons -->
-        <controls1:Card Grid.Column="0" Margin="5, 3">
+        <controls1:Card Grid.Column="0" Margin="5, 3,5,5">
 
             <Grid RowDefinitions="*, Auto" Margin="0,5">
                 <Grid Grid.Row="0" RowDefinitions="Auto, Auto, Auto, Auto">

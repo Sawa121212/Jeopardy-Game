@@ -1,11 +1,10 @@
-﻿using System.Threading.Tasks;
-using Common.Core.Views;
+﻿using Common.Core.Views;
 using TelegramAPI.Infrastructure.Interfaces.Managers;
 using ReactiveUI;
 
 namespace JeopardyGame.Views.Shell
 {
-    public partial class ShellViewModel : ViewModelBase
+    public class ShellViewModel : ViewModelBase
     {
         public ShellViewModel(ITelegramBotManager telegramBotManager)
         {

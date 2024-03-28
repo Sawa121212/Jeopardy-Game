@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Users.Domain.Models;
@@ -17,8 +18,18 @@ namespace Users.Domain
                 return;
             }
 
-            // при создании контекста автоматически проверит наличие базы данных и, если она отсутствует, создаст ее.
-            bool isCreated = Database.EnsureCreated();
+            bool isCreated = false;
+
+            try
+            {
+                // при создании контекста автоматически проверит наличие базы данных и, если она отсутствует, создаст ее.
+                isCreated = Database.EnsureCreated();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"[Debug] {nameof(UserDbContext)}: База данных^ Exception: {e.Message}");
+                return;
+            }
 
             Debug.WriteLine(isCreated
                 ? $"[Debug] {nameof(UserDbContext)}: База данных была создана"
@@ -27,7 +38,7 @@ namespace Users.Domain
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=UserDb.db");
+            optionsBuilder.UseSqlite($"Data Source={Environment.CurrentDirectory}/UserDb.db");
         }
 
         public Microsoft.EntityFrameworkCore.DbSet<User> Users { get; set; }

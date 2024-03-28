@@ -1,4 +1,4 @@
-﻿using Common.Extensions.ValueTypes;
+﻿using Common.Extensions;
 using ReactiveUI;
 
 namespace Common.Ui.Parameters

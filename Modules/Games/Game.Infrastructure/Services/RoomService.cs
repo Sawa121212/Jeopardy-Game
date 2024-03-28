@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Extensions;
@@ -58,6 +59,7 @@ namespace Game.Infrastructure.Services
             }
 
             RoomModel? room = GetRoomByKey(roomKey);
+
             if (room == null)
             {
                 return false;
@@ -93,12 +95,15 @@ namespace Game.Infrastructure.Services
             }
 
             RoomModel? room = GetRoomByKey(roomKey);
+
             if (room == null)
             {
                 return false;
             }
 
-            foreach (PlayerModel? player in room.Players.OfType<PlayerModel>())
+            IEnumerable<PlayerModel> players = new List<PlayerModel>(room.Players.OfType<PlayerModel>());
+
+            foreach (PlayerModel? player in players)
             {
                 await KickPlayer(room.Key, player.Id).ConfigureAwait(true);
             }
@@ -157,7 +162,7 @@ namespace Game.Infrastructure.Services
                 return true;
             }
 
-            PlayerModel? player = room.Players.FirstOrDefault(e => e.Id == playerId);
+            PlayerModel? player = room.Players.FirstOrDefault(e => e != null && e.Id == playerId);
 
             if (player != null)
             {

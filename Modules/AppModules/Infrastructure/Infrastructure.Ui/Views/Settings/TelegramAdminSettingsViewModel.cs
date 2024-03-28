@@ -1,14 +1,11 @@
 ﻿using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using Common.Core.Components;
 using Common.Core.Views;
-using Common.Extensions;
 using Infrastructure.Interfaces.Managers;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
-using TelegramAPI.Infrastructure.Interfaces.Managers;
 using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
