@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Common.Extensions.Collections;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
 using Game.Ui.Models;
@@ -132,7 +131,7 @@ namespace Game.Ui.Views.GameControls
             }
 
             // даем право убрать тему следующему игроку
-            int? nextActivePlayerIndex = SortedPlayers?.GetIndex(_activePlayer);
+            int? nextActivePlayerIndex = SortedPlayers?.IndexOf(_activePlayer);
             nextActivePlayerIndex++;
 
             if (nextActivePlayerIndex is null || nextActivePlayerIndex == SortedPlayers.Count)

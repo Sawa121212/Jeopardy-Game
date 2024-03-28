@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Core.Components;
 using Common.Extensions;
-using Prism.Common;
 using ReactiveUI;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;

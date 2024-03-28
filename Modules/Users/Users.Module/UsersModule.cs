@@ -5,12 +5,8 @@ using Prism.Ioc;
 using Prism.Modularity;
 using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
 using TelegramAPI.Infrastructure.Services.Settings;
-using Users.Domain;
 using Users.Domain.Models;
-using Users.Infrastructure;
 using Users.Infrastructure.Interfaces;
-using Users.Infrastructure.Interfaces.Managers;
-using Users.Infrastructure.Managers;
 
 namespace Users.Module
 {

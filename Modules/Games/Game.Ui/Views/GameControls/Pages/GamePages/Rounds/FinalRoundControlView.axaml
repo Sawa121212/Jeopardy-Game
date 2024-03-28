@@ -46,17 +46,6 @@
 
                 <ListBox ItemsSource="{Binding TopicsFromFinalRound}"
                          Grid.Row="1">
-                    <!--<ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="6" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem">
-                        <Setter Property="VerticalAlignment" Value="Stretch" />
-                    </Style>
-                </ListBox.Styles>-->
 
                     <!-- Topics -->
                     <ListBox.ItemTemplate>

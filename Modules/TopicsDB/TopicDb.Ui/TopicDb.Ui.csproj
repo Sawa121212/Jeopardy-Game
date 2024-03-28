@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Common.Core\Common.Core.csproj" />
+    <ProjectReference Include="..\..\..\Common\Common.Resources\Common.Resources.csproj" />
     <ProjectReference Include="..\..\..\Common\Common.Ui\Common.Ui.csproj" />
     <ProjectReference Include="..\..\AppModules\Confirmation\Confirmation.Module\Confirmation.Module.csproj" />
     <ProjectReference Include="..\..\AppModules\Notification\Notification.Module\Notification.Module.csproj" />

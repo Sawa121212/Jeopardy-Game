@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Input;
 using Common.Core.Components;
 using Common.Core.Views;
@@ -9,7 +8,6 @@ using Prism.Regions;
 using ReactiveUI;
 using TelegramAPI.Infrastructure.Interfaces.Managers;
 using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
-using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 using Timer = System.Timers.Timer;
 

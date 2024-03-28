@@ -39,15 +39,6 @@ namespace Common.Extensions
 
             return sb.ToString().Trim();
         }
-
-        /// <summary>
-        /// Выброс исключения NullReferenceException если объект равен null.
-        /// </summary>
-        public static void AssertNotNull<T>(this T obj, string exceptionMessage) where T : class
-        {
-            if (obj == null)
-                throw new NullReferenceException(exceptionMessage);
-        }
     }
 }
     

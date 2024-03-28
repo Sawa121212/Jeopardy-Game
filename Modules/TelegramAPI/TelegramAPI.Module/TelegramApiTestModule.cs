@@ -4,7 +4,6 @@ using Infrastructure.Interfaces.Managers;
 using Prism.Ioc;
 using Prism.Modularity;
 using TelegramAPI.Infrastructure.Interfaces.Managers;
-using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
 using TelegramAPI.Infrastructure.Managers;
 using TelegramAPI.Module.Properties;
 using TelegramAPI.Ui.Views;

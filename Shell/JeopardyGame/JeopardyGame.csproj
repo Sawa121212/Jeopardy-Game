@@ -34,8 +34,6 @@
     <ProjectReference Include="..\..\Modules\Games\Game.Module\Game.Module.csproj" />
     <ProjectReference Include="..\..\Modules\TelegramAPI\TelegramAPI.Module\TelegramAPI.Module.csproj" />
     <ProjectReference Include="..\..\Modules\TopicsDB\TopicDb.Module\TopicDb.Module.csproj" />
-    <ProjectReference Include="..\..\Modules\TopicsDB\TopicDb.Ui\TopicDb.Ui.csproj" />
-    <ProjectReference Include="..\..\Modules\TopicsDB\TopicsDB.Domain\TopicDb.Domain.csproj" />
     <ProjectReference Include="..\..\Modules\Users\Users.Module\Users.Module.csproj" />
   </ItemGroup>
 
