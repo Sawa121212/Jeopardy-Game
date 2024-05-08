@@ -29,6 +29,8 @@ namespace Game.Infrastructure.Mangers
             _roomService = roomService;
             _roundService = roundService;
 
+            _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(e => AddBot(e.RoomKey));
+
             _eventAggregator.GetEvent<PlayerIsTryingToConnectToRoomEvent>().Subscribe(e => ConnectPlayerToRoom(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<SetPlayerToHostEvent>().Subscribe(e => SetPlayerToHost(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<KickOutPlayerEvent>().Subscribe(async (e) => await KickOutPlayer(e.RoomKey, e.PlayerId));
@@ -124,6 +126,7 @@ namespace Game.Infrastructure.Mangers
             }
 
             RoomModel? room = _roomService.GetRoomByKey(roomKey);
+
             if (room is null)
             {
                 return;
@@ -137,6 +140,17 @@ namespace Game.Infrastructure.Mangers
             {
                 _notificationService.Show("Ошибка", $"В комнату игрок не смог присоединится", NotificationType.Error);
             }
+        }
+
+        /// <summary>
+        /// Добавить бота
+        /// </summary>
+        /// <param name="roomKey"></param>
+        /// <returns></returns>
+        private void AddBot(string roomKey)
+        {
+            _roomService.AddBot(roomKey);
+            _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish(new NumberOfPlayersInRoomIsUpdatedEvent(roomKey));
         }
 
         /// <summary>

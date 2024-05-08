@@ -39,7 +39,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Rounds
             navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound);
         }
 
-        public override void GoBackOrder()
+        protected override void GoBackOrder()
         {
             NavigationParameters parameter = new()
             {

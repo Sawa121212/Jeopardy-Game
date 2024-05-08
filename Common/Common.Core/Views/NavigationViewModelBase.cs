@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Prism.Commands;
 using Prism.Regions;
@@ -55,7 +56,11 @@ namespace Common.Core.Views
             GoBackOrder();
         }
 
-        public virtual void GoBackOrder()
+        protected virtual void GoBackOrder()
+        {
+        }
+
+        protected virtual async Task GoBackOrderAsync()
         {
         }
 

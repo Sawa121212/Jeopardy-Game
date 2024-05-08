@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Common.Core.Prism;
 using Common.Core.Views;
+using Confirmation.Module.Services;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
 using DataDomain.Rooms.Rounds.Enums;
@@ -29,15 +30,19 @@ namespace Game.Ui.Views.GameControls
             IEventAggregator eventAggregator,
             IGameManager gameManager,
             IQuestionService questionService,
-            ITelegramBotService telegramBotService)
+            ITelegramBotService telegramBotService,
+            IConfirmationService confirmationService)
             : base(regionManager)
         {
             _gameManager = gameManager;
+            _confirmationService = confirmationService;
             _eventAggregator = eventAggregator;
             _telegramBotService = telegramBotService;
             _questionService = questionService;
 
             _eventAggregator.GetEvent<PlayerIsReadyAnswerQuestionEvent>().Subscribe(e => OnPlayerIsReadyAnswerQuestion(e));
+
+            MoveBackButtonCommand = new DelegateCommand(async () => await GoBackOrderAsync());
 
             ShowGameTopicsCommand = new DelegateCommand(OnShowAllTopics);
             ShowTopicsCarouselCommand = new DelegateCommand(OnShowTopicsCarousel);
@@ -163,20 +168,25 @@ namespace Game.Ui.Views.GameControls
                         return;
                     case GameStatusEnum.ShowRoundLevel:
                         OnShowRoundLevelInformation();
+
                         return;
                     case GameStatusEnum.ShowCurrentRound:
                         IsShowedTopics = true;
                         OnShowCurrentRound();
                         SetPlayerFirstChoosingTopic();
+
                         return;
                     case GameStatusEnum.GoNextRound:
                         OnGoNextRound();
+
                         return;
                     case GameStatusEnum.SetPlayerBets:
                         OnSetPlayerBets();
+
                         return;
                     case GameStatusEnum.EndGame_ShowWinner:
                         OnGoNextRound();
+
                         return;
 
                     default:
@@ -289,6 +299,7 @@ namespace Game.Ui.Views.GameControls
         private string? _roomKey;
 
         private readonly IGameManager _gameManager;
+        private readonly IConfirmationService _confirmationService;
         private readonly IEventAggregator _eventAggregator;
 
         private ObservableCollection<RoundModel?>? _rounds;

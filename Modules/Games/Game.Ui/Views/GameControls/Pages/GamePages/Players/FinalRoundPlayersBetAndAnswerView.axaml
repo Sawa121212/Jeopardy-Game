@@ -14,13 +14,19 @@
              x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Players.FinalRoundPlayersBetAndAnswerView"
              x:DataType="players1:FinalRoundPlayersBetAndAnswerViewModel">
 
-    <Design.DataContext>
+    <!--<Design.DataContext>
         <players1:FinalRoundPlayersBetAndAnswerViewModel />
-    </Design.DataContext>
+    </Design.DataContext>-->
 
     <UserControl.Resources>
-        <system:Boolean x:Key="Boolean_True">True</system:Boolean>
-        <system:Boolean x:Key="Boolean_False">False</system:Boolean>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Common.Resources/GeneralResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <system:Boolean x:Key="Boolean_True">True</system:Boolean>
+            <system:Boolean x:Key="Boolean_False">False</system:Boolean>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid RowDefinitions="*, 2*">
@@ -30,11 +36,12 @@
         <!-- Players Bet -->
         <controls:Card HorizontalAlignment="Center"
                        MinWidth="250"
+                       Margin="5"
                        Grid.Row="1">
 
             <Grid RowDefinitions="Auto,*, Auto">
                 <TextBlock Grid.Row="0"
-                           Text="Ставки и ответы"
+                           Text="Ответ"
                            Classes="Headline6"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
@@ -58,12 +65,14 @@
                                          IsChecked="{Binding ShowedPlayerBetModel.IsCorrectAnswer, Mode=TwoWay}"
                                          Command="{Binding Path=AnsweredQuestionCommand}"
                                          CommandParameter="{StaticResource Boolean_True}"
+                                         Background="{DynamicResource SuccessColorBrush}"
                                          HorizontalContentAlignment="Center" />
                             <RadioButton Content="Не правильно"
                                          GroupName="AnsweredQuestion"
                                          IsChecked="{Binding !ShowedPlayerBetModel.IsCorrectAnswer, Mode=TwoWay}"
                                          Command="{Binding Path=AnsweredQuestionCommand}"
                                          CommandParameter="{StaticResource Boolean_False}"
+                                         Background="{DynamicResource ErrorColorBrush}"
                                          HorizontalContentAlignment="Center" />
                         </StackPanel>
                     </controls:Card>

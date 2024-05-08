@@ -118,13 +118,8 @@ namespace Game.Ui.Views
         // Test method
         private void OnAddPlayer()
         {
-            PlayerModel player = new()
-            {
-                Id = RandomGenerator.GenerateSixDigitRandomNumber()
-            };
-
-            _eventAggregator.GetEvent<PlayerIsTryingToConnectToRoomEvent>()
-                .Publish(new PlayerIsTryingToConnectToRoomEvent(_roomKey, player.Id));
+            _eventAggregator.GetEvent<AddBotToRoomEvent>()
+                .Publish(new AddBotToRoomEvent(_roomKey));
         }
 
         /// <summary>

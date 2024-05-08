@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls.Notifications;
 using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
@@ -10,6 +11,7 @@ using Infrastructure.Domain.Helpers;
 using Notification.Module.Services;
 using ReactiveUI;
 using TelegramAPI.Infrastructure.Interfaces.Managers;
+using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 
 namespace Game.Infrastructure.Services
@@ -65,21 +67,33 @@ namespace Game.Infrastructure.Services
                 return false;
             }
 
-            // get player from DB
-            /*User user = _userService.GetUserById(playerId);
+            _userService.TryGetUserById(playerId, out User user);
+
             if (user is null)
             {
                 _notificationService.Show("Error", $"User '{playerId}' not found", NotificationType.Error);
+
                 return false;
             }
 
-            PlayerModel player = new(user);*/
+            PlayerModel player = new(user);
 
-            PlayerModel? player = new() //Test
+            room.Players.Add(player);
+
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public bool AddBot(string roomKey)
+        {
+            RoomModel? room = GetRoomByKey(roomKey);
+
+            if (room == null)
             {
-                Id = playerId,
-                Name = $"Test {playerId}"
-            };
+                return false;
+            }
+
+            PlayerModel player = CreateBot();
 
             room.Players.Add(player);
 
@@ -167,17 +181,18 @@ namespace Game.Infrastructure.Services
             if (player != null)
             {
                 room.Players.Remove(player);
-                await _telegramBotService.SendMessageAsync(playerId, $"Вас выгнали с комнаты {roomKey}");
+                await _telegramBotService.SendMessageAsync(playerId, $"Вас кикнули с комнаты {roomKey}");
+
                 return true;
             }
 
-            if (room.Host != player)
+            if (room.Host != null && room.Host.Id != playerId)
             {
                 return false;
             }
 
             room.Host = null;
-            await _telegramBotService.SendMessageAsync(playerId, $"Вас выгнали с комнаты {roomKey}");
+            await _telegramBotService.SendMessageAsync(playerId, $"Вас кикнули с комнаты {roomKey}");
 
             return true;
         }
@@ -186,6 +201,20 @@ namespace Game.Infrastructure.Services
         public GameModel? GetGame(string roomKey)
         {
             return GetRoomByKey(roomKey)?.Game;
+        }
+
+        /// <summary>
+        /// Создать бота
+        /// </summary>
+        private PlayerModel CreateBot()
+        {
+            int id = RandomGenerator.GenerateSixDigitRandomNumber();
+
+            return new PlayerModel
+            {
+                Id = id,
+                Name = $"Bot {id}"
+            };
         }
 
         private readonly INotificationService _notificationService;

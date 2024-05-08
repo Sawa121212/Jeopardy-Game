@@ -31,7 +31,7 @@
         <!-- Back-->
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *">
-            <Button Command="{Binding MoveBackCommand}" Classes="Flat"
+            <Button Command="{Binding MoveBackButtonCommand}" Classes="Flat"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Grid.Column="0"

@@ -28,6 +28,13 @@ namespace Game.Infrastructure.Interfaces.Services
         bool ConnectPlayer(string roomKey, long playerId);
 
         /// <summary>
+        /// Добавить бота
+        /// </summary>
+        /// <param name="roomKey"></param>
+        /// <returns></returns>
+        public bool AddBot(string roomKey);
+
+        /// <summary>
         /// Получить комнату по ключу
         /// </summary>
         /// <param name="roomKey">Ключ комнаты</param>

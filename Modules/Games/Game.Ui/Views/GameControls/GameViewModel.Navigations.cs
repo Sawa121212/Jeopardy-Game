@@ -1,6 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System.Threading.Tasks;
+using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
+using Confirmation.Module.Enums;
 using DataDomain.Rooms.Rounds.Enums;
 using Game.Domain.Data;
 using Game.Ui.Views.GameControls.Pages.GamePages;
@@ -17,6 +19,32 @@ namespace Game.Ui.Views.GameControls
         public ICommand ShowGameTopicsCommand { get; }
 
         public ICommand ShowTopicsCarouselCommand { get; }
+
+        public ICommand MoveBackButtonCommand { get; }
+
+        protected override async Task GoBackOrderAsync()
+        {
+            if (IsGameStarted)
+            {
+                ConfirmationResultEnum result = await _confirmationService.ShowInfoAsync(
+                    "Подтверждение",
+                    "Хотите вернутся в комнату? Игра будет завершена.",
+                    ConfirmationResultEnum.Yes | ConfirmationResultEnum.No);
+
+                if (result == ConfirmationResultEnum.Yes)
+                {
+                    await _gameManager.CloseRoom(_roomKey).ConfigureAwait(true);
+
+                    ClearAllParameters();
+                }
+
+                RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(RoomView));
+
+                return;
+            }
+
+            MoveBackCommand.Execute(default);
+        }
 
         /// <summary>
         /// Отобразить окно "Список тем"

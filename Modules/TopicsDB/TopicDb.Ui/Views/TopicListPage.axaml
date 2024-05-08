@@ -3,31 +3,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mvvm="http://prismlibrary.com/"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
              xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
              xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:textBoxes="clr-namespace:Common.Ui.Behaviors.TextBoxes;assembly=Common.Ui"
              xmlns:models="clr-namespace:TopicDb.Domain.Models;assembly=TopicDb.Domain"
              xmlns:views="clr-namespace:TopicDb.Ui.Views"
              x:Class="TopicDb.Ui.Views.TopicListPage"
              mc:Ignorable="d"
-             mvvm:ViewModelLocator.AutoWireViewModel="True"
              x:Name="TopicListControl"
              x:DataType="views:MainTopicDbViewModel"
              d:DesignWidth="800" d:DesignHeight="450">
 
-    <Design.DataContext>
+    <!--<Design.DataContext>
         <views:MainTopicDbViewModel />
     </Design.DataContext>
-
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <MergeResourceInclude Source="avares://Common.Resources/GeneralResources.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+    -->
 
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,*"
           Margin="5">
@@ -75,9 +69,9 @@
                                             Command="{Binding FindTopicsCommand, Mode=OneWay}" />
                                 </StackPanel>
                             </TextBox.InnerRightContent>
-                            <Interaction.Behaviors>
+                            <i:Interaction.Behaviors>
                                 <textBoxes:TextBoxTextChangedBehavior Command="{Binding FindTopicsCommand}" />
-                            </Interaction.Behaviors>
+                            </i:Interaction.Behaviors>
                         </TextBox>
                     </Grid>
                 </controls:Card>
@@ -101,7 +95,7 @@
               Margin="10, 5">
             <materialIcons:MaterialIcon Grid.Column="0"
                                         Kind="AlertCircle"
-                                        Foreground="{DynamicResource WarningColorBrush}" />
+                                        Foreground="{DynamicResource ErrorColorBrush}" />
             <TextBlock Grid.Column="1"
                        Classes="Subtitle1"
                        Text="Для создания игры нужно иметь минимум 6 полных тем"
@@ -264,7 +258,7 @@
         </ScrollViewer>
 
         <!-- Сообщение об отсутствии тем -->
-        <Grid Grid.Row="3"
+        <Grid Grid.Row="4"
               ColumnDefinitions="Auto, *"
               VerticalAlignment="Center"
               HorizontalAlignment="Center"
@@ -272,7 +266,7 @@
               Margin="10, 5">
             <materialIcons:MaterialIcon Grid.Column="0"
                                         Kind="AlertCircle"
-                                        Foreground="{DynamicResource MaterialValidationErrorBrush}" />
+                                        Foreground="{DynamicResource ErrorColorBrush}" />
             <TextBlock Grid.Column="1"
                        Classes="Subtitle1"
                        Text="Темы не найдены"

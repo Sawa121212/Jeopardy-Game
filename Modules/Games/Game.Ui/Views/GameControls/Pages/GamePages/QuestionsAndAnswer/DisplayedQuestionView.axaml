@@ -12,9 +12,9 @@
              x:DataType="gameControls:GameViewModel"
              x:Name="BaseRoundControl">
 
-    <Design.DataContext>
+    <!--<Design.DataContext>
         <gameControls:GameViewModel />
-    </Design.DataContext>
+    </Design.DataContext>-->
 
     <UserControl.Resources>
         <system:Boolean x:Key="Boolean_True">True</system:Boolean>
@@ -25,9 +25,9 @@
         <Image Source="{Binding DisplayedQuestion.Picture, Mode=OneWay}"
                Grid.Row="0" />
         <Viewbox Grid.Row="1">
-            <TextBlock Text="{Binding DisplayedQuestion.Text, Mode=OneWay}" 
+            <TextBlock Text="{Binding DisplayedQuestion.Text, Mode=OneWay}"
                        TextWrapping="Wrap"
-                       MaxWidth="800"/>
+                       MaxWidth="800" />
         </Viewbox>
 
         <Grid Grid.Row="2"
@@ -35,11 +35,13 @@
             <Button Content="Правильно"
                     Command="{Binding AnsweredQuestionCommand}"
                     CommandParameter="{StaticResource Boolean_True}"
+                    Background="{DynamicResource SuccessColorBrush}"
                     Margin="3"
                     Grid.Column="0" />
             <Button Content="Не правильно"
                     Command="{Binding AnsweredQuestionCommand}"
                     CommandParameter="{StaticResource Boolean_False}"
+                    Background="{DynamicResource ErrorColorBrush}"
                     Margin="3"
                     Grid.Column="1" />
 

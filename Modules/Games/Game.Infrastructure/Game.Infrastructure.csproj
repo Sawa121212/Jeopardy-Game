@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
-    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11072" />
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11073" />
   </ItemGroup>
 
   <ItemGroup>

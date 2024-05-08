@@ -30,7 +30,8 @@ namespace TelegramAPI.Infrastructure.Managers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Debug.WriteLine($"[EXCEPTION][{nameof(TelegramBotService)}]: {e.Message}");
+                Debug.WriteLine(e);
             }
 
             return null;

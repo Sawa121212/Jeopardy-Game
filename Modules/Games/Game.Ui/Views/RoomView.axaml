@@ -77,10 +77,17 @@
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center"
                                Margin="0 ,3" />
-                    <!-- Test -->
-                    <Button Grid.Row="0"
-                            Content="AddPlayerCommand Test"
-                            Command="{Binding AddPlayerCommand}" />
+                    <!-- Add Bot -->
+                    <Button Command="{Binding AddPlayerCommand}"
+                            Grid.Row="0"
+                            Margin="3">
+                        <Button.Content>
+                            <Grid ColumnDefinitions="Auto, 8, *">
+                                <avalonia:MaterialIcon Grid.Column="0" Kind="Robot" />
+                                <TextBlock Grid.Column="2" Text="Add Bot" />
+                            </Grid>
+                        </Button.Content>
+                    </Button>
 
                     <!-- Players -->
                     <ScrollViewer Grid.Row="1"
