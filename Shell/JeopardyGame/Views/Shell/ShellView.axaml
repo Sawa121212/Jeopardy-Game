@@ -1,0 +1,82 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+        xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+        xmlns:controls1="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:regions="clr-namespace:Common.Core.Prism.Regions;assembly=Common.Core"
+        xmlns:shell="clr-namespace:JeopardyGame.Views.Shell"
+        xmlns:pages="clr-namespace:JeopardyGame.Views.Shell.Pages"
+        xmlns:c="clr-namespace:Common.Ui.Converters;assembly=Common.Ui"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        x:Class="JeopardyGame.Views.Shell.ShellView"
+        x:Name="ThisWindow"
+        x:DataType="shell:ShellViewModel"
+        Title="{Binding Title}"
+        Height="650" Width="800"
+        MinHeight="720" MinWidth="860"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        SystemDecorations="{OnPlatform Full, Linux=None}">
+
+    <Design.DataContext>
+        <shell:ShellViewModel />
+    </Design.DataContext>
+
+    <Grid Margin="{Binding #ThisWindow.WindowState, Converter={x:Static c:WindowStateConverters.ToContentMargin}}">
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="{Binding #ThisWindow.WindowState, Converter={x:Static c:WindowStateConverters.ToTitleBarHeight}}" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"
+              ColumnDefinitions="Auto, *, Auto, Auto">
+            <avalonia:MaterialIcon Kind="Brain"
+                                   Height="18"
+                                   Width="18"
+                                   Margin="10,0,5,0"
+                                   Grid.Column="0" />
+
+            <TextBlock Classes="Body2"
+                       Grid.Column="1"
+                       VerticalAlignment="Center"
+                       Text="{Binding Title}"
+                       Margin="0,0" />
+
+            <!-- TelegramBot status -->
+            <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Grid.Column="2"
+                        Margin="5,0">
+                <avalonia:MaterialIcon Foreground="{DynamicResource SuccessColorBrush}"
+                                       Kind="Connection"
+                                       IsVisible="{Binding TelegramBotManager.IsConnected, Mode=OneWay}"
+                                       ToolTip.Tip="TelegramBot запущен"
+                                       Height="16"
+                                       Width="16" />
+                <avalonia:MaterialIcon Foreground="{DynamicResource ErrorColorBrush}"
+                                       Kind="Connection"
+                                       IsVisible="{Binding !TelegramBotManager.IsConnected, Mode=OneWay}"
+                                       ToolTip.Tip="TelegramBot не запущен"
+                                       Height="16"
+                                       Width="16" />
+
+                <TextBlock Classes="Body2"
+                           VerticalAlignment="Center"
+                           Text="TelegramBot "
+                           Margin="3,0" />
+            </StackPanel>
+
+            <pages:CaptionButtons Grid.Column="3" />
+        </Grid>
+
+        <TransitioningContentControl Grid.Row="1"
+                                     prism:RegionManager.RegionName="{x:Static regions:RegionNameService.ShellRegionName}" />
+    </Grid>
+</Window>

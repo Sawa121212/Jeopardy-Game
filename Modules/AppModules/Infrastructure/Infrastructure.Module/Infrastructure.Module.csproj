@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11073" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Common.Ui\Common.Ui.csproj" />
+    <ProjectReference Include="..\..\..\..\Common\Extensions\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Infrastructure.Environment\Infrastructure.Environment.csproj" />
+    <ProjectReference Include="..\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\Infrastructure.Ui\Infrastructure.Ui.csproj" />
+  </ItemGroup>
+</Project>

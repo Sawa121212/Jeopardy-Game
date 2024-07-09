@@ -1,0 +1,89 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:rounds="clr-namespace:DataDomain.Rooms.Rounds;assembly=DataDomain"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:players1="clr-namespace:Game.Ui.Views.GameControls.Pages.GamePages.Players"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Rounds.FinalRoundControlView"
+             x:DataType="gameControls:GameViewModel">
+
+    <Design.DataContext>
+        <gameControls:GameViewModel />
+    </Design.DataContext>
+
+    <Grid>
+        <controls:Card HorizontalAlignment="Center"
+                       IsVisible="{Binding IsRemoveMode}"
+                       MinWidth="250">
+
+            <Grid RowDefinitions="Auto, *"
+                  Margin="5">
+
+                <!-- Header -->
+                <TextBlock Text="Выберите убираемую тему"
+                           Classes="Headline6"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Grid.Row="0"
+                           Margin="3 ,3,5,3" />
+
+                <Grid ColumnDefinitions="Auto, *"
+                      IsVisible="{Binding !TopicsFromFinalRound.Count}"
+                      Grid.Row="1">
+                    <avalonia:MaterialIcon Kind="ErrorOutline"
+                                           Grid.Column="0" />
+                    <TextBlock Text="Список тем пуст!"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Margin="3" />
+                </Grid>
+
+                <ListBox ItemsSource="{Binding TopicsFromFinalRound}"
+                         Grid.Row="1">
+
+                    <!-- Topics -->
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="rounds:TopicModel">
+                            <Grid ColumnDefinitions="*, Auto"
+                                  RowDefinitions="Auto, *">
+                                <Separator Grid.Row="0"
+                                           Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Margin="3" />
+
+                                <TextBlock Text="{Binding Name}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           TextWrapping="Wrap"
+                                           Grid.Column="0"
+                                           Grid.Row="1"
+                                           Margin="3" />
+                                <Button ToolTip.Tip="Убрать"
+                                        Command="{Binding DataContext.RemoveTopicFromFinalRoundCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                        CommandParameter="{Binding .}"
+                                        Classes="Outline"
+                                        Grid.Column="1"
+                                        Grid.Row="1"
+                                        Margin="3">
+                                    <Button.Content>
+                                        <avalonia:MaterialIcon Kind="Close" />
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </controls:Card>
+
+        <!-- Players Bet-->
+        <players1:FinalRoundPlayersPlaceBetPage IsVisible="{Binding !IsRemoveMode}" />
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.11" />
+    <PackageReference Include="Prism.Avalonia" Version="8.1.97.11073" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AppModules\Infrastructure\Infrastructure.Domain\Infrastructure.Domain.csproj" />
+    <ProjectReference Include="..\..\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
+    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Infrastructure.Interfaces\TelegramAPI.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\..\TopicsDB\TopicsDB.Infrastructure.Interfaces\TopicsDB.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Users\Users.Infrastructure.Infrastructure\Users.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\Game.Domain\Game.Domain.csproj" />
+    <ProjectReference Include="..\Game.Infrastructure.Interfaces\Game.Infrastructure.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>

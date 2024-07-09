@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mvvm="http://prismlibrary.com/"
+             xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+             xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
+             xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles"
+             xmlns:settings="clr-namespace:TelegramAPI.Ui.Views.Settings"
+             mc:Ignorable="d"
+             x:Class="TelegramAPI.Ui.Views.Settings.TelegramSettingsView"
+             mvvm:ViewModelLocator.AutoWireViewModel="True"
+             x:DataType="settings:TelegramSettingsViewModel">
+
+    <!--<Design.DataContext>
+        <settings:TelegramSettingsViewModel />
+    </Design.DataContext>-->
+
+    <Grid RowDefinitions="Auto, Auto, *">
+        <controls:Card Grid.Row="0"
+                       Margin="0,0,0,5">
+            <StackPanel Spacing="10" Margin="10,5">
+                <TextBlock Classes="Headline6"
+                           Text="Бот"
+                           FontWeight="Bold" />
+
+                <TextBox Classes="outline revealPasswordButton"
+                         PasswordChar="*"
+                         assists:TextFieldAssist.Label="BotToken"
+                         UseFloatingWatermark="True"
+                         Text="{Binding Token, Mode=TwoWay}" />
+                <Button Content="Проверить"
+                        Command="{Binding CheckTokenCommand}" />
+                <TextBlock Text="{Binding TokenStatus}" />
+            </StackPanel>
+        </controls:Card>
+    </Grid>
+</UserControl>

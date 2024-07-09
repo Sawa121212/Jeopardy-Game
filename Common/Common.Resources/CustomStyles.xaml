@@ -1,0 +1,91 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
+        xmlns:assists="clr-namespace:Material.Styles.Assists;assembly=Material.Styles">
+
+    <!-- caption_button -->
+    <Style Selector="Grid.caption_button_box:pointerover Button.caption_button_macos Path">
+        <Setter Property="IsVisible" Value="True" />
+    </Style>
+
+    <Style Selector="Button.caption_button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Width" Value="48" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{DynamicResource MaterialPrimaryMidBrush}" />
+        <Setter Property="assists:ShadowAssist.ShadowDepth" Value="Depth0" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+    <Style Selector="Button.caption_button > Path">
+        <Setter Property="Fill" Value="{DynamicResource MaterialBodyBrush}" />
+        <Setter Property="Stroke" Value="{DynamicResource MaterialBodyBrush}" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Width" Value="10" />
+        <Setter Property="Height" Value="10" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+    <Style
+        Selector="Button.caption_button:nth-last-child(1):pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="Red" />
+    </Style>
+
+    <!-- ToggleButton.Gray -->
+    <Style Selector="ToggleButton.Gray:not(:checked)">
+        <Setter Property="Foreground"
+                Value="{DynamicResource MaterialDesignToolTipBackground}" />
+    </Style>
+
+    <Style Selector="ToggleButton.Gray:checked">
+        <Setter Property="Foreground"
+                Value="{DynamicResource MaterialPrimaryHueMidBrush}" />
+    </Style>
+    <Style Selector="controls|Card.Dark">
+        <!--<Setter Property="Foreground"
+                Value="{DynamicResource MaterialPrimaryHueMidBrush}" />-->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="PART_RootPanel">
+                    <Border Background="Black"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Opacity="0.26" />
+                    <Border Name="PART_BackgroundBorder"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            assists:ShadowAssist.ShadowDepth="{TemplateBinding assists:ShadowAssist.ShadowDepth}" />
+                    <Border Name="PART_InnerBorder"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            ClipToBounds="{TemplateBinding InsideClipping}">
+                        <ContentPresenter Name="ContentPresenter"
+                                          Padding="{TemplateBinding Padding}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <StackPanel Spacing="3">
+                <Border>
+                    <avalonia:MaterialIcon Kind="PlaylistMusic" Foreground="#6e9acb" Width="42" Height="42" />
+                </Border>
+
+                <ContentControl Classes="PlaylistMusicImage" />
+
+                <controls:Card Classes="Dark">
+                    Text
+                </controls:Card>
+
+                <Button Classes="caption_button">
+                    <Path Data="{StaticResource Icons.Window.Minimize}" />
+                </Button>
+            </StackPanel>
+        </Border>
+    </Design.PreviewWith>
+</Styles>
