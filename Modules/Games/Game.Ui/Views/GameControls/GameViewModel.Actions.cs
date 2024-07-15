@@ -78,7 +78,7 @@ namespace Game.Ui.Views.GameControls
         /// <returns></returns>
         private async Task OnSendQuestion(Question question)
         {
-            if (!_players.Any() || _host is null)
+            if (_players != null && (!_players.Any() || _host is null))
             {
                 return;
             }
@@ -93,7 +93,7 @@ namespace Game.Ui.Views.GameControls
             }
 
             // Показать вопрос для ответа во вью
-            OnShowQuestionForAnswer();
+            OnShowQuestionForAnswerView();
         }
 
         /// <summary>
@@ -112,10 +112,10 @@ namespace Game.Ui.Views.GameControls
             {
                 case true:
                     ActivePlayer.AddPoint(_displayedQuestion.Price);
-                    ActivePlayerBackup = _activePlayer;
+                    ActivePlayerBackup = ActivePlayer;
 
                     // Показать сразу ответ
-                    OnShowCorrectAnswer();
+                    OnShowCorrectAnswerView();
 
                     break;
                 case false:
@@ -135,7 +135,7 @@ namespace Game.Ui.Views.GameControls
         private void OnNoAnsweredQuestionCommand()
         {
             Message = "На вопрос не был дан ответ";
-            OnShowCorrectAnswer();
+            OnShowCorrectAnswerView();
 
             // восстановить активного игрока
             ActivePlayer = ActivePlayerBackup;
@@ -150,7 +150,7 @@ namespace Game.Ui.Views.GameControls
             if (_currentRound?.Level == RoundsLevelEnum.Final)
             {
                 // если Финальный раунд, покажем ставки и ответы
-                OnShowPlayersBet();
+                OnShowPlayersBetView();
 
                 return;
             }
@@ -167,7 +167,7 @@ namespace Game.Ui.Views.GameControls
             Message = $"Вопрос выбирает игрок {_activePlayer?.Name}";
 
             CheckRoundIsOver();
-            OnShowCurrentRound();
+            OnShowCurrentRoundView();
         }
 
         /// <inheritdoc cref="GameIsReadyToReceiveAnswersEvent"/>
@@ -219,7 +219,7 @@ namespace Game.Ui.Views.GameControls
             if (CurrentRound?.Topics != null &&
                 CurrentRound?.Topics.FirstOrDefault(t => t.Questions.Exists(q => q.IsAsked == false)) == null)
             {
-                // если все вопрос заданы, переходим в следующий раунд
+                // если все вопросы заданы, переходим в следующий раунд
                 OnGoNextRound();
             }
         }
@@ -245,7 +245,8 @@ namespace Game.Ui.Views.GameControls
                     if (playerModels.Count == 1)
                     {
                         // Показать победителя игры
-                        OnShowGameWinner();
+                        OnShowGameWinnerView();
+
                         return;
                     }
                 }
@@ -278,6 +279,11 @@ namespace Game.Ui.Views.GameControls
             if (topicModels != null)
             {
                 Topics = new ObservableCollection<TopicModel>(topicModels);
+            }
+
+            if (IsGameStarted)
+            {
+                OnShowRoundLevelNameView();
             }
         }
 

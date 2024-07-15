@@ -1,8 +1,10 @@
-﻿using Common.Core.Prism;
+﻿using System.Windows.Input;
+using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using Common.Core.Views;
 using DataDomain.Rooms.Rounds;
 using Game.Domain.Data;
+using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
 
@@ -13,6 +15,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Rounds
         /// <inheritdoc />
         public RoundLevelViewModel(IRegionManager regionManager) : base(regionManager)
         {
+            ContinueGameCommand = new DelegateCommand(OnContinueGame);
         }
 
         public RoundModel Round
@@ -20,6 +23,8 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Rounds
             get => _round;
             private set => this.RaiseAndSetIfChanged(ref _round, value);
         }
+
+        public ICommand ContinueGameCommand { get; }
 
         /// <inheritdoc />
         public override void OnNavigatedTo(NavigationContext navigationContext)
@@ -39,8 +44,15 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Rounds
             navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound);
         }
 
-        protected override void GoBackOrder()
+        /// <summary>
+        /// Продолжить игру
+        /// </summary>
+        private void OnContinueGame()
         {
+            // 1. Change ContentRegion
+            MoveBackCommand.Execute(default);
+
+            // 2. Change ShellRegion
             NavigationParameters parameter = new()
             {
                 {
@@ -50,6 +62,18 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Rounds
 
             RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
         }
+
+        /*protected override void GoBackOrder()
+        {
+            NavigationParameters parameter = new()
+            {
+                {
+                    NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound
+                }
+            };
+
+            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
+        }*/
 
         private RoundModel _round;
     }

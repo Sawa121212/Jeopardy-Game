@@ -2,8 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="300"
+             mc:Ignorable="d"
+             d:DesignHeight="500"
+             d:DesignWidth="300"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:localization="clr-namespace:Common.Core.Localization;assembly=Common.Core"
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
@@ -29,8 +30,10 @@
                 Margin="3">
             <Button.Content>
                 <Grid ColumnDefinitions="Auto, 8, *">
-                    <avalonia:MaterialIcon Grid.Column="0" Kind="ChevronLeft" />
-                    <TextBlock Grid.Column="2" Text="{localization:Localize MoveBack}" />
+                    <avalonia:MaterialIcon Grid.Column="0"
+                                           Kind="ChevronLeft" />
+                    <TextBlock Grid.Column="2"
+                               Text="{localization:Localize MoveBack}" />
                 </Grid>
             </Button.Content>
         </Button>
@@ -43,8 +46,10 @@
                 Margin="3">
             <Button.Content>
                 <Grid ColumnDefinitions="Auto, 8, *">
-                    <avalonia:MaterialIcon Grid.Column="0" Kind="EmailSendOutline" />
-                    <TextBlock Grid.Column="2" Text="Пригласить в комнату" />
+                    <avalonia:MaterialIcon Grid.Column="0"
+                                           Kind="EmailSendOutline" />
+                    <TextBlock Grid.Column="2"
+                               Text="Пригласить в комнату" />
                 </Grid>
             </Button.Content>
         </Button>
@@ -65,7 +70,8 @@
             </Grid>
         </controls:Card>
 
-        <Grid Grid.Row="1" RowDefinitions="*, Auto, Auto"
+        <Grid Grid.Row="1"
+              RowDefinitions="*, Auto, Auto"
               IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
 
             <!-- Players -->
@@ -83,8 +89,10 @@
                             Margin="3">
                         <Button.Content>
                             <Grid ColumnDefinitions="Auto, 8, *">
-                                <avalonia:MaterialIcon Grid.Column="0" Kind="Robot" />
-                                <TextBlock Grid.Column="2" Text="Add Bot" />
+                                <avalonia:MaterialIcon Grid.Column="0"
+                                                       Kind="Robot" />
+                                <TextBlock Grid.Column="2"
+                                           Text="Add Bot" />
                             </Grid>
                         </Button.Content>
                     </Button>
@@ -102,20 +110,25 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="rooms:PlayerModel">
                                     <Grid Margin="5">
-                                        <Image Stretch="Fill" Height="64" Width="64"
+                                        <Image Stretch="Fill"
+                                               Height="64"
+                                               Width="64"
                                                Source="{StaticResource PrisonerDrawingImage}"
                                                VerticalAlignment="Top"
                                                Margin="10,5" />
                                         <TextBlock Classes="Subtitle2"
                                                    Text="{Binding Name}"
                                                    FontWeight="Bold"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Top"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Top"
                                                    Margin="0,68,0, 0" />
                                         <!-- Опции -->
                                         <Menu VerticalAlignment="Top"
-                                              HorizontalAlignment="Right"
+                                              HorizontalAlignment="Center"
+                                              Margin="60,0,0,0"
                                               Height="24">
-                                            <MenuItem Height="24" Width="24"
+                                            <MenuItem Height="24"
+                                                      Width="24"
                                                       Header="{avalonia:MaterialIconExt DotsVertical, Size=24}"
                                                       Padding="0">
                                                 <MenuItem Header="На место ведущего"
@@ -151,7 +164,8 @@
             <Grid Grid.Row="1"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
-                  RowDefinitions="Auto,*">
+                  RowDefinitions="Auto,*, Auto">
+
                 <TextBlock Grid.Row="0"
                            Text="Ведущий"
                            HorizontalAlignment="Center"
@@ -159,8 +173,9 @@
                            Margin="0 ,3" />
 
                 <Grid Grid.Row="1">
-                    <Image Grid.Column="0"
-                           Stretch="Fill" Height="64" Width="64"
+                    <Image Stretch="Fill"
+                           Height="64"
+                           Width="64"
                            Source="{StaticResource PrisonerDrawingImage}"
                            VerticalAlignment="Top"
                            Margin="10,5" />
@@ -168,26 +183,32 @@
                                Text="{Binding Host.Name}"
                                FontWeight="Bold"
                                IsVisible="{Binding Host.Name, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                               HorizontalAlignment="Center" VerticalAlignment="Top"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Top"
                                Margin="0,68,0, 0" />
 
                     <TextBlock Classes="Subtitle2"
                                IsVisible="{Binding Host.Name, Converter={x:Static StringConverters.IsNullOrEmpty}}"
                                Text="??????"
                                FontWeight="Bold"
-                               HorizontalAlignment="Center" VerticalAlignment="Top"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Top"
                                Margin="0,68,0, 0" />
+
                     <avalonia:MaterialIcon Kind="Crown"
                                            Foreground="Gold"
                                            Width="24"
                                            Height="24"
                                            VerticalAlignment="Top"
-                                           HorizontalAlignment="Left" />
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,60,0"/>
                     <Menu VerticalAlignment="Top"
-                          HorizontalAlignment="Right"
+                          HorizontalAlignment="Center"
+                          Margin="60,0,0,0"
                           Height="24"
                           IsVisible="{Binding Host, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <MenuItem Height="24" Width="24"
+                        <MenuItem Height="24"
+                                  Width="24"
                                   Header="{avalonia:MaterialIconExt DotsVertical, Size=24}"
                                   Padding="0">
                             <MenuItem Header="Покинуть место ведущего"
@@ -212,6 +233,20 @@
                         </MenuItem>
                     </Menu>
                 </Grid>
+
+                <StackPanel Orientation="Horizontal"
+                            IsVisible="{Binding Host.Name, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                            Spacing="3"
+                            Margin="0,5,0, 0"
+                            Grid.Row="2">
+                    <avalonia:MaterialIcon Kind="Information"
+                                           Foreground="{StaticResource WarningColorBrush}" />
+                    <TextBlock Classes="Subtitle1"
+                               FontWeight="Bold"
+                               Text="Выберите ведущего"
+                               Foreground="{StaticResource WarningColorBrush}"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
             </Grid>
 
             <!-- Room key -->

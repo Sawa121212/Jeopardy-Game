@@ -44,8 +44,8 @@ namespace Game.Ui.Views.GameControls
 
             MoveBackButtonCommand = new DelegateCommand(async () => await GoBackOrderAsync());
 
-            ShowGameTopicsCommand = new DelegateCommand(OnShowAllTopics);
-            ShowTopicsCarouselCommand = new DelegateCommand(OnShowTopicsCarousel);
+            ShowGameTopicsCommand = new DelegateCommand(OnShowAllTopicsView);
+            ShowTopicsCarouselCommand = new DelegateCommand(OnShowTopicsCarouselView);
             SelectQuestionAnswerCommand = new DelegateCommand<QuestionModel?>(async (q) => await OnSelectAndShowQuestionAnswer(q));
             AnsweredQuestionCommand = new DelegateCommand<bool?>(async (b) => await OnAnsweredQuestion(b));
             NoAnsweredQuestionCommand = new DelegateCommand(OnNoAnsweredQuestionCommand);
@@ -167,12 +167,12 @@ namespace Game.Ui.Views.GameControls
                     case GameStatusEnum.Continue:
                         return;
                     case GameStatusEnum.ShowRoundLevel:
-                        OnShowRoundLevelInformation();
+                        OnShowRoundLevelNameView();
 
                         return;
                     case GameStatusEnum.ShowCurrentRound:
                         IsShowedTopics = true;
-                        OnShowCurrentRound();
+                        OnShowCurrentRoundView();
                         SetPlayerFirstChoosingTopic();
 
                         return;
@@ -258,6 +258,7 @@ namespace Game.Ui.Views.GameControls
                     if (_players.Count is 1 or 2)
                     {
                         ActivePlayer = _players[0];
+                        ActivePlayerBackup = ActivePlayer;
 
                         return;
                     }
@@ -267,6 +268,7 @@ namespace Game.Ui.Views.GameControls
 
                     Message = $"Выбор темы и стоимости вопроса первым осуществляет игрок {playerModel?.Name}";
                     ActivePlayer = playerModel;
+                    ActivePlayerBackup = ActivePlayer;
 
                     break;
                 case RoundsLevelEnum.Round2:
@@ -276,8 +278,7 @@ namespace Game.Ui.Views.GameControls
                     if (_currentRound is {Level: not RoundsLevelEnum.Round1})
                     {
                         ActivePlayer = GetPlayerWithMinPoint(players);
-
-                        return;
+                        ActivePlayerBackup = ActivePlayer;
                     }
 
                     break;
