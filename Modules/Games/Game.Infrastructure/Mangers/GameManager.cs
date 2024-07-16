@@ -30,11 +30,11 @@ namespace Game.Infrastructure.Mangers
             _roomService = roomService;
             _roundService = roundService;
 
-            _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(e => AddBot(e.RoomKey));
+            _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(AddBot);
 
             _eventAggregator.GetEvent<PlayerIsTryingToConnectToRoomEvent>().Subscribe(e => ConnectPlayerToRoom(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<SetPlayerToHostEvent>().Subscribe(e => SetPlayerToHost(e.RoomKey, e.PlayerId));
-            _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Subscribe(e => GetOutHostPlayer(e.RoomKey));
+            _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Subscribe(GetOutHostPlayer);
             _eventAggregator.GetEvent<KickOutPlayerEvent>().Subscribe(async (e) => await KickOutPlayer(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<GameIsReadyToStartEvent>().Subscribe(e => StartGame(e.RoomKey));
         }
@@ -184,7 +184,7 @@ namespace Game.Infrastructure.Mangers
         {
             if (_roomService.SetHost(roomKey, playerId))
             {
-                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(new HostPlayerUpdatedEvent(roomKey));
+                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(roomKey);
             }
         }
 
@@ -192,7 +192,7 @@ namespace Game.Infrastructure.Mangers
         {
             if (_roomService.SetHost(roomKey, default))
             {
-                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(new HostPlayerUpdatedEvent(roomKey));
+                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(roomKey);
             }
         }
 

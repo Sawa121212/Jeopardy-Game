@@ -6,20 +6,7 @@ namespace Game.Domain.Events.Rooms
     /// The presenter in the hall has been updated.
     /// [Ведущий в комнате обновлен]
     /// </summary>
-    public class HostPlayerUpdatedEvent : PubSubEvent<HostPlayerUpdatedEvent>
+    public class HostPlayerUpdatedEvent : PubSubEvent<string>
     {
-        public HostPlayerUpdatedEvent()
-        {
-        }
-
-        public HostPlayerUpdatedEvent(string roomKey)
-        {
-            RoomKey = roomKey;
-        }
-
-        /// <summary>
-        /// Room key
-        /// </summary>
-        public string RoomKey { get; }
     }
 }

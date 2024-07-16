@@ -14,9 +14,9 @@
              x:DataType="gameControls:GameViewModel"
              x:Name="BaseRoundControl">
 
-    <!--<Design.DataContext>
+    <Design.DataContext>
         <gameControls:GameViewModel />
-    </Design.DataContext>-->
+    </Design.DataContext>
 
     <controls:Card Classes="Dark">
         <ListBox ItemsSource="{Binding Topics, Mode=OneWay}">
@@ -38,7 +38,7 @@
                 <DataTemplate DataType="rounds:TopicModel">
                     <Grid ColumnDefinitions="*, Auto, 2*">
                         <ContentControl Grid.Column="0">
-                          <ContentControl.Content>
+                            <ContentControl.Content>
                                 <Viewbox VerticalAlignment="Center"
                                          HorizontalAlignment="Center"
                                          Stretch="Uniform">

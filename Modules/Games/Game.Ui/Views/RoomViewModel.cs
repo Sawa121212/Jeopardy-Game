@@ -56,7 +56,7 @@ namespace Game.Ui.Views
                 .ObservesProperty(() => Players);
 
             _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Subscribe(e => OnUpdatePlayerList(e.RoomKey));
-            _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(e => OnUpdateHostPlayer(e.RoomKey));
+            _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(OnUpdateHostPlayer);
             _eventAggregator.GetEvent<PlayerKickedOutEvent>().Subscribe(e => OnUpdateAllPlayers(e.RoomKey));
             _eventAggregator.GetEvent<GameIsStartedEvent>().Subscribe(e => OnUpdateGameStartingView(e.RoomKey));
         }
@@ -127,8 +127,7 @@ namespace Game.Ui.Views
         // Test method
         private void OnAddBot()
         {
-            _eventAggregator.GetEvent<AddBotToRoomEvent>()
-                .Publish(new AddBotToRoomEvent(_roomKey));
+            _eventAggregator.GetEvent<AddBotToRoomEvent>().Publish(_roomKey);
         }
 
         /// <summary>
@@ -160,14 +159,14 @@ namespace Game.Ui.Views
             }
         }
 
-
         private void OnGetOutHostPlayer()
         {
             if (Host is not null)
             {
-                _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Publish(new GetOutHostPlayerEvent(_roomKey));
+                _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Publish(_roomKey);
             }
         }
+
         private void OnUpdateAllPlayers(string roomKey)
         {
             OnUpdatePlayerList(roomKey);
