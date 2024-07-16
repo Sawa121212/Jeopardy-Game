@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
+using Common.Core.Components;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using Confirmation.Module.Enums;
@@ -33,8 +34,7 @@ namespace Game.Ui.Views.GameControls
 
                 if (result == ConfirmationResultEnum.Yes)
                 {
-                    await _gameManager.CloseRoom(_roomKey).ConfigureAwait(true);
-
+                    _gameManager.CloseGame(_roomKey);
                     ClearAllParameters();
                 }
 
@@ -49,7 +49,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Отобразить окно "Список тем"
         /// </summary>
-        private void OnShowAllTopics()
+        private void OnShowAllTopicsView()
         {
             NavigationParameters parameter = new()
             {
@@ -66,7 +66,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Отобразить название текущего раунда
         /// </summary>
-        private void OnShowRoundLevelInformation()
+        private void OnShowRoundLevelNameView()
         {
             NavigationParameters parameter = new()
             {
@@ -75,13 +75,13 @@ namespace Game.Ui.Views.GameControls
                 }
             };
 
-            RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(RoundLevelView), parameter);
+            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(RoundLevelView), parameter);
         }
 
         /// <summary>
         /// Отобразить окно "Список тем текущего раунда"
         /// </summary>
-        private void OnShowTopicsCarousel()
+        private void OnShowTopicsCarouselView()
         {
             NavigationParameters parameter = new()
             {
@@ -96,7 +96,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Отобразить окно "Текущий раунд"
         /// </summary>
-        private void OnShowCurrentRound()
+        private void OnShowCurrentRoundView()
         {
             if (_game == null)
             {
@@ -106,10 +106,9 @@ namespace Game.Ui.Views.GameControls
             if (_game.CurrentRoundLevel == RoundsLevelEnum.Final)
             {
                 // Подготовь финальный раунд
-                PrepareFinalRound();
-                RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundControlView));
+                Task.Run(async () => await PrepareFinalRound());
 
-                return;
+                RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(FinalRoundControlView));
             }
             else
             {
@@ -120,7 +119,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Показать вопрос для ответа
         /// </summary>
-        private void OnShowQuestionForAnswer()
+        private void OnShowQuestionForAnswerView()
         {
             if (_displayedQuestion == null)
             {
@@ -144,7 +143,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Показать правильный ответ
         /// </summary>
-        private void OnShowCorrectAnswer()
+        private void OnShowCorrectAnswerView()
         {
             if (_displayedQuestion == null)
             {
@@ -157,7 +156,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Показать ставки игроков
         /// </summary>
-        private void OnShowPlayersBet()
+        private void OnShowPlayersBetView()
         {
             NavigationParameters parameter = new()
             {
@@ -175,7 +174,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Показать победителя игры
         /// </summary>
-        private void OnShowGameWinner()
+        private void OnShowGameWinnerView()
         {
             NavigationParameters parameter = new()
             {

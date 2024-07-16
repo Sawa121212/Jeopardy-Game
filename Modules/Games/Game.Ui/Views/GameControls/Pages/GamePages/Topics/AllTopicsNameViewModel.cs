@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Common.Core.Prism;
+using Common.Core.Prism.Regions;
 using Common.Core.Views;
 using DataDomain.Rooms.Rounds;
 using Game.Domain.Data;
+using Game.Ui.Views.GameControls.Pages.GamePages.Rounds;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
@@ -15,7 +17,8 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
     public class AllTopicsNameViewModel : NavigationViewModelBase
     {
         /// <inheritdoc />
-        public AllTopicsNameViewModel(IRegionManager regionManager) : base(regionManager)
+        public AllTopicsNameViewModel(IRegionManager regionManager)
+            : base(regionManager)
         {
             ContinueGameCommand = new DelegateCommand(OnContinueGame);
         }
@@ -39,13 +42,18 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
             Topics = new ObservableCollection<TopicModel>();
 
             object parameter = navigationContext.Parameters[NavigationParameterService.InitializeParameter];
-            if (parameter is IList<RoundModel> roundModels && roundModels.Any())
+
+            if (parameter is not IList<RoundModel> roundModels || !roundModels.Any())
             {
-                for (int i = 0; i < 3; i++)
-                {
-                    Topics.AddRange(roundModels[i].Topics);
-                }
+                return;
             }
+
+            for (int i = 0; i < 3; i++)
+            {
+                Topics.AddRange(roundModels[i].Topics);
+            }
+
+            _firstRoundModel = roundModels.First();
         }
 
         /// <summary>
@@ -53,7 +61,18 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
         /// </summary>
         private void OnContinueGame()
         {
+            // 1. Change ContentRegion
             MoveBackCommand.Execute(default);
+
+            // 2. Change ShellRegion
+            NavigationParameters parameter = new()
+            {
+                {
+                    NavigationParameterService.InitializeParameter, _firstRoundModel
+                }
+            };
+
+            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(RoundLevelView), parameter);
         }
 
         /// <inheritdoc />
@@ -63,5 +82,6 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
         }
 
         private ObservableCollection<TopicModel> _topics;
+        private RoundModel _firstRoundModel;
     }
 }

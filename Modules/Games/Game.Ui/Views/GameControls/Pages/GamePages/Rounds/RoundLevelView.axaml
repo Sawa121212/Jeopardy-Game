@@ -7,7 +7,9 @@
              xmlns:converter="clr-namespace:Game.Ui.Converter"
              xmlns:rounds="clr-namespace:Game.Ui.Views.GameControls.Pages.GamePages.Rounds"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
              x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Rounds.RoundLevelView"
              x:DataType="rounds:RoundLevelViewModel"
              x:Name="RoundLevelControl">
@@ -30,7 +32,8 @@
 
                 <Border Background="Yellow"
                         Grid.Row="0"
-                        Grid.Column="0" Grid.ColumnSpan="2"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
                         Margin="1">
                     <TextBlock Text="{Binding Round.Level, Converter={StaticResource RoundLevelConverter}}"
                                FontSize="32"
@@ -43,7 +46,8 @@
 
                 <ItemsControl ItemsSource="РАУНД"
                               Grid.Row="1"
-                              Grid.Column="1" Grid.ColumnSpan="3">
+                              Grid.Column="1"
+                              Grid.ColumnSpan="3">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal" />
@@ -67,7 +71,7 @@
         </Viewbox>
 
         <Button Content="Ok"
-                Command="{Binding MoveBackCommand}"
+                Command="{Binding ContinueGameCommand}"
                 Grid.Row="1" />
     </Grid>
 </UserControl>

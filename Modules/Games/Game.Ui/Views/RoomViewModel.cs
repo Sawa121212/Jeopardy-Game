@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Common.Core.Prism;
@@ -10,6 +11,7 @@ using Confirmation.Module.Services;
 using DataDomain.Rooms;
 using Game.Domain.Events.Games;
 using Game.Domain.Events.Players;
+using Game.Domain.Events.Players.Host;
 using Game.Domain.Events.Rooms;
 using Game.Infrastructure.Interfaces.Mangers;
 using Game.Ui.Views.GameControls;
@@ -44,18 +46,19 @@ namespace Game.Ui.Views
             CreateRoomCommand = new DelegateCommand(async () => await OnCreateRoom());
 
             SendAnInvitationCommand = new DelegateCommand(OnSendAnInvitation);
-            AddPlayerCommand = new DelegateCommand(OnAddPlayer);
+            AddPlayerCommand = new DelegateCommand(OnAddBot);
             KickOutPlayerCommand = new DelegateCommand<PlayerModel>(OnKickOutPlayer);
             SetPlayerToHostCommand = new DelegateCommand<PlayerModel>(OnSetPlayerToHost);
+            GetOutHostPlayerCommand = new DelegateCommand(OnGetOutHostPlayer);
 
             StartGameCommand = new DelegateCommand(OnStartGame, () => Host != null && (Players != null && Players.Any()))
                 .ObservesProperty(() => Host)
                 .ObservesProperty(() => Players);
 
             _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Subscribe(e => OnUpdatePlayerList(e.RoomKey));
-            _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(e => OnUpdateHostPlayer(e.RoomKey));
+            _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(OnUpdateHostPlayer);
             _eventAggregator.GetEvent<PlayerKickedOutEvent>().Subscribe(e => OnUpdateAllPlayers(e.RoomKey));
-            _eventAggregator.GetEvent<GameIsStartedEvent>().Subscribe(e => OnUpdateGameStarting(e.RoomKey));
+            _eventAggregator.GetEvent<GameIsStartedEvent>().Subscribe(e => OnUpdateGameStartingView(e.RoomKey));
         }
 
         /// <summary>
@@ -88,38 +91,43 @@ namespace Game.Ui.Views
         public ICommand AddPlayerCommand { get; }
         public ICommand KickOutPlayerCommand { get; }
         public ICommand SetPlayerToHostCommand { get; }
+        public ICommand GetOutHostPlayerCommand { get; }
         public ICommand CreateRoomCommand { get; }
         public ICommand StartGameCommand { get; }
         public ICommand MoveGoBackCommand { get; }
         public ICommand SendAnInvitationCommand { get; }
+
+        /// <inheritdoc />
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            base.OnNavigatedTo(navigationContext);
+        }
 
         /// <summary>
         /// Создать комнату
         /// </summary>
         private async Task OnCreateRoom()
         {
-            // ToDo: Uncomment
-            /*
             if (!_telegramBotManager.IsConnected)
             {
                 await _telegramBotManager.StartTelegramBot().ConfigureAwait(true);
             }
 
-            if (!_telegramBotManager.IsConnected == null)
+            if (!_telegramBotManager.IsConnected)
             {
-                await _confirmationService.ShowInfoAsync("Ошибка", $"TelegramBotClient не запущен!", ConfirmationResultEnum.Ok);
+                await _confirmationService.ShowInfoAsync("Ошибка", $"TelegramBotClient не запущен!");
+
                 return;
-            }*/
+            }
 
             Players = new ObservableCollection<PlayerModel?>();
             RoomKey = _gameManager.CreateRoom();
         }
 
         // Test method
-        private void OnAddPlayer()
+        private void OnAddBot()
         {
-            _eventAggregator.GetEvent<AddBotToRoomEvent>()
-                .Publish(new AddBotToRoomEvent(_roomKey));
+            _eventAggregator.GetEvent<AddBotToRoomEvent>().Publish(_roomKey);
         }
 
         /// <summary>
@@ -148,6 +156,14 @@ namespace Game.Ui.Views
             if (Players.Contains(player))
             {
                 _eventAggregator.GetEvent<SetPlayerToHostEvent>().Publish(new SetPlayerToHostEvent(_roomKey, player.Id));
+            }
+        }
+
+        private void OnGetOutHostPlayer()
+        {
+            if (Host is not null)
+            {
+                _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Publish(_roomKey);
             }
         }
 
@@ -181,7 +197,11 @@ namespace Game.Ui.Views
             OnUpdatePlayerList(roomKey);
         }
 
-        private void OnUpdateGameStarting(string roomKey)
+        /// <summary>
+        /// Перейти в игру
+        /// </summary>
+        /// <param name="roomKey"></param>
+        private void OnUpdateGameStartingView(string roomKey)
         {
             if (roomKey != _roomKey)
             {
@@ -198,6 +218,9 @@ namespace Game.Ui.Views
             RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
         }
 
+        /// <summary>
+        /// Отправить приглашения
+        /// </summary>
         private void OnSendAnInvitation()
         {
             NavigationParameters parameter = new()

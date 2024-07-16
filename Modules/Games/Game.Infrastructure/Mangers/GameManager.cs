@@ -7,6 +7,7 @@ using DataDomain;
 using DataDomain.Rooms;
 using Game.Domain.Events.Games;
 using Game.Domain.Events.Players;
+using Game.Domain.Events.Players.Host;
 using Game.Domain.Events.Rooms;
 using Game.Infrastructure.Interfaces.Mangers;
 using Game.Infrastructure.Interfaces.Services;
@@ -29,10 +30,11 @@ namespace Game.Infrastructure.Mangers
             _roomService = roomService;
             _roundService = roundService;
 
-            _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(e => AddBot(e.RoomKey));
+            _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(AddBot);
 
             _eventAggregator.GetEvent<PlayerIsTryingToConnectToRoomEvent>().Subscribe(e => ConnectPlayerToRoom(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<SetPlayerToHostEvent>().Subscribe(e => SetPlayerToHost(e.RoomKey, e.PlayerId));
+            _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Subscribe(GetOutHostPlayer);
             _eventAggregator.GetEvent<KickOutPlayerEvent>().Subscribe(async (e) => await KickOutPlayer(e.RoomKey, e.PlayerId));
             _eventAggregator.GetEvent<GameIsReadyToStartEvent>().Subscribe(e => StartGame(e.RoomKey));
         }
@@ -103,6 +105,26 @@ namespace Game.Infrastructure.Mangers
         }
 
         /// <inheritdoc />
+        public bool CloseGame(string roomKey)
+        {
+            if (roomKey.IsNullOrEmpty())
+            {
+                return false;
+            }
+
+            RoomModel? room = _roomService.GetRoomByKey(roomKey);
+
+            if (room == null)
+            {
+                return false;
+            }
+
+            room.Game = null;
+
+            return true;
+        }
+
+        /// <inheritdoc />
         public async Task<bool> CloseRoom(string roomKey)
         {
             if (roomKey.IsNullOrEmpty())
@@ -162,7 +184,15 @@ namespace Game.Infrastructure.Mangers
         {
             if (_roomService.SetHost(roomKey, playerId))
             {
-                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(new HostPlayerUpdatedEvent(roomKey));
+                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(roomKey);
+            }
+        }
+
+        private void GetOutHostPlayer(string roomKey)
+        {
+            if (_roomService.SetHost(roomKey, default))
+            {
+                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(roomKey);
             }
         }
 

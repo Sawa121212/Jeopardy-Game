@@ -7,7 +7,9 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
              x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Rounds.BaseRoundControlView"
              x:DataType="gameControls:GameViewModel"
              x:Name="BaseRoundControl">
@@ -26,7 +28,8 @@
 
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">
-                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                    <Setter Property="VerticalAlignment"
+                            Value="Stretch" />
                 </Style>
             </ListBox.Styles>
 
@@ -34,9 +37,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="rounds:TopicModel">
                     <Grid ColumnDefinitions="*, Auto, 2*">
-                        <Button Grid.Column="0"
-                                Classes="Flat">
-                            <Button.Content>
+                        <ContentControl Grid.Column="0">
+                            <ContentControl.Content>
                                 <Viewbox VerticalAlignment="Center"
                                          HorizontalAlignment="Center"
                                          Stretch="Uniform">
@@ -48,28 +50,29 @@
                                                HorizontalAlignment="Center"
                                                Width="400" />
                                 </Viewbox>
-                            </Button.Content>
-                        </Button>
+                            </ContentControl.Content>
+                        </ContentControl>
 
-                        <GridSplitter Grid.Column="1" Margin="3, -1" />
+                        <GridSplitter Grid.Column="1"
+                                      Margin="3, -1" />
 
                         <!-- Questions -->
                         <ItemsControl ItemsSource="{Binding Questions, Mode=OneWay}"
                                       Grid.Column="2">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Rows="1" Columns="5" />
+                                    <UniformGrid Rows="1"
+                                                 Columns="5" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
 
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="rounds:QuestionModel">
-                                    <Button
-                                        Command="{Binding DataContext.SelectQuestionAnswerCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
-                                        CommandParameter="{Binding .}"
-                                        Classes="Outline"
-                                        IsVisible="{Binding !IsAsked, Mode=OneWay}"
-                                        Margin="3">
+                                    <Button Command="{Binding DataContext.SelectQuestionAnswerCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}"
+                                            CommandParameter="{Binding .}"
+                                            Classes="Outline"
+                                            IsVisible="{Binding !IsAsked, Mode=OneWay}"
+                                            Margin="3">
                                         <TextBlock Text="{Binding Price}"
                                                    Classes="Headline6"
                                                    Foreground="{DynamicResource MaterialBodyBrush}" />

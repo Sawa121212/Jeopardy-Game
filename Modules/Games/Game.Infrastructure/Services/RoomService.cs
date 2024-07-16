@@ -136,18 +136,18 @@ namespace Game.Infrastructure.Services
         /// <inheritdoc />
         public bool SetHost(string roomKey, long playerId)
         {
-            if (playerId == default)
+            RoomModel? room = GetRoomByKey(roomKey);
+
+            if (room is null)
             {
                 return false;
             }
 
-            RoomModel? room = GetRoomByKey(roomKey);
+            PlayerModel? player = null;
 
-            PlayerModel? player = room?.Players.FirstOrDefault(e => e.Id == playerId);
-
-            if (player == null)
+            if (playerId != default)
             {
-                return false;
+                player = room.Players.FirstOrDefault(e => e.Id == playerId);
             }
 
             if (room.Host is not null)
@@ -156,7 +156,11 @@ namespace Game.Infrastructure.Services
             }
 
             room.Host = player;
-            room.Players.Remove(player);
+
+            if (player != null)
+            {
+                room.Players.Remove(player);
+            }
 
             return true;
         }

@@ -1,6 +1,6 @@
 ﻿using Prism.Events;
 
-namespace Game.Domain.Events.Players
+namespace Game.Domain.Events.Players.Host
 {
     /// <summary>
     /// Set a player as event organizer.

@@ -52,6 +52,11 @@ namespace TelegramAPI.Infrastructure.Managers
             string errorMessage = null;
             _token = _telegramSettingsService.GetGameBotToken();
 
+            if (_token.IsNullOrEmpty())
+            {
+                errorMessage = $"TelegramBot: Bot token is null";
+            }
+
             try
             {
                 await StartTelegramBot(_token);
@@ -94,6 +99,7 @@ namespace TelegramAPI.Infrastructure.Managers
                 //await Task.Delay(-1, cts.Token);
                 //this.RaisePropertyChanged(nameof(IsConnected));
                 IsConnected = true;
+
                 return Result<bool>.Done(true);
             }
             catch (Exception e)
@@ -128,6 +134,7 @@ namespace TelegramAPI.Infrastructure.Managers
                 {
                     _user = _userService.CreateUser(user.Id, $"{user.FirstName} {user.LastName}", user.Username);
                     await botClient.SendTextMessageAsync(_user.Id, "Введите ваше имя");
+
                     return;
                 }
 
@@ -145,6 +152,7 @@ namespace TelegramAPI.Infrastructure.Managers
                 else
                 {
                     await botClient.SendTextMessageAsync(_user.Id, result.ErrorMessage);
+
                     return;
                 }
 

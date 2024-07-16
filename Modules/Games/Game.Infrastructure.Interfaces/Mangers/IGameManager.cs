@@ -11,5 +11,6 @@ namespace Game.Infrastructure.Interfaces.Mangers
         IEnumerable<PlayerModel> GetPlayersFromRoom(string roomKey);
         PlayerModel GetHostPlayerFromRoom(string roomKey);
         GameModel? GetGame(string roomKey);
+        bool CloseGame(string roomKey);
     }
 }
