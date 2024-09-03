@@ -39,7 +39,7 @@
         </Button>
 
         <Button Command="{Binding SendAnInvitationCommand}"
-                IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                IsVisible="{Binding IsCreated}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Grid.Row="0"
@@ -55,11 +55,11 @@
         </Button>
 
         <controls:Card Grid.Row="1"
-                       IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNullOrEmpty}}"
+                       IsVisible="{Binding !IsCreated}"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center">
             <Grid RowDefinitions="Auto, Auto">
-                <TextBlock Text="Начнем?"
+                <TextBlock Text="Вы готовы? Пора собраться..."
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Margin="0 ,3" />
@@ -72,7 +72,7 @@
 
         <Grid Grid.Row="1"
               RowDefinitions="*, Auto, Auto"
-              IsVisible="{Binding RoomKey, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+              IsVisible="{Binding IsCreated}">
 
             <!-- Players -->
             <controls:Card Grid.Row="0"
@@ -201,7 +201,7 @@
                                            Height="24"
                                            VerticalAlignment="Top"
                                            HorizontalAlignment="Center"
-                                           Margin="0,0,60,0"/>
+                                           Margin="0,0,60,0" />
                     <Menu VerticalAlignment="Top"
                           HorizontalAlignment="Center"
                           Margin="60,0,0,0"
@@ -248,29 +248,6 @@
                                HorizontalAlignment="Center" />
                 </StackPanel>
             </Grid>
-
-            <!-- Room key -->
-            <controls:Card Grid.Row="1"
-                           HorizontalAlignment="Right"
-                           VerticalAlignment="Center"
-                           Margin="0, 0, 15, 0">
-                <Grid RowDefinitions="Auto,*,Auto">
-                    <TextBlock Grid.Row="0"
-                               Classes="Subtitle2"
-                               Text="Код комнаты"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Margin="0 ,3" />
-
-                    <TextBlock Grid.Row="1"
-                               Classes="Subtitle1"
-                               Text="{Binding RoomKey}"
-                               Foreground="{DynamicResource MaterialPrimaryMidBrush}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               FontWeight="Bold" />
-                </Grid>
-            </controls:Card>
 
             <Button Grid.Row="2"
                     Content="Запустить игру"

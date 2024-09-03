@@ -112,7 +112,7 @@ namespace TelegramAPI.Infrastructure.Managers
         }
 
         public virtual async Task UpdateHandler(
-            ITelegramBotClient botClient,
+            ITelegramBotClient telegramBotClient,
             Update update,
             CancellationToken cancellationToken)
         {
@@ -133,7 +133,7 @@ namespace TelegramAPI.Infrastructure.Managers
                 if (!_userService.TryGetUserById(user.Id, out Users.Domain.Models.User _user))
                 {
                     _user = _userService.CreateUser(user.Id, $"{user.FirstName} {user.LastName}", user.Username);
-                    await botClient.SendTextMessageAsync(_user.Id, "Введите ваше имя");
+                    await telegramBotClient.SendTextMessageAsync(_user.Id, "Введите ваше имя", cancellationToken: cancellationToken);
 
                     return;
                 }
@@ -145,13 +145,14 @@ namespace TelegramAPI.Infrastructure.Managers
                     _user.State = result.Value.Item1;
 
                     _userService.UpdateUser(_user);
-                    var resultKeyboard = _telegramHandlerService.GetKeyboardMarkup(result.Value.Item1, update);
+
+                    Result<ReplyKeyboardMarkup>? resultKeyboard = _telegramHandlerService.GetKeyboardMarkup(result.Value.Item1, update);
                     ReplyMarkupBase replyKeyboard = resultKeyboard ? resultKeyboard.Value : new ReplyKeyboardRemove();
-                    await botClient.SendTextMessageAsync(_user.Id, result.Value.Item2, replyMarkup: replyKeyboard);
+                    await telegramBotClient.SendTextMessageAsync(_user.Id, result.Value.Item2, replyMarkup: replyKeyboard);
                 }
                 else
                 {
-                    await botClient.SendTextMessageAsync(_user.Id, result.ErrorMessage);
+                    await telegramBotClient.SendTextMessageAsync(_user.Id, result.ErrorMessage);
 
                     return;
                 }

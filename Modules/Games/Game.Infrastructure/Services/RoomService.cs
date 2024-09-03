@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,10 +8,10 @@ using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
 using Game.Infrastructure.Interfaces.Services;
+using GameSender.Infrastructure.Interfaces;
 using Infrastructure.Domain.Helpers;
 using Notification.Module.Services;
 using ReactiveUI;
-using TelegramAPI.Infrastructure.Interfaces.Managers;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 
@@ -18,49 +19,50 @@ namespace Game.Infrastructure.Services
 {
     public class RoomService : ReactiveObject, IRoomService
     {
-        public RoomService(INotificationService notificationService, IUserService userService, ITelegramBotService telegramBotService)
+        public RoomService(
+            INotificationService notificationService,
+            IUserService userService,
+            IGameSenderService gameSenderService)
         {
             _notificationService = notificationService;
             _userService = userService;
-            _telegramBotService = telegramBotService;
-            Rooms = new ObservableCollection<RoomModel>();
+            _gameSenderService = gameSenderService;
         }
 
         /// <summary>
-        /// Список комнат
+        /// Комната
         /// </summary>
-        private ObservableCollection<RoomModel> Rooms
+        private RoomModel Room
         {
-            get => _rooms;
-            init => this.RaiseAndSetIfChanged(ref _rooms, value);
+            get => _room;
+            set => this.RaiseAndSetIfChanged(ref _room, value);
         }
 
         /// <inheritdoc/>
-        public string Create()
+        public bool Create()
         {
-            string key = RandomGenerator.GenerateRandomString(5);
-
-            // сгенерировать уникальный ключ
-            while (GetRoomByKey(key) != null)
+            try
             {
-                key = RandomGenerator.GenerateRandomString(5);
+                Room = new RoomModel();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
             }
 
-            RoomModel room = new(key);
-            Rooms.Add(room);
-
-            return room.Key;
+            return true;
         }
 
         /// <inheritdoc/>
-        public bool ConnectPlayer(string roomKey, long playerId)
+        public bool ConnectPlayer(long playerId)
         {
             if (playerId == default)
             {
                 return false;
             }
 
-            RoomModel? room = GetRoomByKey(roomKey);
+            RoomModel? room = GetRoom();
 
             if (room == null)
             {
@@ -84,9 +86,9 @@ namespace Game.Infrastructure.Services
         }
 
         /// <inheritdoc/>
-        public bool AddBot(string roomKey)
+        public bool AddBot()
         {
-            RoomModel? room = GetRoomByKey(roomKey);
+            RoomModel? room = GetRoom();
 
             if (room == null)
             {
@@ -101,14 +103,9 @@ namespace Game.Infrastructure.Services
         }
 
         /// <inheritdoc/>
-        public async Task<bool> Remove(string roomKey)
+        public async Task<bool> Remove()
         {
-            if (roomKey.IsNullOrEmpty())
-            {
-                return false;
-            }
-
-            RoomModel? room = GetRoomByKey(roomKey);
+            RoomModel? room = GetRoom();
 
             if (room == null)
             {
@@ -119,24 +116,26 @@ namespace Game.Infrastructure.Services
 
             foreach (PlayerModel? player in players)
             {
-                await KickPlayer(room.Key, player.Id).ConfigureAwait(true);
+                await KickPlayer(player.Id).ConfigureAwait(true);
             }
 
             if (room.Host != null)
             {
-                await KickPlayer(room.Key, room.Host.Id).ConfigureAwait(true);
+                await KickPlayer(room.Host.Id).ConfigureAwait(true);
             }
 
-            return Rooms.Remove(room);
+            Room = null;
+
+            return true;
         }
 
-        /// <inheritdoc/>
-        public RoomModel? GetRoomByKey(string roomKey) => roomKey.IsNullOrEmpty() ? null : Rooms.FirstOrDefault(r => r.Key == roomKey);
+        /// <inheritdoc />
+        public RoomModel? GetRoom() => Room;
 
         /// <inheritdoc />
-        public bool SetHost(string roomKey, long playerId)
+        public bool SetHost(long playerId)
         {
-            RoomModel? room = GetRoomByKey(roomKey);
+            RoomModel? room = GetRoom();
 
             if (room is null)
             {
@@ -166,14 +165,14 @@ namespace Game.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> KickPlayer(string roomKey, long playerId)
+        public async Task<bool> KickPlayer(long playerId)
         {
             if (playerId == default)
             {
                 return false;
             }
 
-            RoomModel? room = GetRoomByKey(roomKey);
+            RoomModel? room = GetRoom();
 
             if (room == null)
             {
@@ -185,8 +184,7 @@ namespace Game.Infrastructure.Services
             if (player != null)
             {
                 room.Players.Remove(player);
-                await _telegramBotService.SendMessageAsync(playerId, $"Вас кикнули с комнаты {roomKey}");
-
+                await _gameSenderService.SendKickedMessage(playerId);
                 return true;
             }
 
@@ -196,15 +194,14 @@ namespace Game.Infrastructure.Services
             }
 
             room.Host = null;
-            await _telegramBotService.SendMessageAsync(playerId, $"Вас кикнули с комнаты {roomKey}");
-
+            await _gameSenderService.SendKickedMessage(playerId);
             return true;
         }
 
         /// <inheritdoc />
-        public GameModel? GetGame(string roomKey)
+        public GameModel? GetGame()
         {
-            return GetRoomByKey(roomKey)?.Game;
+            return GetRoom()?.Game;
         }
 
         /// <summary>
@@ -222,8 +219,8 @@ namespace Game.Infrastructure.Services
         }
 
         private readonly INotificationService _notificationService;
-        private readonly ITelegramBotService _telegramBotService;
         private readonly IUserService _userService;
-        private ObservableCollection<RoomModel> _rooms;
+        private readonly IGameSenderService _gameSenderService;
+        private RoomModel _room;
     }
 }

@@ -42,14 +42,12 @@ namespace Game.Ui.Views.GameControls
             if (questionModel is null)
             {
                 Message = "Ошибка. Не удалось получить вопрос";
-
                 return;
             }
 
             if (questionModel.IsAsked)
             {
                 Message = "Ошибка. Вопрос уже был задан";
-
                 return;
             }
 
@@ -58,7 +56,6 @@ namespace Game.Ui.Views.GameControls
             if (questionById is null)
             {
                 Message = "Ошибка. Не удалось найти вопрос в БД";
-
                 return;
             }
 
@@ -85,7 +82,7 @@ namespace Game.Ui.Views.GameControls
 
             // ToDo: выполнить проверку на "специальные вопросы"
             MessageModel? sentMessage = await OnSendMessage(question);
-            _eventAggregator.GetEvent<QuestionsIsSentEvent>().Publish(new QuestionsIsSentEvent(_roomKey));
+            _eventAggregator.GetEvent<QuestionsIsSentEvent>().Publish();
 
             if (sentMessage != null)
             {
@@ -178,28 +175,23 @@ namespace Game.Ui.Views.GameControls
             if (isReady)
             {
                 Message = $"Ответы принимаются";
-                _eventAggregator.GetEvent<GameIsReadyToReceiveAnswersEvent>().Publish(new GameIsReadyToReceiveAnswersEvent(_roomKey));
+                _eventAggregator.GetEvent<GameIsReadyToReceiveAnswersEvent>().Publish();
             }
         }
 
         /// <inheritdoc cref="PlayerIsReadyAnswerQuestionEvent"/>
-        private void OnPlayerIsReadyAnswerQuestion(PlayerIsReadyAnswerQuestionEvent? playerIsReadyAnswer)
+        private void OnPlayerIsReadyAnswerQuestion(long playerId)
         {
-            if (playerIsReadyAnswer == null || !IsReadyGameToReceiveAnswers || ActivePlayer != null)
+            if (!IsReadyGameToReceiveAnswers || ActivePlayer != null)
             {
                 return;
             }
 
-            if (playerIsReadyAnswer.RoomKey.IsNullOrEmpty() || playerIsReadyAnswer.RoomKey != _roomKey)
-            {
-                return;
-            }
-
-            PlayerModel? player = Players.FirstOrDefault(p => p.Id == playerIsReadyAnswer.PlayerId);
+            PlayerModel? player = Players.FirstOrDefault(p => p.Id == playerId);
 
             if (player == null)
             {
-                Message = $"Ошибка. Не найден игрок с ИД: {playerIsReadyAnswer.PlayerId}";
+                Message = $"Ошибка. Не найден игрок с ИД: {playerId}";
 
                 return;
             }
@@ -336,7 +328,6 @@ namespace Game.Ui.Views.GameControls
             Topics = null;
 
             _game = null;
-            _roomKey = null;
         }
 
         private readonly IQuestionService _questionService;

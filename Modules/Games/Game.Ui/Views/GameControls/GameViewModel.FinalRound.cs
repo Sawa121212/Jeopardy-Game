@@ -65,8 +65,7 @@ namespace Game.Ui.Views.GameControls
             {
                 foreach (PlayerModel playerModel in getOutPlayers)
                 {
-                    await _telegramBotService.SendMessageAsync(playerModel.Id,
-                        $"Финальный раунд: вы ПОКИДАТЕ игру и терпите досрочное поражение.");
+                    await _gameSenderService.SendLoseGameInFinalRound(playerModel.Id);
                 }
             }
 

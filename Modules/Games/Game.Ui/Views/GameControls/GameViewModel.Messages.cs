@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using DataDomain.Rooms;
+using GameSender.Infrastructure.Interfaces;
 using Telegram.Bot.Types;
 using TelegramAPI.Domain.Models;
-using TelegramAPI.Infrastructure.Interfaces.Managers;
 using TopicDb.Domain.Models;
 
 namespace Game.Ui.Views.GameControls
@@ -10,7 +10,7 @@ namespace Game.Ui.Views.GameControls
     public partial class GameViewModel
     {
         /// <summary>
-        /// Отправить сообщение через <see cref="ITelegramBotService"/>
+        /// Отправить сообщение через <see cref="IGameSenderService"/>
         /// </summary>
         /// <param name="question"></param>
         /// <returns></returns>
@@ -21,36 +21,30 @@ namespace Game.Ui.Views.GameControls
             {
                 foreach (PlayerModel? playerModel in _players)
                 {
-                    await _telegramBotService.ForwardMessageAsync(playerModel.Id, question.Picture.ChatId, question.Picture.MessageId);
+                    await _gameSenderService.ForwardMessageAsync(playerModel.Id, question.Picture.ChatId, question.Picture.MessageId);
                 }
 
-                Message? message = await _telegramBotService.ForwardMessageAsync(
+                Message? message = await _gameSenderService.ForwardMessageAsync(
                     _host.Id,
                     question.Picture.ChatId,
                     question.Picture.MessageId);
 
-                return await _telegramBotService.ParseMessageAsync(message);
+                return await _gameSenderService.ParseMessageAsync(message) as MessageModel;
             }
             else
             {
                 // base message
                 foreach (PlayerModel? playerModel in _players)
                 {
-                    await _telegramBotService.SendMessageAsync(playerModel.Id, question.Text);
+                    await _gameSenderService.SendMessageAsync(playerModel.Id, question.Text);
                 }
 
-                Message sentMessage = await _telegramBotService.SendMessageAsync(_host.Id, question.Text);
-                if (sentMessage == null)
-                {
-                    return null;
-                }
+                Message sentMessage = await _gameSenderService.SendMessageAsync(_host.Id, question.Text);
 
-                return new MessageModel(sentMessage.Text);
+                return sentMessage == null ? null : new MessageModel(sentMessage.Text);
             }
 
             return null;
         }
-
-        private readonly ITelegramBotService _telegramBotService;
     }
 }

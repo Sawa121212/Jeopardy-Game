@@ -10,57 +10,50 @@ namespace Game.Infrastructure.Interfaces.Services
         /// Создать комнату
         /// </summary>
         /// <returns></returns>
-        string Create();
+        bool Create();
 
         /// <summary>
         /// Удалить комнату
         /// </summary>
-        /// <param name="roomKey">Ключ комнаты</param>
         /// <returns></returns>
-        Task<bool> Remove(string roomKey);
+        Task<bool> Remove();
 
         /// <summary>
         /// Присоединить игрока к комнате
         /// </summary>
-        /// <param name="roomKey">Ключ комнаты</param>
         /// <param name="playerId">ИД игрока</param>
         /// <returns></returns>
-        bool ConnectPlayer(string roomKey, long playerId);
+        bool ConnectPlayer(long playerId);
 
         /// <summary>
         /// Добавить бота
         /// </summary>
-        /// <param name="roomKey"></param>
         /// <returns></returns>
-        public bool AddBot(string roomKey);
+        public bool AddBot();
 
         /// <summary>
-        /// Получить комнату по ключу
+        /// Получить комнату
         /// </summary>
-        /// <param name="roomKey">Ключ комнаты</param>
         /// <returns></returns>
-        RoomModel? GetRoomByKey(string roomKey);
+        RoomModel? GetRoom();
 
         /// <summary>
         /// Установить игрока "Ведущим"
         /// </summary>
-        /// <param name="roomKey">Ключ комнаты</param>
         /// <param name="playerId">ИД игрока</param>
         /// <returns></returns>
-        bool SetHost(string roomKey, long playerId);
+        bool SetHost(long playerId);
 
         /// <summary>
         /// Выгнать игрока
         /// </summary>
-        /// <param name="roomKey"></param>
         /// <param name="playerId"></param>
         /// <returns></returns>
-        Task<bool> KickPlayer(string roomKey, long playerId);
+        Task<bool> KickPlayer(long playerId);
 
         /// <summary>
         /// Получить игру по ключу комнаты
         /// </summary>
-        /// <param name="roomKey"></param>
-        GameModel? GetGame(string roomKey);
+        GameModel? GetGame();
     }
 }

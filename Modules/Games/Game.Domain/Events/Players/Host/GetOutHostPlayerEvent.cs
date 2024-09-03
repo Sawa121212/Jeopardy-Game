@@ -6,7 +6,5 @@ namespace Game.Domain.Events.Players.Host
     /// Get out host player as event organizer.
     /// [Убрать игрока в качестве организатора]
     /// </summary>
-    public class GetOutHostPlayerEvent : PubSubEvent<string>
-    {
-    }
+    public class GetOutHostPlayerEvent : PubSubEvent;
 }
