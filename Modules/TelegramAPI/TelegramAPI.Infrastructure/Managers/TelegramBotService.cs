@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -6,8 +7,11 @@ using Avalonia.Media.Imaging;
 using ReactiveUI;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramAPI.Domain.Models;
 using TelegramAPI.Infrastructure.Interfaces.Managers;
+using static System.Net.Mime.MediaTypeNames;
 using File = Telegram.Bot.Types.File;
 
 namespace TelegramAPI.Infrastructure.Managers
@@ -38,12 +42,32 @@ namespace TelegramAPI.Infrastructure.Managers
         }
 
         /// <inheritdoc />
+        public async Task<Message?> SendMessageAsync(long userId, string text, IReplyMarkup replyMarkup)
+        {
+            // ToDo show Exception result
+            try
+            {
+                Message? message = await _telegramBotManager.TelegramBotClient.SendTextMessageAsync(userId, text, default, default, default,
+                    false, default, default, default, default, replyMarkup);
+                return message;
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"[EXCEPTION][{nameof(TelegramBotService)}]: {e.Message}");
+                Debug.WriteLine(e);
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc />
         public async Task<Message?> SendPhotoAsync(long chatId, string photoUrl, string caption = "", int replyToMessageId = 0)
         {
             try
             {
                 Message message;
                 await using FileStream fileStream = new(photoUrl, FileMode.Open, FileAccess.Read, FileShare.Read);
+
                 message = await _telegramBotManager.TelegramBotClient.SendPhotoAsync(chatId,
                     new InputFileStream(fileStream), null, caption);
 
@@ -86,6 +110,7 @@ namespace TelegramAPI.Infrastructure.Managers
             {
                 string? text = null;
                 Bitmap? bitmap = null;
+
                 if (message.Photo != null)
                 {
                     bitmap = await CreateBitmapAsync(message);
@@ -101,6 +126,7 @@ namespace TelegramAPI.Infrastructure.Managers
 
             return null;
         }
+
         private async Task<Bitmap?> CreateBitmapAsync(Message message)
         {
             try
@@ -114,6 +140,7 @@ namespace TelegramAPI.Infrastructure.Managers
                     {
                         string downloadFolder = "Download";
                         string photosDownloadFolder = "Download/photos";
+
                         if (!Directory.Exists(photosDownloadFolder))
                         {
                             Directory.CreateDirectory(photosDownloadFolder);

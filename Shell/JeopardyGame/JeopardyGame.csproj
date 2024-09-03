@@ -31,6 +31,7 @@
     <ProjectReference Include="..\..\Modules\AppModules\Confirmation\Confirmation.Module\Confirmation.Module.csproj" />
     <ProjectReference Include="..\..\Modules\AppModules\Infrastructure\Infrastructure.Module\Infrastructure.Module.csproj" />
     <ProjectReference Include="..\..\Modules\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
+    <ProjectReference Include="..\..\Modules\GameSender\GameSender.Module\GameSender.Module.csproj" />
     <ProjectReference Include="..\..\Modules\Games\Game.Module\Game.Module.csproj" />
     <ProjectReference Include="..\..\Modules\Games\Game.Ui\Game.Ui.csproj" />
     <ProjectReference Include="..\..\Modules\TelegramAPI\TelegramAPI.Module\TelegramAPI.Module.csproj" />

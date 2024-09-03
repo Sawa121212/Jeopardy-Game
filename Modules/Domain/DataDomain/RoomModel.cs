@@ -9,9 +9,8 @@ namespace DataDomain
     /// </summary>
     public class RoomModel : ReactiveObject
     {
-        public RoomModel(string key)
+        public RoomModel()
         {
-            Key = key;
             Players = new List<PlayerModel?>();
         }
 
@@ -33,15 +32,8 @@ namespace DataDomain
             set => this.RaiseAndSetIfChanged(ref _game, value);
         }
 
-        public string Key
-        {
-            get => _key;
-            private set => this.RaiseAndSetIfChanged(ref _key, value);
-        }
-
         private List<PlayerModel?> _players;
         private PlayerModel? _host;
         private GameModel? _game;
-        private string _key;
     }
 }

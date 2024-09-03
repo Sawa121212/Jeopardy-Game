@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramAPI.Domain.Models;
 
 namespace TelegramAPI.Infrastructure.Interfaces.Managers
@@ -7,6 +8,8 @@ namespace TelegramAPI.Infrastructure.Interfaces.Managers
     public interface ITelegramBotService
     {
         Task<Message?> SendMessageAsync(long chatId, string message);
+
+        Task<Message?> SendMessageAsync(long userId, string message, IReplyMarkup replyMarkup);
 
         Task<Message?> ForwardMessageAsync(long chatId, long fromChatId, long messageId);
 

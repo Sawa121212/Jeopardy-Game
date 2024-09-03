@@ -6,7 +6,5 @@ namespace Game.Domain.Events.Players
     /// Add Bot to the room.
     /// [Добавить бота в комнату]
     /// </summary>
-    public class AddBotToRoomEvent : PubSubEvent<string>
-    {
-    }
+    public class AddBotToRoomEvent : PubSubEvent;
 }

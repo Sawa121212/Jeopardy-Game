@@ -8,7 +8,9 @@ using Common.Core.Localization;
 using Common.Core.Prism.Regions;
 using Common.Ui.Parameters;
 using Confirmation.Module;
+using Confirmation.Module.Services;
 using Game.Module;
+using GameSender.Module;
 using Infrastructure.Environment.Managers;
 using Infrastructure.Environment.Services;
 using Infrastructure.Environment.Services.ApplicationInfo;
@@ -80,6 +82,7 @@ namespace JeopardyGame
                 .RegisterSingleton<IProtobufSerializeService, ProtobufSerializeService>()
                 .RegisterSingleton<IApplicationSettingsService, ApplicationSettingsService>()
                 .RegisterSingleton<IApplicationSettingsRepositoryService, ApplicationSettingsRepositoryService>()
+                .RegisterSingleton<IConfirmationService, ConfirmationService>()
 
                 // Telegram settings
                 .RegisterSingleton<ITelegramSettingsRepositoryService, TelegramSettingsRepositoryService>()
@@ -119,9 +122,11 @@ namespace JeopardyGame
 
                 // modules
                 .AddModule<TelegramApiModule>()
-                .AddModule<UsersModule>()
+                .AddModule<GameSenderModule>()
                 .AddModule<TopicDbModule>()
-                .AddModule<GameModule>();
+                .AddModule<GameModule>()
+                .AddModule<UsersModule>()
+                ;
         }
 
         protected override void InitializeShell(AvaloniaObject shell)

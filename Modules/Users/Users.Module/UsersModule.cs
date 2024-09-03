@@ -1,5 +1,6 @@
 ﻿using System;
 using Common.Core.Components;
+using Game.Infrastructure.Interfaces.Mangers;
 using Infrastructure.Interfaces.Managers;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -7,6 +8,7 @@ using TelegramAPI.Infrastructure.Interfaces.Services.Settings;
 using TelegramAPI.Infrastructure.Services.Settings;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
+using User = Telegram.Bot.Types.User;
 
 namespace Users.Module
 {
@@ -18,8 +20,6 @@ namespace Users.Module
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry
-
-                
                 .RegisterSingleton<IMainTelegramMenuService, MainTelegramMenuService>();
         }
 
@@ -29,20 +29,19 @@ namespace Users.Module
             //containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
 
             IUserService userService = containerProvider.Resolve<IUserService>();
+            IAdminManager adminManager = containerProvider.Resolve<IAdminManager>();
+            IGameManager gameManager = containerProvider.Resolve<IGameManager>();
             IMainTelegramMenuService mainTelegramMenuService = containerProvider.Resolve<IMainTelegramMenuService>();
-
             ITelegramHandlerService telegramHandlerService = containerProvider.Resolve<ITelegramHandlerService>();
 
-            //
-            IAdminManager adminManager = containerProvider.Resolve<IAdminManager>();
+            // Check Admin
             telegramHandlerService.RegisterHandler(StateUserEnum.CheckAddedAdmin, adminManager.CheckAddedAdminMode, null);
 
             //
-            telegramHandlerService.RegisterHandler(StateUserEnum.SetName,
-                userService.UpdateUsername,
+            telegramHandlerService.RegisterHandler(StateUserEnum.SetName, userService.UpdateUsername,
                 (u) =>
                 {
-                    var result = telegramHandlerService.GetUser(u);
+                    Result<User>? result = telegramHandlerService.GetUser(u);
 
                     if (result)
                         return Result<Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup>.Done(
@@ -52,19 +51,29 @@ namespace Users.Module
                     return Result<Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup>.Fail(result.ErrorMessage);
                 });
 
-            telegramHandlerService.RegisterHandler(StateUserEnum.MainMenu,
+            // Connect to room
+            telegramHandlerService.RegisterHandler(StateUserEnum.MainMenu, gameManager.TryConnectPlayerToRoom, null);
+
+            /*telegramHandlerService.RegisterHandler(StateUserEnum.MainMenu,
                 (u) =>
                 {
                     if (u.Message.Text == "Войти в комнату")
-                        return Result<Tuple<StateUserEnum, string>>.Done(
-                            new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
+                    {
+                        return gameManager.TryConnectPlayerToRoom(string roomKey, long playerId);
+
+                        // event
+                        return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
+                    }
 
                     return Result<Tuple<StateUserEnum, string>>.Fail("Вы в главном меню, и я не понимаю, куда тебе нужно...");
                 },
-                mainTelegramMenuService.CreateMenu);
+                mainTelegramMenuService.CreateMenu);*/
 
             telegramHandlerService.RegisterHandler(StateUserEnum.InRoom,
-                (u) => { return Result<Tuple<StateUserEnum, string>>.Fail("Вы в игровой комнате"); },
+                (u) =>
+                {
+                    return Result<Tuple<StateUserEnum, string>>.Fail("Вы в игровой комнате");
+                },
                 null);
         }
     }

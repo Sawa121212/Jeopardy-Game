@@ -6,11 +6,12 @@ using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Views;
 using DataDomain.Rooms;
+using Game.Infrastructure.Interfaces.Mangers;
 using Game.Ui.Models;
+using GameSender.Infrastructure.Interfaces;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
-using TelegramAPI.Infrastructure.Interfaces.Managers;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 
@@ -25,11 +26,11 @@ namespace Game.Ui.Views.GameControls.Pages
         public SendAnInvitationControlViewModel(
             IRegionManager regionManager,
             IUserService userService,
-            ITelegramBotService telegramBotService)
+            IGameSenderService gameSender)
             : base(regionManager)
         {
             _userService = userService;
-            _telegramBotService = telegramBotService;
+            _gameSender = gameSender;
             SendAnInvitationCommand = new DelegateCommand<InvitationModelExtended?>(async (u) => await OnSendAnInvitation(u));
             SendAnInvitationEveryoneCommand = new DelegateCommand(async () => await OnSendAnInvitationEveryone());
         }
@@ -53,8 +54,8 @@ namespace Game.Ui.Views.GameControls.Pages
 
             IList<PlayerModel>? playersInRoom = parameter as IList<PlayerModel>;
 
-
             Users = new ObservableCollection<InvitationModelExtended>();
+
             foreach (User? user in _userService.GetAllUsers())
             {
                 if (playersInRoom?.FirstOrDefault(p => p.Id == user.Id) != null)
@@ -65,7 +66,7 @@ namespace Game.Ui.Views.GameControls.Pages
                 Users.Add(new InvitationModelExtended(user));
             }
 
-            // Test.Remove
+            // ToDo: Test.Remove
             Users.Add(
                 new InvitationModelExtended(new User()
                     {
@@ -73,6 +74,7 @@ namespace Game.Ui.Views.GameControls.Pages
                         Name = "sdsdsd"
                     }
                 ));
+
             Users.Add(
                 new InvitationModelExtended(new User()
                     {
@@ -112,15 +114,12 @@ namespace Game.Ui.Views.GameControls.Pages
                 return;
             }
 
-            await _telegramBotService.SendMessageAsync(userModel.User.Id, "Вас пригласили в комнату.");
-
-            // ToDo: send button
-
-            userModel.IsInvited = true;
+            userModel.IsInvited = await _gameSender.SendAnInvitation(userModel.User.Id);
         }
 
         private readonly IUserService _userService;
-        private readonly ITelegramBotService _telegramBotService;
+        private readonly IGameSenderService _gameSender;
+        private readonly IGameManager _gameManager;
         private ObservableCollection<InvitationModelExtended> _users;
     }
 }

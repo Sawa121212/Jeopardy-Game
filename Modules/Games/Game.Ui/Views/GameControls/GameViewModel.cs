@@ -11,11 +11,11 @@ using DataDomain.Rooms.Rounds.Enums;
 using Game.Domain.Data;
 using Game.Domain.Events.Questions;
 using Game.Infrastructure.Interfaces.Mangers;
+using GameSender.Infrastructure.Interfaces;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 using ReactiveUI;
-using TelegramAPI.Infrastructure.Interfaces.Managers;
 using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace Game.Ui.Views.GameControls
@@ -30,17 +30,17 @@ namespace Game.Ui.Views.GameControls
             IEventAggregator eventAggregator,
             IGameManager gameManager,
             IQuestionService questionService,
-            ITelegramBotService telegramBotService,
-            IConfirmationService confirmationService)
+            IConfirmationService confirmationService,
+            IGameSenderService gameSenderService)
             : base(regionManager)
         {
             _gameManager = gameManager;
             _confirmationService = confirmationService;
+            _gameSenderService = gameSenderService;
             _eventAggregator = eventAggregator;
-            _telegramBotService = telegramBotService;
             _questionService = questionService;
 
-            _eventAggregator.GetEvent<PlayerIsReadyAnswerQuestionEvent>().Subscribe(e => OnPlayerIsReadyAnswerQuestion(e));
+            _eventAggregator.GetEvent<PlayerIsReadyAnswerQuestionEvent>().Subscribe(playerId => OnPlayerIsReadyAnswerQuestion(playerId));
 
             MoveBackButtonCommand = new DelegateCommand(async () => await GoBackOrderAsync());
 
@@ -207,8 +207,7 @@ namespace Game.Ui.Views.GameControls
 
             Rounds = new ObservableCollection<RoundModel?>();
 
-            _roomKey = value;
-            _game = _gameManager.GetGame(_roomKey);
+            _game = _gameManager.GetGame();
 
             if (_game is null)
             {
@@ -225,8 +224,8 @@ namespace Game.Ui.Views.GameControls
             }
 
             Rounds = new ObservableCollection<RoundModel?>(_game.Rounds);
-            Players = new ObservableCollection<PlayerModel?>(_gameManager.GetPlayersFromRoom(_roomKey));
-            Host = _gameManager.GetHostPlayerFromRoom(_roomKey);
+            Players = new ObservableCollection<PlayerModel?>(_gameManager.GetPlayersFromRoom());
+            Host = _gameManager.GetHostPlayerFromRoom();
 
             // ToDo: Test. Remove
             //_game.CurrentRoundLevel = RoundsLevelEnum.Final;
@@ -294,13 +293,9 @@ namespace Game.Ui.Views.GameControls
         /// </summary>
         private GameModel? _game;
 
-        /// <summary>
-        /// Ключ комнаты
-        /// </summary>
-        private string? _roomKey;
-
         private readonly IGameManager _gameManager;
         private readonly IConfirmationService _confirmationService;
+        private readonly IGameSenderService _gameSenderService;
         private readonly IEventAggregator _eventAggregator;
 
         private ObservableCollection<RoundModel?>? _rounds;

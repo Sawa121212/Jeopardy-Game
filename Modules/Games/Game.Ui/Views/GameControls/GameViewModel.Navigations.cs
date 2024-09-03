@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
-using Common.Core.Components;
 using Common.Core.Prism;
 using Common.Core.Prism.Regions;
 using Confirmation.Module.Enums;
@@ -34,7 +33,7 @@ namespace Game.Ui.Views.GameControls
 
                 if (result == ConfirmationResultEnum.Yes)
                 {
-                    _gameManager.CloseGame(_roomKey);
+                    _gameManager.CloseGame();
                     ClearAllParameters();
                 }
 

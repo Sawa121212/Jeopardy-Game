@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
+using Common.Core.Components;
 using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
@@ -11,48 +13,48 @@ using Game.Domain.Events.Players.Host;
 using Game.Domain.Events.Rooms;
 using Game.Infrastructure.Interfaces.Mangers;
 using Game.Infrastructure.Interfaces.Services;
+using GameSender.Domain;
+using GameSender.Infrastructure.Interfaces;
 using Notification.Module.Services;
 using Prism.Events;
 using ReactiveUI;
+using Telegram.Bot.Types;
+using Users.Domain.Models;
 
 namespace Game.Infrastructure.Mangers
 {
-    public class GameManager : ReactiveObject, IGameManager
+    public partial class GameManager : ReactiveObject, IGameManager
     {
         public GameManager(
             IEventAggregator eventAggregator,
             INotificationService notificationService,
             IRoomService roomService,
-            IRoundService roundService)
+            IRoundService roundService,
+            IGameSenderService gameSenderService)
         {
             _eventAggregator = eventAggregator;
             _notificationService = notificationService;
             _roomService = roomService;
             _roundService = roundService;
+            _gameSenderService = gameSenderService;
 
             _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(AddBot);
 
-            _eventAggregator.GetEvent<PlayerIsTryingToConnectToRoomEvent>().Subscribe(e => ConnectPlayerToRoom(e.RoomKey, e.PlayerId));
-            _eventAggregator.GetEvent<SetPlayerToHostEvent>().Subscribe(e => SetPlayerToHost(e.RoomKey, e.PlayerId));
+            _eventAggregator.GetEvent<SetPlayerToHostEvent>().Subscribe(SetPlayerToHost);
             _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Subscribe(GetOutHostPlayer);
-            _eventAggregator.GetEvent<KickOutPlayerEvent>().Subscribe(async (e) => await KickOutPlayer(e.RoomKey, e.PlayerId));
-            _eventAggregator.GetEvent<GameIsReadyToStartEvent>().Subscribe(e => StartGame(e.RoomKey));
+            _eventAggregator.GetEvent<KickOutPlayerEvent>().Subscribe(async (e) => await KickOutPlayer(e));
+            _eventAggregator.GetEvent<GameIsReadyToStartEvent>().Subscribe(StartGame);
         }
 
         /// <inheritdoc />
-        public string CreateRoom()
+        public bool CreateRoom()
         {
             return _roomService.Create();
         }
 
-        private bool StartGame(string roomKey)
+        private void StartGame()
         {
-            if (roomKey.IsNullOrEmpty())
-            {
-                return false;
-            }
-
-            RoomModel? room = _roomService.GetRoomByKey(roomKey);
+            RoomModel? room = _roomService.GetRoom();
 
             if (room != null)
             {
@@ -66,53 +68,27 @@ namespace Game.Infrastructure.Mangers
                     room.Game.IsStarted = true;
                 }
 
-                _eventAggregator.GetEvent<GameIsStartedEvent>().Publish(new GameIsStartedEvent(roomKey));
+                _eventAggregator.GetEvent<GameIsStartedEvent>().Publish();
             }
             else
             {
-                return false;
+                // error
             }
-
-            return true;
         }
 
         /// <inheritdoc />
-        public IEnumerable<PlayerModel?> GetPlayersFromRoom(string roomKey)
-        {
-            if (roomKey.IsNullOrEmpty())
-            {
-                return null;
-            }
-
-            return _roomService.GetRoomByKey(roomKey)?.Players;
-        }
+        public IEnumerable<PlayerModel?> GetPlayersFromRoom() => _roomService.GetRoom()?.Players;
 
         /// <inheritdoc />
-        public PlayerModel? GetHostPlayerFromRoom(string roomKey)
-        {
-            if (roomKey.IsNullOrEmpty())
-            {
-                return null;
-            }
-
-            return _roomService.GetRoomByKey(roomKey)?.Host;
-        }
+        public PlayerModel? GetHostPlayerFromRoom() => _roomService.GetRoom()?.Host;
 
         /// <inheritdoc />
-        public GameModel? GetGame(string roomKey)
-        {
-            return _roomService.GetGame(roomKey);
-        }
+        public GameModel? GetGame() => _roomService.GetGame();
 
         /// <inheritdoc />
-        public bool CloseGame(string roomKey)
+        public bool CloseGame()
         {
-            if (roomKey.IsNullOrEmpty())
-            {
-                return false;
-            }
-
-            RoomModel? room = _roomService.GetRoomByKey(roomKey);
+            RoomModel? room = _roomService.GetRoom();
 
             if (room == null)
             {
@@ -125,87 +101,105 @@ namespace Game.Infrastructure.Mangers
         }
 
         /// <inheritdoc />
-        public async Task<bool> CloseRoom(string roomKey)
+        public async Task<bool> CloseRoom()
         {
-            if (roomKey.IsNullOrEmpty())
-            {
-                return false;
-            }
-
-            return await _roomService.Remove(roomKey).ConfigureAwait(true);
+            return await _roomService.Remove().ConfigureAwait(true);
         }
 
-        /// <summary>
-        /// Присоединить игрока к комнате
-        /// </summary>
-        /// <param name="roomKey"></param>
-        /// <param name="playerId"></param>
-        private void ConnectPlayerToRoom(string roomKey, long playerId)
+        /// <inheritdoc />
+        public Result<Tuple<StateUserEnum, string>> TryConnectPlayerToRoom(Update update)
         {
-            if (roomKey.IsNullOrEmpty() || playerId == default)
+            Message message = update?.Message;
+
+            if (message == null)
             {
-                return;
+                return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
             }
 
-            RoomModel? room = _roomService.GetRoomByKey(roomKey);
+            if (message.Type != Telegram.Bot.Types.Enums.MessageType.Text)
+            {
+                return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+            }
+
+            Telegram.Bot.Types.User user = message.From;
+
+            if (user == null)
+            {
+                return Result<Tuple<StateUserEnum, string>>.Fail("Нет юзера");
+            }
+
+            if (message.Text != GameMessages.ConnectToRoom)
+            {
+                return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+            }
+
+            RoomModel? room = _roomService.GetRoom();
 
             if (room is null)
             {
-                return;
+                return Result<Tuple<StateUserEnum, string>>.Fail("Упс.. Комната уже закрыта");
             }
 
-            if (_roomService.ConnectPlayer(roomKey, playerId))
+            if (room.Players.Any(e => e != null && e.Id == user.Id))
             {
-                _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish(new NumberOfPlayersInRoomIsUpdatedEvent(roomKey));
+                return Result<Tuple<StateUserEnum, string>>.Fail("Вы уже находитесь в комнате");
+            }
+
+            if (_roomService.ConnectPlayer(user.Id))
+            {
+                _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish();
+                Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
+                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
             }
             else
             {
-                _notificationService.Show("Ошибка", $"В комнату игрок не смог присоединится", NotificationType.Error);
+                _notificationService.Show("Ошибка", $"Игрок {user.Username} не смог присоединится в комнату", NotificationType.Error);
+                return Result<Tuple<StateUserEnum, string>>.Fail("Не удалось войти в комнату");
             }
         }
 
         /// <summary>
         /// Добавить бота
         /// </summary>
-        /// <param name="roomKey"></param>
+        /// <param name=""></param>
         /// <returns></returns>
-        private void AddBot(string roomKey)
+        private void AddBot()
         {
-            _roomService.AddBot(roomKey);
-            _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish(new NumberOfPlayersInRoomIsUpdatedEvent(roomKey));
+            _roomService.AddBot();
+            _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish();
         }
 
         /// <summary>
         /// Установить игрока в качестве организатора
         /// </summary>
-        /// <param name="roomKey"></param>
+        /// <param name=""></param>
         /// <param name="playerId"></param>
-        private void SetPlayerToHost(string roomKey, long playerId)
+        private void SetPlayerToHost(long playerId)
         {
-            if (_roomService.SetHost(roomKey, playerId))
+            if (_roomService.SetHost(playerId))
             {
-                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(roomKey);
+                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish();
             }
         }
 
-        private void GetOutHostPlayer(string roomKey)
+        private void GetOutHostPlayer()
         {
-            if (_roomService.SetHost(roomKey, default))
+            if (_roomService.SetHost(default))
             {
-                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish(roomKey);
+                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish();
             }
         }
 
         /// <summary>
         /// Выгнать игрока
         /// </summary>
-        /// <param name="roomKey"></param>
+        /// <param name=""></param>
         /// <param name="playerId"></param>
-        private async Task KickOutPlayer(string roomKey, long playerId)
+        private async Task KickOutPlayer(long playerId)
         {
-            if (await _roomService.KickPlayer(roomKey, playerId))
+            if (await _roomService.KickPlayer(playerId))
             {
-                _eventAggregator.GetEvent<PlayerKickedOutEvent>().Publish(new PlayerKickedOutEvent(roomKey, playerId));
+                _eventAggregator.GetEvent<PlayerKickedOutEvent>().Publish(playerId);
             }
         }
 
@@ -213,5 +207,6 @@ namespace Game.Infrastructure.Mangers
         private readonly INotificationService _notificationService;
         private readonly IRoomService _roomService;
         private readonly IRoundService _roundService;
+        private readonly IGameSenderService _gameSenderService;
     }
 }

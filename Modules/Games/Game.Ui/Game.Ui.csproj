@@ -25,8 +25,8 @@
     <ProjectReference Include="..\..\AppModules\Confirmation\Confirmation.Module\Confirmation.Module.csproj" />
     <ProjectReference Include="..\..\AppModules\Infrastructure\Infrastructure.Domain\Infrastructure.Domain.csproj" />
     <ProjectReference Include="..\..\Domain\DataDomain\DataDomain.csproj" />
+    <ProjectReference Include="..\..\GameSender\GameSender.Infrastructure.Interfaces\GameSender.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Domain\TelegramAPI.Domain.csproj" />
-    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Infrastructure.Interfaces\TelegramAPI.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\..\TopicsDB\TopicsDB.Infrastructure.Interfaces\TopicsDB.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\..\Users\Users.Infrastructure.Infrastructure\Users.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\Game.Domain\Game.Domain.csproj" />

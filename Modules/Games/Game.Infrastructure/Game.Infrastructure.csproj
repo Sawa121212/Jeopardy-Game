@@ -13,7 +13,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\AppModules\Infrastructure\Infrastructure.Domain\Infrastructure.Domain.csproj" />
     <ProjectReference Include="..\..\AppModules\Notification\Notification.Module\Notification.Module.csproj" />
-    <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Infrastructure.Interfaces\TelegramAPI.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\..\GameSender\GameSender.Domain\GameSender.Domain.csproj" />
+    <ProjectReference Include="..\..\GameSender\GameSender.Infrastructure.Interfaces\GameSender.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\..\TopicsDB\TopicsDB.Infrastructure.Interfaces\TopicsDB.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\..\Users\Users.Infrastructure.Infrastructure\Users.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\Game.Domain\Game.Domain.csproj" />
