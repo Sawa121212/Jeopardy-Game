@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\TelegramAPI\TelegramAPI.Infrastructure.Interfaces\TelegramAPI.Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Users\Users.Infrastructure.Infrastructure\Users.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\GameSender.Domain\GameSender.Domain.csproj" />
     <ProjectReference Include="..\GameSender.Infrastructure.Interfaces\GameSender.Infrastructure.Interfaces.csproj" />
   </ItemGroup>

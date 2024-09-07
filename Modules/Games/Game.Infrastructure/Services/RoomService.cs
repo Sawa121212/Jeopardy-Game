@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
+using Common.Core.Components;
 using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
@@ -149,6 +150,11 @@ namespace Game.Infrastructure.Services
                 player = room.Players.FirstOrDefault(e => e.Id == playerId);
             }
 
+            if (room.Host == player)
+            {
+                return false;
+            }
+
             if (room.Host is not null)
             {
                 room.Players.Add(room.Host);
@@ -165,18 +171,18 @@ namespace Game.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> KickPlayer(long playerId)
+        public Result LeaveTheRoom(long playerId)
         {
             if (playerId == default)
             {
-                return false;
+                return Result.Fail("Неизвестный пользователь. Команда отменена!");
             }
 
             RoomModel? room = GetRoom();
 
-            if (room == null)
+            if (room is null)
             {
-                return true;
+                return Result.Fail("Упс.. Комната уже закрыта");
             }
 
             PlayerModel? player = room.Players.FirstOrDefault(e => e != null && e.Id == playerId);
@@ -184,16 +190,28 @@ namespace Game.Infrastructure.Services
             if (player != null)
             {
                 room.Players.Remove(player);
-                await _gameSenderService.SendKickedMessage(playerId);
-                return true;
+                return Result.Done();
             }
 
             if (room.Host != null && room.Host.Id != playerId)
             {
-                return false;
+                return Result.Fail($"Пользователь {playerId} не найден!");
             }
 
             room.Host = null;
+            return Result.Done();
+        }
+
+        /// <inheritdoc />
+        public async Task<bool> KickPlayer(long playerId)
+        {
+            Result resulTask = LeaveTheRoom(playerId);
+
+            if (!resulTask)
+            {
+                return false;
+            }
+
             await _gameSenderService.SendKickedMessage(playerId);
             return true;
         }

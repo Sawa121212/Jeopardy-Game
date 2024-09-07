@@ -36,6 +36,24 @@ namespace Users.Infrastructure
         }
 
         /// <inheritdoc />
+        public void UpdateUser(User user)
+        {
+            User oldUser = _dbContext.Users.Find(user.Id);
+
+            if (oldUser == null)
+            {
+                return;
+            }
+
+            oldUser.Name = user.Name;
+            oldUser.State = user.State;
+            oldUser.Nick = user.Nick;
+
+            // обновление других свойств
+            _dbContext.SaveChanges();
+        }
+
+        /// <inheritdoc />
         public void DeleteUser(User question)
         {
             if (_dbContext.Users.Contains(question))
@@ -48,6 +66,7 @@ namespace Users.Infrastructure
         public void DeleteUser(long questionId)
         {
             User user = _dbContext.Users.Find(questionId);
+
             if (user == null)
             {
                 return;
@@ -69,27 +88,19 @@ namespace Users.Infrastructure
             return user != null;
         }
 
-        /// <inheritdoc />
-        public void UpdateUser(User user)
-        {
-            User oldUser = _dbContext.Users.Find(user.Id);
-            if (oldUser == null)
-            {
-                return;
-            }
-
-            oldUser.Name = user.Name;
-            oldUser.State = user.State;
-            oldUser.Nick = user.Nick;
-
-            // обновление других свойств
-            _dbContext.SaveChanges();
-        }
-
         public bool TryGetUserByNiсk(string nick, out User user)
         {
             user = _dbContext.Users.FirstOrDefault(x => x.Nick == nick);
             return user != null;
+        }
+
+        /// <inheritdoc />
+        public void ResetUsersStatus()
+        {
+            foreach (User user in GetAllUsers())
+            {
+                user.State = StateUserEnum.MainMenu;
+            }
         }
 
         public Result<Tuple<StateUserEnum, string>> UpdateUsername(Update update)
@@ -107,6 +118,7 @@ namespace Users.Infrastructure
                 {
                     user.Name = message.Text;
                     UpdateUser(user);
+
                     return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu,
                         "Вы в главном меню"));
                 }

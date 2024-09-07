@@ -3,7 +3,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace GameSender.Infrastructure;
 
-public partial class GameSenderService
+internal static class GameSenderButtons
 {
     // var rkm = new ReplyKeyboardMarkup();  
     //    rkm.Keyboard =  
@@ -24,14 +24,14 @@ public partial class GameSenderService
     /// 
     /// </summary>
     /// <returns></returns>
-    private ReplyKeyboardRemove EmptyButtons { get; } = new()
+    public static ReplyKeyboardRemove EmptyButtons { get; } = new()
     {
         Selective = true
     };
 
-    private ReplyKeyboardMarkup SendAnInvitationButton { get; } = new(new KeyboardButton(GameMessages.ConnectToRoom));
+    public static ReplyKeyboardMarkup SendAnInvitationButton { get; } = new(new KeyboardButton(GameMessages.ConnectToRoom));
 
-    private ReplyKeyboardMarkup BaseRoomButtons { get; } = new(
+    public static ReplyKeyboardMarkup BaseRoomButtons { get; } = new(
         new KeyboardButton[]
         {
             new KeyboardButton(GameMessages.SetToHost), new KeyboardButton(GameMessages.LeaveTheRoom)

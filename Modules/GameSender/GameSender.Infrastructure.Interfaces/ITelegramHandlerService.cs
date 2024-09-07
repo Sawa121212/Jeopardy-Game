@@ -1,10 +1,9 @@
-﻿using System;
-using Common.Core.Components;
+﻿using Common.Core.Components;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Users.Domain.Models;
 
-namespace Users.Infrastructure.Interfaces
+namespace GameSender.Infrastructure.Interfaces
 {
     /// <summary>
     /// Обработчик сообщений полученных ботом.

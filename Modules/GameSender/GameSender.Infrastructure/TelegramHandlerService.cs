@@ -1,20 +1,15 @@
 ﻿using Common.Core.Components;
-using System;
-using System.Collections.Generic;
+using GameSender.Infrastructure.Interfaces;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 using User = Users.Domain.Models.User;
 
-namespace Users.Infrastructure
+namespace GameSender.Infrastructure
 {
     public class TelegramHandlerService : ITelegramHandlerService
     {
-        Dictionary<StateUserEnum, Func<Update, Result<Tuple<StateUserEnum, string>>>> _dictionary;
-        Dictionary<StateUserEnum, Func<Update, Result<ReplyKeyboardMarkup>>> _dictionaryReplyKeyboardMarkup;
-        private readonly IUserService _userService;
-
         public TelegramHandlerService(IUserService userService)
         {
             _dictionary = new Dictionary<StateUserEnum, Func<Update, Result<Tuple<StateUserEnum, string>>>>();
@@ -94,7 +89,7 @@ namespace Users.Infrastructure
                 return Result<Tuple<StateUserEnum, string>>.Fail("Странное сообщение");
             }
 
-            var result = GetUser(update);
+            Result<Telegram.Bot.Types.User> result = GetUser(update);
             Telegram.Bot.Types.User botUser = result ? result.Value : null;
 
             if (botUser == null)
@@ -122,12 +117,16 @@ namespace Users.Infrastructure
 
         public Result<ReplyKeyboardMarkup> GetKeyboardMarkup(StateUserEnum stateUser, Update update)
         {
-            if (!_dictionaryReplyKeyboardMarkup.TryGetValue(stateUser, out var generator) || generator == null)
+            if (!_dictionaryReplyKeyboardMarkup.TryGetValue(stateUser, out Func<Update, Result<ReplyKeyboardMarkup>>? generator) || generator == null)
             {
                 return Result<ReplyKeyboardMarkup>.Fail("нет такого");
             }
 
             return generator.Invoke(update);
         }
+
+        Dictionary<StateUserEnum, Func<Update, Result<Tuple<StateUserEnum, string>>>> _dictionary;
+        Dictionary<StateUserEnum, Func<Update, Result<ReplyKeyboardMarkup>>> _dictionaryReplyKeyboardMarkup;
+        private readonly IUserService _userService;
     }
 }

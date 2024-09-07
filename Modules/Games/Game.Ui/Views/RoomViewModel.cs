@@ -156,7 +156,7 @@ namespace Game.Ui.Views
         {
             if (Players.Contains(player))
             {
-                _eventAggregator.GetEvent<SetPlayerToHostEvent>().Publish(player.Id);
+                _gameManager.SetPlayerToHost(player.Id);
             }
         }
 

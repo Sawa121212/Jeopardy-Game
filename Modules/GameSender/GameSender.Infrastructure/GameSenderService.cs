@@ -4,7 +4,7 @@ using TelegramAPI.Infrastructure.Interfaces.Managers;
 
 namespace GameSender.Infrastructure;
 
-public partial class GameSenderService : IGameSenderService
+public class GameSenderService : IGameSenderService
 {
     private readonly ITelegramBotManager _telegramBotManager;
     private readonly ITelegramBotService _telegramBotService;
@@ -29,22 +29,22 @@ public partial class GameSenderService : IGameSenderService
             return false;
         }
 
-        await _telegramBotService.SendMessageAsync(userId, "Вас пригласили в комнату", SendAnInvitationButton);
+        await _telegramBotService.SendMessageAsync(userId, "Вас пригласили в комнату", GameSenderButtons.SendAnInvitationButton);
         return true;
     }
 
     /// <inheritdoc />
-    public async Task<bool> SendConnectedPlayerActions(long userId)
+    /*public async Task<bool> SendConnectedPlayerActions(long userId)
     {
         if (!IsReady())
         {
             return false;
         }
 
-        Message? result = await _telegramBotService.SendMessageAsync(userId, "Вы можете:", BaseRoomButtons);
+        Message? result = await _telegramBotService.SendMessageAsync(userId, "Вы можете:", GameSenderButtons.BaseRoomButtons);
 
         return result is not null;
-    }
+    }*/
 
     /// <inheritdoc />
     public async Task<bool> SendKickedMessage(long playerId)
@@ -54,7 +54,7 @@ public partial class GameSenderService : IGameSenderService
             return false;
         }
 
-        await _telegramBotService.SendMessageAsync(playerId, $"Вас кикнули с комнаты", EmptyButtons);
+        await _telegramBotService.SendMessageAsync(playerId, $"Вас кикнули с комнаты", GameSenderButtons.EmptyButtons);
         return true;
     }
 
@@ -68,7 +68,7 @@ public partial class GameSenderService : IGameSenderService
 
         await _telegramBotService.SendMessageAsync(playerId,
             $"Финальный раунд: вы завершаете игру и терпите досрочное поражение. \nОжидайте конца игры",
-            EmptyButtons);
+            GameSenderButtons.EmptyButtons);
         return true;
     }
 
@@ -80,7 +80,7 @@ public partial class GameSenderService : IGameSenderService
             return null;
         }
 
-        return await _telegramBotService.SendMessageAsync(playerId, text, EmptyButtons);
+        return await _telegramBotService.SendMessageAsync(playerId, text, GameSenderButtons.EmptyButtons);
     }
 
     /// <inheritdoc />
@@ -92,7 +92,7 @@ public partial class GameSenderService : IGameSenderService
         }
 
         Message? result = await _telegramBotService.ForwardMessageAsync(playerId, pictureChatId, pictureMessageId);
-        await _telegramBotService.SendMessageAsync(playerId, null, EmptyButtons);
+        await _telegramBotService.SendMessageAsync(playerId, null, GameSenderButtons.EmptyButtons);
         return result;
     }
 

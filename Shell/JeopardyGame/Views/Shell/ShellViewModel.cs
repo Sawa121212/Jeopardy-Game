@@ -5,15 +5,20 @@ using Confirmation.Module.Services;
 using Prism.Commands;
 using TelegramAPI.Infrastructure.Interfaces.Managers;
 using ReactiveUI;
+using Users.Infrastructure.Interfaces;
 
 namespace JeopardyGame.Views.Shell
 {
     public class ShellViewModel : ViewModelBase
     {
-        public ShellViewModel(IConfirmationService confirmationService, ITelegramBotManager telegramBotManager)
+        public ShellViewModel(
+            IConfirmationService confirmationService,
+            ITelegramBotManager telegramBotManager,
+            IUserService userService)
         {
             _confirmationService = confirmationService;
             _telegramBotManager = telegramBotManager;
+            _userService = userService;
             StartTelegramBotCommand = new DelegateCommand(async () => await OnStartBot());
         }
 
@@ -22,6 +27,7 @@ namespace JeopardyGame.Views.Shell
             if (!_telegramBotManager.IsConnected)
             {
                 await _telegramBotManager.StartTelegramBot().ConfigureAwait(true);
+                _userService.ResetUsersStatus();
             }
             else
             {
@@ -46,5 +52,6 @@ namespace JeopardyGame.Views.Shell
         public ICommand StartTelegramBotCommand { get; }
         private readonly IConfirmationService _confirmationService;
         private ITelegramBotManager _telegramBotManager;
+        private readonly IUserService _userService;
     }
 }

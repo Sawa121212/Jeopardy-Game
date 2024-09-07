@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Common.Core.Components;
 using Common.Extensions;
+using GameSender.Infrastructure.Interfaces;
 using ReactiveUI;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;

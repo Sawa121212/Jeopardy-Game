@@ -40,7 +40,6 @@ namespace Game.Infrastructure.Mangers
 
             _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(AddBot);
 
-            _eventAggregator.GetEvent<SetPlayerToHostEvent>().Subscribe(SetPlayerToHost);
             _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Subscribe(GetOutHostPlayer);
             _eventAggregator.GetEvent<KickOutPlayerEvent>().Subscribe(async (e) => await KickOutPlayer(e));
             _eventAggregator.GetEvent<GameIsReadyToStartEvent>().Subscribe(StartGame);
@@ -107,54 +106,80 @@ namespace Game.Infrastructure.Mangers
         }
 
         /// <inheritdoc />
-        public Result<Tuple<StateUserEnum, string>> TryConnectPlayerToRoom(Update update)
+        public Result LeaveTheRoom(long userId)
         {
-            Message message = update?.Message;
+            return _roomService.LeaveTheRoom(userId);
+        }
 
-            if (message == null)
+        /// <summary>
+        /// Присоединить игрока к комнате
+        /// </summary>
+        /// <param name="playerId"></param>
+        public Result TryConnectPlayerToRoom(long playerId)
+        {
+            if (playerId == default)
             {
-                return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
-            }
-
-            if (message.Type != Telegram.Bot.Types.Enums.MessageType.Text)
-            {
-                return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
-            }
-
-            Telegram.Bot.Types.User user = message.From;
-
-            if (user == null)
-            {
-                return Result<Tuple<StateUserEnum, string>>.Fail("Нет юзера");
-            }
-
-            if (message.Text != GameMessages.ConnectToRoom)
-            {
-                return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+                return Result.Fail("Неизвестный пользователь. Команда отменена!");
             }
 
             RoomModel? room = _roomService.GetRoom();
 
             if (room is null)
             {
-                return Result<Tuple<StateUserEnum, string>>.Fail("Упс.. Комната уже закрыта");
+                return Result.Fail("Упс.. Комната уже закрыта");
             }
 
-            if (room.Players.Any(e => e != null && e.Id == user.Id))
+            if (room.Players.Any(e => e != null && e.Id == playerId))
             {
-                return Result<Tuple<StateUserEnum, string>>.Fail("Вы уже находитесь в комнате");
+                return Result.Fail("Вы уже находитесь в комнате");
             }
 
-            if (_roomService.ConnectPlayer(user.Id))
+            if (_roomService.ConnectPlayer(playerId))
             {
                 _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish();
-                Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
-                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
             }
             else
             {
-                _notificationService.Show("Ошибка", $"Игрок {user.Username} не смог присоединится в комнату", NotificationType.Error);
-                return Result<Tuple<StateUserEnum, string>>.Fail("Не удалось войти в комнату");
+                _notificationService.Show("Ошибка", $"Игрок {playerId} не смог присоединится в комнату", NotificationType.Error);
+                return Result.Fail($"В комнату игрок не смог присоединится");
+            }
+
+            return Result.Done();
+        }
+
+        /// <summary>
+        /// Установить игрока в качестве организатора
+        /// </summary>
+        /// <param name=""></param>
+        /// <param name="playerId"></param>
+        public Result SetPlayerToHost(long playerId)
+        {
+            if (playerId == default)
+            {
+                return Result.Fail("Неизвестный пользователь. Команда отменена!");
+            }
+
+            RoomModel? room = _roomService.GetRoom();
+
+            if (room is null)
+            {
+                return Result.Fail("Упс.. Комната уже закрыта");
+            }
+
+            if (room.Host != null && room.Host.Id == playerId)
+            {
+                return Result.Fail("Вы уже ведущий");
+            }
+
+            if (_roomService.SetHost(playerId))
+            {
+                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish();
+                return Result.Done();
+            }
+            else
+            {
+                // ToDo: error
+                return Result.Fail("Set Host Error");
             }
         }
 
@@ -167,19 +192,6 @@ namespace Game.Infrastructure.Mangers
         {
             _roomService.AddBot();
             _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish();
-        }
-
-        /// <summary>
-        /// Установить игрока в качестве организатора
-        /// </summary>
-        /// <param name=""></param>
-        /// <param name="playerId"></param>
-        private void SetPlayerToHost(long playerId)
-        {
-            if (_roomService.SetHost(playerId))
-            {
-                _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Publish();
-            }
         }
 
         private void GetOutHostPlayer()

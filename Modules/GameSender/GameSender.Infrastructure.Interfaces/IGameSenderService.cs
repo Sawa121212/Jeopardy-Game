@@ -5,8 +5,10 @@ namespace GameSender.Infrastructure.Interfaces;
 public interface IGameSenderService
 {
     bool IsReady();
+
     Task<bool> SendAnInvitation(long playerId);
-    Task<bool> SendConnectedPlayerActions(long playerId);
+
+    // Task<bool> SendConnectedPlayerActions(long playerId);
     Task<bool> SendKickedMessage(long playerId);
     Task<bool> SendLoseGameInFinalRound(long playerId);
 

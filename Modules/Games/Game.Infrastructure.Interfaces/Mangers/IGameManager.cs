@@ -17,11 +17,14 @@ namespace Game.Infrastructure.Interfaces.Mangers
         GameModel? GetGame();
         bool CloseGame();
 
-        /// <summary>
-        /// Присоединить игрока к комнате
-        /// </summary>
-        /// <param name="update"></param>
-        /// <returns></returns>
-        Result<Tuple<StateUserEnum, string>> TryConnectPlayerToRoom(Update update);
+        Result SetPlayerToHost(long playerId);
+
+        ///  <summary>
+        ///  Присоединить игрока к комнате
+        ///  </summary>
+        ///  <param name="playerId"></param>
+        Result TryConnectPlayerToRoom(long playerId);
+
+        Result LeaveTheRoom(long userId);
     }
 }

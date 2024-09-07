@@ -61,5 +61,10 @@ namespace Users.Infrastructure.Interfaces
         /// </summary>
         /// <returns></returns>
         public IList<User> GetAllUsers();
+
+        /// <summary>
+        /// Выставить всех пользователей статус по умолчанию
+        /// </summary>
+        void ResetUsersStatus();
     }
 }

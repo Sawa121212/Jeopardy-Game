@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Common.Core.Components;
 using DataDomain;
 using DataDomain.Rooms;
 
@@ -55,5 +56,7 @@ namespace Game.Infrastructure.Interfaces.Services
         /// Получить игру по ключу комнаты
         /// </summary>
         GameModel? GetGame();
+
+        Result LeaveTheRoom(long userId);
     }
 }
