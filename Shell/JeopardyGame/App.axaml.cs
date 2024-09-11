@@ -124,10 +124,10 @@ namespace JeopardyGame
 
                 // modules
                 .AddModule<TelegramApiModule>()
-                .AddModule<GameSenderModule>()
                 .AddModule<TopicDbModule>()
                 .AddModule<GameModule>()
                 .AddModule<UsersModule>()
+                .AddModule<GameSenderModule>()
                 ;
         }
 

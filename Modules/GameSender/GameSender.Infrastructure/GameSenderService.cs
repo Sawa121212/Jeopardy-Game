@@ -29,7 +29,7 @@ public class GameSenderService : IGameSenderService
             return false;
         }
 
-        await _telegramBotService.SendMessageAsync(userId, "Вас пригласили в комнату", GameSenderButtons.SendAnInvitationButton);
+        await _telegramBotService.SendMessageAsync(userId, "Вас пригласили в комнату", GameSenderButtons.SendAnInvitationButtons);
         return true;
     }
 

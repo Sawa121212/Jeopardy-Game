@@ -86,6 +86,8 @@
                     <!-- Add Bot -->
                     <Button Command="{Binding AddPlayerCommand}"
                             Grid.Row="0"
+                            HorizontalAlignment="Right"
+                            Width="120"
                             Margin="3">
                         <Button.Content>
                             <Grid ColumnDefinitions="Auto, 8, *">
@@ -100,7 +102,7 @@
                     <!-- Players -->
                     <ScrollViewer Grid.Row="1"
                                   VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding Players}">
+                        <ItemsControl ItemsSource="{Binding Players, Mode=OneWay}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel HorizontalAlignment="Center"

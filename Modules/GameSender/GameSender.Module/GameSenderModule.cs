@@ -7,6 +7,8 @@ using Infrastructure.Interfaces.Managers;
 using Prism.Ioc;
 using Prism.Modularity;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 using User = Telegram.Bot.Types.User;
@@ -44,16 +46,16 @@ namespace GameSender.Module
                     Result<User>? result = telegramHandlerService.GetUser(u);
 
                     if (result)
-                        return Result<Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup>.Done(
-                            new Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup(
-                                new Telegram.Bot.Types.ReplyMarkups.KeyboardButton($"{result.Value.FirstName} {result.Value.LastName}")));
+                        return Result<ReplyKeyboardMarkup>.Done(
+                            new ReplyKeyboardMarkup(new KeyboardButton($"{result.Value.FirstName} {result.Value.LastName}")));
 
-                    return Result<Telegram.Bot.Types.ReplyMarkups.ReplyKeyboardMarkup>.Fail(result.ErrorMessage);
+                    return Result<ReplyKeyboardMarkup>.Fail(result.ErrorMessage);
                 });
 
-            // MainMenu (ConnectToRoom)
-            telegramHandlerService.RegisterHandler(StateUserEnum.MainMenu,
-                (update) =>
+            // MainMenu
+            telegramHandlerService.RegisterHandler(
+                stateUser: StateUserEnum.MainMenu,
+                handler: (update) =>
                 {
                     Message message = update?.Message;
 
@@ -83,7 +85,7 @@ namespace GameSender.Module
                             if (result)
                             {
                                 //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
-                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Player, "Вы в игровой комнате"));
                             }
                             else
                             {
@@ -94,11 +96,15 @@ namespace GameSender.Module
                     }
 
                     return Result<Tuple<StateUserEnum, string>>.Fail("Я вас не понял");
-                }, null);
+                },
+                (_) => Result<ReplyKeyboardMarkup>.Done(GameSenderButtons.MainButtons));
 
-            // InRoom
-            telegramHandlerService.RegisterHandler(StateUserEnum.InRoom,
-                (update) =>
+            #region InRoom
+
+            // Player
+            telegramHandlerService.RegisterHandler(
+                stateUser: StateUserEnum.Player,
+                handler: (update) =>
                 {
                     Message message = update?.Message;
 
@@ -128,7 +134,7 @@ namespace GameSender.Module
                             if (result)
                             {
                                 //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
-                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "✔ Вы в игровой комнате"));
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Host, "✔ Вы стали ведущим"));
                             }
                             else
                             {
@@ -144,7 +150,8 @@ namespace GameSender.Module
                             if (leaveRoomResult)
                             {
                                 //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
-                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "\u2705 Вы в игровой комнате"));
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu,
+                                    "\u2705 Вы в главном меню")); 
                             }
                             else
                             {
@@ -155,7 +162,73 @@ namespace GameSender.Module
                         default:
                             return Result<Tuple<StateUserEnum, string>>.Fail("\u274c Я вас не понял");
                     }
-                }, null);
+                },
+                replyKeyboardMarkupGenerator: (_) => Result<ReplyKeyboardMarkup>.Done(GameSenderButtons.PlayerButtons));
+
+            // Host
+            telegramHandlerService.RegisterHandler(
+                stateUser: StateUserEnum.Host,
+                handler: (update) =>
+                {
+                    Message message = update?.Message;
+
+                    if (message == null)
+                    {
+                        return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
+                    }
+
+                    if (message.Type != MessageType.Text)
+                    {
+                        return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+                    }
+
+                    User user = message.From;
+
+                    if (user == null)
+                    {
+                        return Result<Tuple<StateUserEnum, string>>.Fail("Нет юзера");
+                    }
+
+                    switch (message.Text)
+                    {
+                        // Set to host
+                        case GameMessages.GoToPlayers:
+                            Result result = gameManager.GetOutHostPlayer();
+
+                            if (result)
+                            {
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Player, "\u2705 Вы стали игроком"));
+                            }
+                            else
+                            {
+                                return Result<Tuple<StateUserEnum, string>>.Fail(result.ErrorMessage);
+                            }
+
+                            break;
+
+                        // Leave the room
+                        case GameMessages.LeaveTheRoom:
+                            Result leaveRoomResult = gameManager.LeaveTheRoom(user.Id);
+
+                            if (leaveRoomResult)
+                            {
+                                //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
+                                return Result<Tuple<StateUserEnum, string>>.Done(
+                                    new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu, "\u2705 Вы в главном меню"));
+                            }
+                            else
+                            {
+                                return Result<Tuple<StateUserEnum, string>>.Fail(leaveRoomResult.ErrorMessage);
+                            }
+
+                            break;
+                        default:
+                            return Result<Tuple<StateUserEnum, string>>.Fail("\u274c Я вас не понял");
+                    }
+                },
+                replyKeyboardMarkupGenerator: (_) => Result<ReplyKeyboardMarkup>.Done(GameSenderButtons.HostButtons));
+
+            #endregion InRoom
 
             /*telegramHandlerService.RegisterHandler(StateUserEnum.MainMenu,
                 (u) =>

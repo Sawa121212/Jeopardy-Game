@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls.Notifications;
 using Common.Core.Components;
-using Common.Extensions;
 using DataDomain;
 using DataDomain.Rooms;
 using Game.Infrastructure.Interfaces.Services;
 using GameSender.Infrastructure.Interfaces;
 using Infrastructure.Domain.Helpers;
-using Notification.Module.Services;
 using ReactiveUI;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
@@ -21,11 +17,9 @@ namespace Game.Infrastructure.Services
     public class RoomService : ReactiveObject, IRoomService
     {
         public RoomService(
-            INotificationService notificationService,
             IUserService userService,
             IGameSenderService gameSenderService)
         {
-            _notificationService = notificationService;
             _userService = userService;
             _gameSenderService = gameSenderService;
         }
@@ -40,7 +34,7 @@ namespace Game.Infrastructure.Services
         }
 
         /// <inheritdoc/>
-        public bool Create()
+        public Result Create()
         {
             try
             {
@@ -48,70 +42,66 @@ namespace Game.Infrastructure.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                return false;
+                return Result.Fail("Не удалось создать комнату");
             }
 
-            return true;
+            return Result.Done();
+        }
+
+        /// <inheritdoc />
+        public RoomModel? GetRoom() => Room;
+
+        /// <inheritdoc />
+        public Result<RoomModel> TryGetRoom()
+        {
+            RoomModel? room = GetRoom();
+
+            return room is null
+                ? Result<RoomModel>.Fail("Не удалось найти созданную комнату")
+                : Result<RoomModel>.Done(room);
         }
 
         /// <inheritdoc/>
-        public bool ConnectPlayer(long playerId)
+        public Result ConnectPlayer(long playerId)
         {
             if (playerId == default)
             {
-                return false;
+                return Result.Fail("Неизвестный пользователь. Команда отменена!");
             }
 
-            RoomModel? room = GetRoom();
+            Result<RoomModel> result = TryGetRoom();
 
-            if (room == null)
+            if (!result)
             {
-                return false;
+                return Result.Fail(result.ErrorMessage);
             }
 
             _userService.TryGetUserById(playerId, out User user);
 
             if (user is null)
             {
-                _notificationService.Show("Error", $"User '{playerId}' not found", NotificationType.Error);
-
-                return false;
+                string message = $"Пользователь '{playerId}' не определен";
+                return Result.Fail(message);
             }
 
             PlayerModel player = new(user);
 
-            room.Players.Add(player);
+            result.Value.Players.Add(player);
 
-            return true;
+            return Result.Done();
         }
 
         /// <inheritdoc/>
-        public bool AddBot()
+        public async Task<Result> Remove()
         {
-            RoomModel? room = GetRoom();
+            Result<RoomModel> result = TryGetRoom();
 
-            if (room == null)
+            if (!result)
             {
-                return false;
+                return Result.Fail(result.ErrorMessage);
             }
 
-            PlayerModel player = CreateBot();
-
-            room.Players.Add(player);
-
-            return true;
-        }
-
-        /// <inheritdoc/>
-        public async Task<bool> Remove()
-        {
-            RoomModel? room = GetRoom();
-
-            if (room == null)
-            {
-                return false;
-            }
+            RoomModel? room = result.Value;
 
             IEnumerable<PlayerModel> players = new List<PlayerModel>(room.Players.OfType<PlayerModel>());
 
@@ -127,21 +117,20 @@ namespace Game.Infrastructure.Services
 
             Room = null;
 
-            return true;
+            return Result.Done();
         }
 
         /// <inheritdoc />
-        public RoomModel? GetRoom() => Room;
-
-        /// <inheritdoc />
-        public bool SetHost(long playerId)
+        public Result SetHost(long playerId)
         {
-            RoomModel? room = GetRoom();
+            Result<RoomModel> result = TryGetRoom();
 
-            if (room is null)
+            if (!result)
             {
-                return false;
+                return Result.Fail(result.ErrorMessage);
             }
+
+            RoomModel room = result.Value;
 
             PlayerModel? player = null;
 
@@ -152,7 +141,7 @@ namespace Game.Infrastructure.Services
 
             if (room.Host == player)
             {
-                return false;
+                return Result.Fail($"Пользователь '{playerId}' уже является ведущим");
             }
 
             if (room.Host is not null)
@@ -167,7 +156,7 @@ namespace Game.Infrastructure.Services
                 room.Players.Remove(player);
             }
 
-            return true;
+            return Result.Done();
         }
 
         /// <inheritdoc />
@@ -203,40 +192,19 @@ namespace Game.Infrastructure.Services
         }
 
         /// <inheritdoc />
-        public async Task<bool> KickPlayer(long playerId)
+        public async Task<Result> KickPlayer(long playerId)
         {
             Result resulTask = LeaveTheRoom(playerId);
 
             if (!resulTask)
             {
-                return false;
+                return Result.Fail(resulTask.ErrorMessage);
             }
 
             await _gameSenderService.SendKickedMessage(playerId);
-            return true;
+            return Result.Done();
         }
 
-        /// <inheritdoc />
-        public GameModel? GetGame()
-        {
-            return GetRoom()?.Game;
-        }
-
-        /// <summary>
-        /// Создать бота
-        /// </summary>
-        private PlayerModel CreateBot()
-        {
-            int id = RandomGenerator.GenerateSixDigitRandomNumber();
-
-            return new PlayerModel
-            {
-                Id = id,
-                Name = $"Bot {id}"
-            };
-        }
-
-        private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
         private readonly IGameSenderService _gameSenderService;
         private RoomModel _room;

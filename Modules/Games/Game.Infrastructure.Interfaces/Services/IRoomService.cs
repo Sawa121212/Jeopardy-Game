@@ -11,26 +11,13 @@ namespace Game.Infrastructure.Interfaces.Services
         /// Создать комнату
         /// </summary>
         /// <returns></returns>
-        bool Create();
+        Result Create();
 
         /// <summary>
         /// Удалить комнату
         /// </summary>
         /// <returns></returns>
-        Task<bool> Remove();
-
-        /// <summary>
-        /// Присоединить игрока к комнате
-        /// </summary>
-        /// <param name="playerId">ИД игрока</param>
-        /// <returns></returns>
-        bool ConnectPlayer(long playerId);
-
-        /// <summary>
-        /// Добавить бота
-        /// </summary>
-        /// <returns></returns>
-        public bool AddBot();
+        Task<Result> Remove();
 
         /// <summary>
         /// Получить комнату
@@ -39,23 +26,31 @@ namespace Game.Infrastructure.Interfaces.Services
         RoomModel? GetRoom();
 
         /// <summary>
+        /// Получить комнату
+        /// </summary>
+        /// <returns></returns>
+        Result<RoomModel> TryGetRoom();
+
+        /// <summary>
+        /// Присоединить игрока к комнате
+        /// </summary>
+        /// <param name="playerId">ИД игрока</param>
+        /// <returns></returns>
+        Result ConnectPlayer(long playerId);
+
+        /// <summary>
         /// Установить игрока "Ведущим"
         /// </summary>
         /// <param name="playerId">ИД игрока</param>
         /// <returns></returns>
-        bool SetHost(long playerId);
+        Result SetHost(long playerId);
 
         /// <summary>
         /// Выгнать игрока
         /// </summary>
         /// <param name="playerId"></param>
         /// <returns></returns>
-        Task<bool> KickPlayer(long playerId);
-
-        /// <summary>
-        /// Получить игру по ключу комнаты
-        /// </summary>
-        GameModel? GetGame();
+        Task<Result> KickPlayer(long playerId);
 
         Result LeaveTheRoom(long userId);
     }
