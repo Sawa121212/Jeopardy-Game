@@ -10,12 +10,13 @@
              mc:Ignorable="d"
              d:DesignWidth="800"
              d:DesignHeight="450"
-             x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Rounds.RoundLevelView"
-             x:DataType="rounds:RoundLevelViewModel"
-             x:Name="RoundLevelControl">
+             x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Rounds.RoundLevelNameView"
+             x:DataType="rounds:RoundLevelNameViewModel"
+             x:Name="RoundLevelControl"
+             Background="{DynamicResource MaterialPaperBrush}">
 
     <Design.DataContext>
-        <rounds:RoundLevelViewModel />
+        <rounds:RoundLevelNameViewModel />
     </Design.DataContext>
 
     <UserControl.Resources>

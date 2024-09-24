@@ -2,6 +2,7 @@
 using Common.Core.Prism.Regions;
 using Game.Ui.Views;
 using Infrastructure.Ui.Views;
+using JeopardyGame.Views.PlayInfoPages;
 using Prism.Regions;
 using TelegramAPI.Ui.Views;
 using TopicDb.Ui.Views;
@@ -23,7 +24,7 @@ namespace JeopardyGame.Views
 
         private void OnShowPlayInformation()
         {
-            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(PlayInfoPages.PlayInfoView));
+            _regionManager.RequestNavigate(RegionNameService.ContentRegionName, nameof(PlayInfoView));
         }
 
         private void OnShowTelegramTest()
@@ -33,7 +34,7 @@ namespace JeopardyGame.Views
 
         private void OnPlay()
         {
-            _regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(RoomView));
+            _regionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameMainLayersView));
         }
 
         private void OnShowSettings()

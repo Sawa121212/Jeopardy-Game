@@ -6,5 +6,5 @@ namespace Game.Domain.Events.Players
     /// Player kicked out.
     /// [Игрок выгнан]
     /// </summary>
-    public class PlayerKickedOutEvent : PubSubEvent<long>;
+    public class IsKickedOutPlayerEvent : PubSubEvent;
 }

@@ -58,7 +58,7 @@ namespace Game.Infrastructure.Mangers
                     room.Game.IsStarted = true;
                 }
 
-                _eventAggregator.GetEvent<GameIsStartedEvent>().Publish();
+                _eventAggregator.GetEvent<IsStartedGameEvent>().Publish();
             }
             else
             {
@@ -213,6 +213,7 @@ namespace Game.Infrastructure.Mangers
             PlayerModel player = CreateBot();
             room.Players.Add(player);
 
+            _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Publish();
             return true;
         }
 
@@ -224,7 +225,7 @@ namespace Game.Infrastructure.Mangers
         {
             if (await _roomService.KickPlayer(playerId))
             {
-                _eventAggregator.GetEvent<PlayerKickedOutEvent>().Publish(playerId);
+                _eventAggregator.GetEvent<IsKickedOutPlayerEvent>().Publish();
             }
         }
 

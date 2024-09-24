@@ -14,7 +14,8 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
     public class TopicsNameCarouselControlViewModel : NavigationViewModelBase
     {
         /// <inheritdoc />
-        public TopicsNameCarouselControlViewModel(IRegionManager regionManager) : base(regionManager)
+        public TopicsNameCarouselControlViewModel(IRegionManager regionManager)
+            : base(regionManager)
         {
             ShowNextTopicCommand = new DelegateCommand(OnShowNextTopic);
             ContinueGameCommand = new DelegateCommand(OnContinueGame);
@@ -50,6 +51,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
             ShowedTopic = default;
 
             object parameter = navigationContext.Parameters[NavigationParameterService.InitializeParameter];
+
             if (parameter is IList<TopicModel> topics)
             {
                 _topics = new List<TopicModel>(topics);
@@ -76,6 +78,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
             }
 
             int nextIndex = _topics.IndexOf(_showedTopic) + 1;
+
             if (nextIndex >= _topics.Count)
             {
                 return;
@@ -94,16 +97,17 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
         /// </summary>
         private void OnContinueGame()
         {
-            MoveBackCommand.Execute(default);
+            RegionManager.Regions[GameRegionNameService.GameTopLayerRegionName].RemoveAll();
         }
 
         /// <inheritdoc />
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        /*public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
             navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound);
-        }
+        }*/
 
         private TopicModel _showedTopic;
+
         private List<TopicModel> _topics;
         private bool _isShowedAllTopic;
     }

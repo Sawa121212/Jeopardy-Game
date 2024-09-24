@@ -1,4 +1,5 @@
 ﻿using Common.Core.Components;
+using Common.Extensions;
 using Game.Infrastructure.Interfaces.Mangers;
 using GameSender.Domain;
 using GameSender.Infrastructure;
@@ -46,8 +47,10 @@ namespace GameSender.Module
                     Result<User>? result = telegramHandlerService.GetUser(u);
 
                     if (result)
+                    {
                         return Result<ReplyKeyboardMarkup>.Done(
                             new ReplyKeyboardMarkup(new KeyboardButton($"{result.Value.FirstName} {result.Value.LastName}")));
+                    }
 
                     return Result<ReplyKeyboardMarkup>.Fail(result.ErrorMessage);
                 });
@@ -59,14 +62,9 @@ namespace GameSender.Module
                 {
                     Message message = update?.Message;
 
-                    if (message == null)
+                    if (IsValidMessage(message, out Result<Tuple<StateUserEnum, string>> validateResult))
                     {
-                        return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
-                    }
-
-                    if (message.Type != Telegram.Bot.Types.Enums.MessageType.Text)
-                    {
-                        return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+                        return validateResult;
                     }
 
                     User user = message.From;
@@ -108,14 +106,9 @@ namespace GameSender.Module
                 {
                     Message message = update?.Message;
 
-                    if (message == null)
+                    if (IsValidMessage(message, out Result<Tuple<StateUserEnum, string>> validateResult))
                     {
-                        return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
-                    }
-
-                    if (message.Type != Telegram.Bot.Types.Enums.MessageType.Text)
-                    {
-                        return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+                        return validateResult;
                     }
 
                     User user = message.From;
@@ -133,8 +126,8 @@ namespace GameSender.Module
 
                             if (result)
                             {
-                                //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
-                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Host, "✔ Вы стали ведущим"));
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Host,
+                                    EmojiExtension.EmojiMessageFormat(MessageEmoji.Success, "Вы стали ведущим")));
                             }
                             else
                             {
@@ -149,9 +142,8 @@ namespace GameSender.Module
 
                             if (leaveRoomResult)
                             {
-                                //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
                                 return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu,
-                                    "\u2705 Вы в главном меню")); 
+                                    EmojiExtension.EmojiMessageFormat(MessageEmoji.Success, "Вы в главном меню")));
                             }
                             else
                             {
@@ -160,7 +152,8 @@ namespace GameSender.Module
 
                             break;
                         default:
-                            return Result<Tuple<StateUserEnum, string>>.Fail("\u274c Я вас не понял");
+                            return Result<Tuple<StateUserEnum, string>>.Fail(
+                                EmojiExtension.EmojiMessageFormat(MessageEmoji.Error, "Я вас не понял"));
                     }
                 },
                 replyKeyboardMarkupGenerator: (_) => Result<ReplyKeyboardMarkup>.Done(GameSenderButtons.PlayerButtons));
@@ -172,14 +165,9 @@ namespace GameSender.Module
                 {
                     Message message = update?.Message;
 
-                    if (message == null)
+                    if (IsValidMessage(message, out Result<Tuple<StateUserEnum, string>> validateResult))
                     {
-                        return Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
-                    }
-
-                    if (message.Type != MessageType.Text)
-                    {
-                        return Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+                        return validateResult;
                     }
 
                     User user = message.From;
@@ -197,7 +185,8 @@ namespace GameSender.Module
 
                             if (result)
                             {
-                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Player, "\u2705 Вы стали игроком"));
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Player,
+                                    EmojiExtension.EmojiMessageFormat(MessageEmoji.Success, "Вы стали игроком")));
                             }
                             else
                             {
@@ -214,7 +203,8 @@ namespace GameSender.Module
                             {
                                 //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
                                 return Result<Tuple<StateUserEnum, string>>.Done(
-                                    new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu, "\u2705 Вы в главном меню"));
+                                    new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu,
+                                        EmojiExtension.EmojiMessageFormat(MessageEmoji.Success, "Вы в главном меню")));
                             }
                             else
                             {
@@ -223,34 +213,30 @@ namespace GameSender.Module
 
                             break;
                         default:
-                            return Result<Tuple<StateUserEnum, string>>.Fail("\u274c Я вас не понял");
+                            return Result<Tuple<StateUserEnum, string>>.Fail(EmojiExtension.EmojiMessageFormat(MessageEmoji.Error, "Я вас не понял"));
                     }
                 },
                 replyKeyboardMarkupGenerator: (_) => Result<ReplyKeyboardMarkup>.Done(GameSenderButtons.HostButtons));
 
             #endregion InRoom
+        }
 
-            /*telegramHandlerService.RegisterHandler(StateUserEnum.MainMenu,
-                (u) =>
-                {
-                    if (u.Message.Text == "Войти в комнату")
-                    {
-                        return gameManager.TryConnectPlayerToRoom(string roomKey, long playerId);
+        private static bool IsValidMessage(Message? message, out Result<Tuple<StateUserEnum, string>> validationResult)
+        {
+            if (message == null)
+            {
+                validationResult = Result<Tuple<StateUserEnum, string>>.Fail("Нет сообщения");
+                return true;
+            }
 
-                        // event
-                        return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
-                    }
+            if (message.Type != MessageType.Text)
+            {
+                validationResult = Result<Tuple<StateUserEnum, string>>.Fail("тип не текстовый...");
+                return true;
+            }
 
-                    return Result<Tuple<StateUserEnum, string>>.Fail("Вы в главном меню, и я не понимаю, куда тебе нужно...");
-                },
-                mainTelegramMenuService.CreateMenu);*/
-
-            /*telegramHandlerService.RegisterHandler(StateUserEnum.InRoom,
-                (u) =>
-                {
-                    return Result<Tuple<StateUserEnum, string>>.Fail("Вы в игровой комнате");
-                },
-                null);*/
+            validationResult = null;
+            return false;
         }
     }
 }

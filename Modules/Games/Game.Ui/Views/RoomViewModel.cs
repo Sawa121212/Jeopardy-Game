@@ -8,6 +8,7 @@ using Common.Core.Views;
 using Confirmation.Module.Enums;
 using Confirmation.Module.Services;
 using DataDomain.Rooms;
+using Game.Domain.Data;
 using Game.Domain.Events.Games;
 using Game.Domain.Events.Players;
 using Game.Domain.Events.Rooms;
@@ -54,8 +55,8 @@ namespace Game.Ui.Views
 
             _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Subscribe(OnUpdateAllPlayer);
             _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(OnUpdateAllPlayer);
-            _eventAggregator.GetEvent<PlayerKickedOutEvent>().Subscribe(e => OnUpdateAllPlayer());
-            _eventAggregator.GetEvent<GameIsStartedEvent>().Subscribe(OnUpdateGameStartingView);
+            _eventAggregator.GetEvent<IsKickedOutPlayerEvent>().Subscribe(OnUpdateAllPlayer);
+            _eventAggregator.GetEvent<IsStartedGameEvent>().Subscribe(OnUpdateGameStartingView);
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace Game.Ui.Views
         }
 
         /// <summary>
-        /// Ведущий
+        /// Игра создана
         /// </summary>
         public bool IsCreated
         {
@@ -115,12 +116,12 @@ namespace Game.Ui.Views
                 }
                 else
                 {
-                    await _confirmationService.ShowInfoAsync("Ошибка", $"Не удалось создать комнату!");
+                    await _confirmationService.ShowErrorAsync("Ошибка", $"Не удалось создать комнату!");
                 }
             }
             else
             {
-                await _confirmationService.ShowInfoAsync("Ошибка", $"TelegramBotClient не запущен!");
+                await _confirmationService.ShowErrorAsync("Ошибка", $"TelegramBotClient не запущен!");
             }
         }
 
@@ -188,7 +189,7 @@ namespace Game.Ui.Views
                 }
             };
 
-            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
+            RegionManager.RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(GameView), parameter);
         }
 
         /// <summary>
@@ -203,7 +204,7 @@ namespace Game.Ui.Views
                 }
             };
 
-            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(SendAnInvitationControlView), parameter);
+            RegionManager.RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(SendAnInvitationControlView), parameter);
         }
 
         private async void OnMoveGoBack()

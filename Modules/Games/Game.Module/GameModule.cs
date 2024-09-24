@@ -32,11 +32,12 @@ namespace Game.Module
             containerRegistry.RegisterSingleton<IGameManager, GameManager>();
 
             // регистрируем View для навигации по Регионам
+            containerRegistry.RegisterForNavigation<GameMainLayersView>();
             containerRegistry.RegisterForNavigation<FinalRoundPlayersBetAndAnswerView, FinalRoundPlayersBetAndAnswerViewModel>();
             containerRegistry.RegisterForNavigation<SendAnInvitationControlView, SendAnInvitationControlViewModel>();
             containerRegistry.RegisterForNavigation<GameWinnerView, GameWinnerViewModel>();
             containerRegistry.RegisterForNavigation<AllTopicsNameView, AllTopicsNameViewModel>();
-            containerRegistry.RegisterForNavigation<RoundLevelView, RoundLevelViewModel>();
+            containerRegistry.RegisterForNavigation<RoundLevelNameView, RoundLevelNameViewModel>();
             containerRegistry.RegisterForNavigation<BaseCorrectAnswerView>();
             containerRegistry.RegisterForNavigation<FinalRoundDisplayedQuestionView>();
             containerRegistry.RegisterForNavigation<DisplayedQuestionView>();
@@ -54,6 +55,11 @@ namespace Game.Module
 
             containerProvider.Resolve<IRegionManager>()
                 .RegisterViewWithRegion(GameRegionNameService.ContentRegionName, nameof(BaseRoundControlView));
+
+            containerProvider.Resolve<IRegionManager>()
+                .RegisterViewWithRegion(GameRegionNameService.GameMainLayerRegionName, nameof(RoomView));
+            containerProvider.Resolve<IRegionManager>()
+                .RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(RoomView));
         }
     }
 }

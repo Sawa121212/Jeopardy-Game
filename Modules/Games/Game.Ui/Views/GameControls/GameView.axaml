@@ -104,7 +104,7 @@
 
         <!-- Start game button -->
         <Button Content="ПОЕХАЛИ"
-                Command="{Binding ShowGameTopicsCommand}"
+                Command="{Binding StartGameCommand}"
                 IsVisible="{Binding !IsGameStarted, Mode=OneWay}"
                 Background="{DynamicResource MaterialCardBackgroundBrush}"
                 Foreground="{DynamicResource MaterialPrimaryMidBrush}"

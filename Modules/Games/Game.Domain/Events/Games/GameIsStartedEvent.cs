@@ -6,5 +6,5 @@ namespace Game.Domain.Events.Games
     /// The game started.
     /// [Игра началась]
     /// </summary>
-    public class GameIsStartedEvent : PubSubEvent;
+    public class IsStartedGameEvent : PubSubEvent;
 }

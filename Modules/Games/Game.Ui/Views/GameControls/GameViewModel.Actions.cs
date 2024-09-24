@@ -18,15 +18,6 @@ namespace Game.Ui.Views.GameControls
 {
     public partial class GameViewModel
     {
-        /// <summary>
-        /// Игра готова принимать ответы
-        /// </summary>
-        public bool IsReadyGameToReceiveAnswers
-        {
-            get => _isReadyGameToReceiveAnswers;
-            private set => this.RaiseAndSetIfChanged(ref _isReadyGameToReceiveAnswers, value);
-        }
-
         public ICommand SelectQuestionAnswerCommand { get; }
         public ICommand AnsweredQuestionCommand { get; }
         public ICommand NoAnsweredQuestionCommand { get; }
@@ -275,6 +266,7 @@ namespace Game.Ui.Views.GameControls
 
             if (IsGameStarted)
             {
+                // Отобразить название текущего раунда
                 OnShowRoundLevelNameView();
             }
         }
