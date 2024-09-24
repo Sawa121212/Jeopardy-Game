@@ -9,11 +9,14 @@ using Game.Domain.Events.Games;
 using Game.Domain.Events.Players;
 using Game.Domain.Events.Rooms;
 using Game.Infrastructure.Interfaces.Mangers;
-using Game.Infrastructure.Interfaces.Services;
+using Game.Infrastructure.Services;
+using GameSender.Infrastructure.Interfaces;
 using Infrastructure.Domain.Helpers;
 using Notification.Module.Services;
 using Prism.Events;
 using ReactiveUI;
+using TopicsDB.Infrastructure.Interfaces.Services;
+using Users.Infrastructure.Interfaces;
 
 namespace Game.Infrastructure.Mangers
 {
@@ -22,13 +25,15 @@ namespace Game.Infrastructure.Mangers
         public GameManager(
             IEventAggregator eventAggregator,
             INotificationService notificationService,
-            IRoomService roomService,
-            IRoundService roundService)
+            IUserService userService,
+            ITopicService topicService,
+            IQuestionService questionService)
         {
             _eventAggregator = eventAggregator;
             _notificationService = notificationService;
-            _roomService = roomService;
-            _roundService = roundService;
+
+            _roomService = new RoomService(userService);
+            _roundService = new RoundService(topicService, questionService, notificationService); //ToDo:  pull it out notificationService
 
             _eventAggregator.GetEvent<AddBotToRoomEvent>().Subscribe(() => AddBot());
 
@@ -245,7 +250,7 @@ namespace Game.Infrastructure.Mangers
 
         private readonly IEventAggregator _eventAggregator;
         private readonly INotificationService _notificationService;
-        private readonly IRoomService _roomService;
-        private readonly IRoundService _roundService;
+        private readonly RoomService _roomService;
+        private readonly RoundService _roundService;
     }
 }

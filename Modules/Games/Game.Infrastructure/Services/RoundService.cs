@@ -7,7 +7,6 @@ using DataDomain.Data;
 using DataDomain.Rooms.Rounds;
 using DataDomain.Rooms.Rounds.Enums;
 using DataDomain.Rooms.Rounds.Helpers;
-using Game.Infrastructure.Interfaces.Services;
 using Infrastructure.Domain.Helpers;
 using Notification.Module.Services;
 using TopicDb.Domain.Models;
@@ -15,7 +14,7 @@ using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace Game.Infrastructure.Services
 {
-    public partial class RoundService : IRoundService
+    internal partial class RoundService
     {
         public RoundService(ITopicService topicService, IQuestionService questionService, INotificationService notificationService)
         {
@@ -28,6 +27,7 @@ namespace Game.Infrastructure.Services
         public List<RoundModel?>? CreateGameRounds()
         {
             List<RoundModel?>? rounds = CollectRounds();
+
             if (rounds is null || !rounds.Any())
             {
                 _notificationService.Show("Error", "No rounds created.", NotificationType.Error);
@@ -56,8 +56,8 @@ namespace Game.Infrastructure.Services
 
             // количество тем в игре
             int gameTopicsCount = GameParameterConstants.BaseRoundTopicsCount * 3
-                                  + GameParameterConstants.FinalRoundTopicsCount
-                                  + GameParameterConstants.ShootoutRoundTopicsCount;
+                + GameParameterConstants.FinalRoundTopicsCount
+                + GameParameterConstants.ShootoutRoundTopicsCount;
 
             // Test. Uncomment.
             // Проверяем, есть ли вообще нужное количество тем для генерации игры
@@ -72,6 +72,7 @@ namespace Game.Infrastructure.Services
             for (int i = 0; i < levelEnum.NamesLength(); i++)
             {
                 int topicsMaxCount = default;
+
                 switch (levelEnum)
                 {
                     case RoundsLevelEnum.Round1:
@@ -121,6 +122,7 @@ namespace Game.Infrastructure.Services
                     }*/
 
                     TopicModel? collectedTopic = CreateTopicModel(topic, topicLevelMultiplier);
+
                     if (collectedTopic is null)
                     {
                         return null;

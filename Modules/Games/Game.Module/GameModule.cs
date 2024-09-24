@@ -2,9 +2,7 @@
 using Common.Core.Localization;
 using Game.Domain.Data;
 using Game.Infrastructure.Interfaces.Mangers;
-using Game.Infrastructure.Interfaces.Services;
 using Game.Infrastructure.Mangers;
-using Game.Infrastructure.Services;
 using Game.Module.Properties;
 using Game.Ui.Views;
 using Game.Ui.Views.GameControls;
@@ -27,8 +25,6 @@ namespace Game.Module
     {
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterSingleton<IRoundService, RoundService>();
-            containerRegistry.RegisterSingleton<IRoomService, RoomService>();
             containerRegistry.RegisterSingleton<IGameManager, GameManager>();
 
             // регистрируем View для навигации по Регионам
@@ -58,6 +54,7 @@ namespace Game.Module
 
             containerProvider.Resolve<IRegionManager>()
                 .RegisterViewWithRegion(GameRegionNameService.GameMainLayerRegionName, nameof(RoomView));
+
             containerProvider.Resolve<IRegionManager>()
                 .RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(RoomView));
         }

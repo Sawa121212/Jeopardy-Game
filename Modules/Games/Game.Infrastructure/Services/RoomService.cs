@@ -5,23 +5,18 @@ using System.Threading.Tasks;
 using Common.Core.Components;
 using DataDomain;
 using DataDomain.Rooms;
-using Game.Infrastructure.Interfaces.Services;
 using GameSender.Infrastructure.Interfaces;
-using Infrastructure.Domain.Helpers;
 using ReactiveUI;
 using Users.Domain.Models;
 using Users.Infrastructure.Interfaces;
 
 namespace Game.Infrastructure.Services
 {
-    public class RoomService : ReactiveObject, IRoomService
+    internal class RoomService : ReactiveObject
     {
-        public RoomService(
-            IUserService userService,
-            IGameSenderService gameSenderService)
+        public RoomService(IUserService userService)
         {
             _userService = userService;
-            _gameSenderService = gameSenderService;
         }
 
         /// <summary>
@@ -33,7 +28,10 @@ namespace Game.Infrastructure.Services
             set => this.RaiseAndSetIfChanged(ref _room, value);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Создать комнату
+        /// </summary>
+        /// <returns></returns>
         public Result Create()
         {
             try
@@ -48,10 +46,48 @@ namespace Game.Infrastructure.Services
             return Result.Done();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Удалить комнату
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Result> Remove()
+        {
+            Result<RoomModel> result = TryGetRoom();
+
+            if (!result)
+            {
+                return Result.Fail(result.ErrorMessage);
+            }
+
+            RoomModel? room = result.Value;
+
+            IEnumerable<PlayerModel> players = new List<PlayerModel>(room.Players.OfType<PlayerModel>());
+
+            foreach (PlayerModel? player in players)
+            {
+                await KickPlayer(player.Id).ConfigureAwait(true);
+            }
+
+            if (room.Host != null)
+            {
+                await KickPlayer(room.Host.Id).ConfigureAwait(true);
+            }
+
+            Room = null;
+
+            return Result.Done();
+        }
+
+        /// <summary>
+        /// Получить комнату
+        /// </summary>
+        /// <returns></returns>
         public RoomModel? GetRoom() => Room;
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Получить комнату
+        /// </summary>
+        /// <returns></returns>
         public Result<RoomModel> TryGetRoom()
         {
             RoomModel? room = GetRoom();
@@ -61,7 +97,11 @@ namespace Game.Infrastructure.Services
                 : Result<RoomModel>.Done(room);
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Присоединить игрока к комнате
+        /// </summary>
+        /// <param name="playerId">ИД игрока</param>
+        /// <returns></returns>
         public Result ConnectPlayer(long playerId)
         {
             if (playerId == default)
@@ -91,36 +131,11 @@ namespace Game.Infrastructure.Services
             return Result.Done();
         }
 
-        /// <inheritdoc/>
-        public async Task<Result> Remove()
-        {
-            Result<RoomModel> result = TryGetRoom();
-
-            if (!result)
-            {
-                return Result.Fail(result.ErrorMessage);
-            }
-
-            RoomModel? room = result.Value;
-
-            IEnumerable<PlayerModel> players = new List<PlayerModel>(room.Players.OfType<PlayerModel>());
-
-            foreach (PlayerModel? player in players)
-            {
-                await KickPlayer(player.Id).ConfigureAwait(true);
-            }
-
-            if (room.Host != null)
-            {
-                await KickPlayer(room.Host.Id).ConfigureAwait(true);
-            }
-
-            Room = null;
-
-            return Result.Done();
-        }
-
-        /// <inheritdoc />
+        /// <summary>
+        /// Установить игрока "Ведущим"
+        /// </summary>
+        /// <param name="playerId">ИД игрока</param>
+        /// <returns></returns>
         public Result SetHost(long playerId)
         {
             Result<RoomModel> result = TryGetRoom();
@@ -159,7 +174,11 @@ namespace Game.Infrastructure.Services
             return Result.Done();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Выгнать игрока
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
         public Result LeaveTheRoom(long playerId)
         {
             if (playerId == default)
@@ -191,7 +210,11 @@ namespace Game.Infrastructure.Services
             return Result.Done();
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Выгнать игрока
+        /// </summary>
+        /// <param name="playerId"></param>
+        /// <returns></returns>
         public async Task<Result> KickPlayer(long playerId)
         {
             Result resulTask = LeaveTheRoom(playerId);
