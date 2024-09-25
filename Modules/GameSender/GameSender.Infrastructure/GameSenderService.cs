@@ -34,17 +34,28 @@ public class GameSenderService : IGameSenderService
     }
 
     /// <inheritdoc />
-    /*public async Task<bool> SendConnectedPlayerActions(long userId)
+    public async Task<bool> SendBaseGameButton(long playerId, string text)
     {
         if (!IsReady())
         {
             return false;
         }
 
-        Message? result = await _telegramBotService.SendMessageAsync(userId, "Вы можете:", GameSenderButtons.BaseRoomButtons);
+        await _telegramBotService.SendMessageAsync(playerId, text, GameSenderButtons.EmptyButtons);
+        return true;
+    }
 
-        return result is not null;
-    }*/
+    /// <inheritdoc />
+    public async Task<bool> SendRedButton(long playerId)
+    {
+        if (!IsReady())
+        {
+            return false;
+        }
+
+        await _telegramBotService.SendMessageAsync(playerId, $"Ответы принимаются!", GameSenderButtons.RedButton);
+        return true;
+    }
 
     /// <inheritdoc />
     public async Task<bool> SendKickedMessage(long playerId)

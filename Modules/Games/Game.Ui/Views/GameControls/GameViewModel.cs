@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Common.Core.Prism;
+﻿using System.Collections.ObjectModel;
 using Common.Core.Views;
 using Confirmation.Module.Services;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
-using DataDomain.Rooms.Rounds.Enums;
-using Game.Domain.Data;
 using Game.Domain.Events.Questions;
 using Game.Infrastructure.Interfaces.Mangers;
 using GameSender.Infrastructure.Interfaces;
@@ -48,7 +42,7 @@ namespace Game.Ui.Views.GameControls
             ShowTopicsCarouselCommand = new DelegateCommand(OnShowTopicsCarouselView);
             SelectQuestionAnswerCommand = new DelegateCommand<QuestionModel?>(async (q) => await OnSelectAndShowQuestionAnswer(q));
             AnsweredQuestionCommand = new DelegateCommand<bool?>(async (b) => await OnAnsweredQuestion(b));
-            NoAnsweredQuestionCommand = new DelegateCommand(OnNoAnsweredQuestionCommand);
+            NoAnsweredQuestionCommand = new DelegateCommand(async() => OnNoAnsweredQuestion());
             CloseQuestionCommand = new DelegateCommand(async () => await OnCloseQuestion());
 
             // Final round
@@ -159,61 +153,6 @@ namespace Game.Ui.Views.GameControls
         {
             get => _isReadyGameToReceiveAnswers;
             private set => this.RaiseAndSetIfChanged(ref _isReadyGameToReceiveAnswers, value);
-        }
-
-        /// <summary>
-        /// Получить игрока, который будет выбирать вопрос первым
-        /// </summary>
-        /// <param name="players"></param>
-        /// <returns></returns>
-        private void SetPlayerFirstChoosingTopic(List<PlayerModel?> players = null)
-        {
-            if (_players == null || !_players.Any())
-            {
-                return;
-            }
-
-            if (_currentRound == null)
-            {
-                return;
-            }
-
-            switch (_currentRound.Level)
-            {
-                case RoundsLevelEnum.Round1:
-                    // выбор темы и стоимости вопроса первым осуществляет игрок за центральным столом
-                    if (_players.Count is 1 or 2)
-                    {
-                        ActivePlayer = _players[0];
-                        ActivePlayerBackup = ActivePlayer;
-
-                        return;
-                    }
-
-                    int ceiling = (int) Math.Ceiling((double) _players.Count / 2) - 1;
-                    PlayerModel? playerModel = _players[ceiling];
-
-                    Message = $"Выбор темы и стоимости вопроса первым осуществляет игрок {playerModel?.Name}";
-                    ActivePlayer = playerModel;
-                    ActivePlayerBackup = ActivePlayer;
-
-                    break;
-                case RoundsLevelEnum.Round2:
-                case RoundsLevelEnum.Round3:
-                case RoundsLevelEnum.Final:
-                    // раунд начинает игрок с наименьшим количеством очков
-                    if (_currentRound is {Level: not RoundsLevelEnum.Round1})
-                    {
-                        ActivePlayer = GetPlayerWithMinPoint(players);
-                        ActivePlayerBackup = ActivePlayer;
-                    }
-
-                    break;
-                case RoundsLevelEnum.Shootout:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
 
         /// <summary>

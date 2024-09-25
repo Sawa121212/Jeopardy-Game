@@ -100,12 +100,6 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
             RegionManager.Regions[GameRegionNameService.GameTopLayerRegionName].RemoveAll();
         }
 
-        /// <inheritdoc />
-        /*public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-            navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, GameStatusEnum.ShowCurrentRound);
-        }*/
-
         private TopicModel _showedTopic;
 
         private List<TopicModel> _topics;

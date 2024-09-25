@@ -222,7 +222,7 @@ namespace Game.Ui.Views.GameControls
 
             // ToDo: move to button click action
             // Игра готова принимать ответы
-            GameIsReadyToReceiveAnswers(true);
+            // GameIsReadyToReceiveAnswers(true);
 
             RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(DisplayedQuestionView));
         }

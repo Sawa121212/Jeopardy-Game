@@ -190,6 +190,21 @@ namespace Game.Ui.Views
             };
 
             RegionManager.RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(GameView), parameter);
+
+            // send buttons
+            Task.Run(async () => await SendEmptyButtonsForPlayers());
+        }
+
+        private async Task SendEmptyButtonsForPlayers()
+        {
+            string message = "Игра началась!";
+
+            foreach (PlayerModel playerModel in Players)
+            {
+                await _gameSenderService.SendBaseGameButton(playerModel.Id, message);
+            }
+
+            await _gameSenderService.SendBaseGameButton(Host.Id, message);
         }
 
         /// <summary>

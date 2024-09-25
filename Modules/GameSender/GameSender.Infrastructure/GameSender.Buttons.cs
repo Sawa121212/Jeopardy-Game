@@ -51,4 +51,6 @@ public static class GameSenderButtons
             new KeyboardButton(GameMessages.GoToPlayers), new KeyboardButton(GameMessages.LeaveTheRoom)
         }
     );
+
+    public static ReplyKeyboardMarkup RedButton { get; } = new(new KeyboardButton(GameMessages.ToAnswer));
 }
