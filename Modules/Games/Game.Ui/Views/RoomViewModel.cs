@@ -219,7 +219,7 @@ namespace Game.Ui.Views
                 }
             };
 
-            RegionManager.RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(SendAnInvitationControlView), parameter);
+            RegionManager.RequestNavigate(GameRegionNameService.GameTopLayerRegionName, nameof(SendAnInvitationControlView), parameter);
         }
 
         private async void OnMoveGoBack()

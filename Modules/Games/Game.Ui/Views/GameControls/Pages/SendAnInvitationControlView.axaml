@@ -13,7 +13,8 @@
              xmlns:pages="clr-namespace:Game.Ui.Views.GameControls.Pages"
              prism:ViewModelLocator.AutoWireViewModel="True"
              x:Class="Game.Ui.Views.GameControls.Pages.SendAnInvitationControlView"
-             x:DataType="pages:SendAnInvitationControlViewModel">
+             x:DataType="pages:SendAnInvitationControlViewModel"
+             Background="{DynamicResource MaterialPaperBrush}">
     <Design.DataContext>
         <pages:SendAnInvitationControlViewModel />
     </Design.DataContext>
@@ -23,7 +24,7 @@
         <!-- Back-->
         <Grid Grid.Row="0"
               ColumnDefinitions="Auto, *">
-            <Button Command="{Binding MoveBackCommand}" Classes="Flat"
+            <Button Command="{Binding GoBackCommand}" Classes="Flat"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
                     Grid.Column="0"
