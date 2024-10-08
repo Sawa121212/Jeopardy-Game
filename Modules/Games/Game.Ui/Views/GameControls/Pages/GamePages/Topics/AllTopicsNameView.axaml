@@ -7,14 +7,14 @@
              xmlns:topics="clr-namespace:Game.Ui.Views.GameControls.Pages.GamePages.Topics"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Game.Ui.Views.GameControls.Pages.GamePages.Topics.AllTopicsNameView"
-             x:DataType="topics:AllTopicsNameViewModel">
+             x:DataType="topics:AllTopicsNameViewModel"
+             Background="{DynamicResource MaterialPaperBrush}">
 
     <Design.DataContext>
         <topics:AllTopicsNameViewModel />
     </Design.DataContext>
 
     <Grid RowDefinitions="*, Auto">
-
         <Viewbox Grid.Row="0">
             <ItemsControl ItemsSource="{Binding Topics}"
                           Margin="5">

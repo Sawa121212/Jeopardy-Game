@@ -7,7 +7,7 @@ using Infrastructure.Domain.Helpers;
 
 namespace Game.Infrastructure.Services
 {
-    public partial class RoundService
+    internal partial class RoundService
     {
         /// <summary>
         /// Выставить специальные вопросы

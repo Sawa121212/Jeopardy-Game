@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Common.Core.Prism;
-using Common.Core.Prism.Regions;
 using Common.Core.Views;
 using DataDomain.Rooms.Rounds;
 using Game.Domain.Data;
@@ -61,10 +60,6 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
         /// </summary>
         private void OnContinueGame()
         {
-            // 1. Change ContentRegion
-            MoveBackCommand.Execute(default);
-
-            // 2. Change ShellRegion
             NavigationParameters parameter = new()
             {
                 {
@@ -72,13 +67,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages.Topics
                 }
             };
 
-            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(RoundLevelView), parameter);
-        }
-
-        /// <inheritdoc />
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-            navigationContext.Parameters.Add(NavigationParameterService.ResultParameter, GameStatusEnum.ShowRoundLevel);
+            RegionManager.RequestNavigate(GameRegionNameService.GameTopLayerRegionName, nameof(RoundLevelNameView), parameter);
         }
 
         private ObservableCollection<TopicModel> _topics;

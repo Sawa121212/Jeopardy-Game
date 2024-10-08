@@ -29,7 +29,7 @@ namespace Infrastructure.Environment.Managers
             _adminModeKey = RandomGenerator.GenerateFormattedSixDigitRandomNumber();
 
             await _telegramBotService.SendMessageAsync(chatId, $"Вторая часть кода подтверждения: ***{_adminModeKey.Substring(3, 3)}" +
-                                                               $"\nОтправьте код, соединив обе части в течение 2 минут\n");
+                $"\nОтправьте код, соединив обе части в течение 2 минут\n");
 
             return _adminModeKey.Substring(0, 3);
         }
@@ -53,8 +53,7 @@ namespace Infrastructure.Environment.Managers
                 CancelAddAdminMode();
                 _telegramBotService.SendMessageAsync(chatId, $"Вы стали администратором");
 
-                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu,
-                    "Вы перешли в меню"));
+                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.MainMenu, "Вы перешли в меню"));
             }
 
             return Result<Tuple<StateUserEnum, string>>.Fail("Не правильный код");

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Core.Components;
 using DataDomain.Rooms;
-using Telegram.Bot.Types;
-using Users.Domain.Models;
 
 namespace Game.Infrastructure.Interfaces.Mangers
 {
@@ -17,11 +14,21 @@ namespace Game.Infrastructure.Interfaces.Mangers
         GameModel? GetGame();
         bool CloseGame();
 
+        Result SetPlayerToHost(long playerId);
+        Result GetOutHostPlayer();
+
+        ///  <summary>
+        ///  Присоединить игрока к комнате
+        ///  </summary>
+        ///  <param name="playerId"></param>
+        Result TryConnectPlayerToRoom(long playerId);
+
+        Result LeaveTheRoom(long userId);
+
         /// <summary>
-        /// Присоединить игрока к комнате
+        /// Добавить бота
         /// </summary>
-        /// <param name="update"></param>
         /// <returns></returns>
-        Result<Tuple<StateUserEnum, string>> TryConnectPlayerToRoom(Update update);
+        bool AddBot();
     }
 }

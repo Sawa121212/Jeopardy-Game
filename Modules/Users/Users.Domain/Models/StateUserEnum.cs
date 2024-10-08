@@ -2,9 +2,15 @@
 {
     public enum StateUserEnum : uint
     {
+        //Main
         SetName,
         MainMenu,
         CheckAddedAdmin,
-        InRoom,
+
+        // Room
+        Player,
+        Host,
+
+        // Game
     }
 }

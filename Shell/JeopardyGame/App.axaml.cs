@@ -10,6 +10,8 @@ using Common.Ui.Parameters;
 using Confirmation.Module;
 using Confirmation.Module.Services;
 using Game.Module;
+using GameSender.Infrastructure;
+using GameSender.Infrastructure.Interfaces;
 using GameSender.Module;
 using Infrastructure.Environment.Managers;
 using Infrastructure.Environment.Services;
@@ -122,10 +124,10 @@ namespace JeopardyGame
 
                 // modules
                 .AddModule<TelegramApiModule>()
-                .AddModule<GameSenderModule>()
                 .AddModule<TopicDbModule>()
                 .AddModule<GameModule>()
                 .AddModule<UsersModule>()
+                .AddModule<GameSenderModule>()
                 ;
         }
 

@@ -33,4 +33,13 @@
     <ProjectReference Include="..\Game.Infrastructure.Interfaces\Game.Infrastructure.Interfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\GameControls\Pages\GamePages\Rounds\RoundLevelNameView.axaml.cs">
+      <DependentUpon>RoundLevelNameView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\GameMainLayersView.axaml.cs">
+      <DependentUpon>GameMainLayersView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

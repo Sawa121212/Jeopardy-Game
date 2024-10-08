@@ -6,7 +6,7 @@ using System.Windows.Input;
 using Common.Core.Prism;
 using Common.Core.Views;
 using DataDomain.Rooms;
-using Game.Infrastructure.Interfaces.Mangers;
+using Game.Domain.Data;
 using Game.Ui.Models;
 using GameSender.Infrastructure.Interfaces;
 using Prism.Commands;
@@ -33,6 +33,7 @@ namespace Game.Ui.Views.GameControls.Pages
             _gameSender = gameSender;
             SendAnInvitationCommand = new DelegateCommand<InvitationModelExtended?>(async (u) => await OnSendAnInvitation(u));
             SendAnInvitationEveryoneCommand = new DelegateCommand(async () => await OnSendAnInvitationEveryone());
+            GoBackCommand = new DelegateCommand(OnGoBack);
         }
 
         ObservableCollection<InvitationModelExtended> Users
@@ -43,6 +44,7 @@ namespace Game.Ui.Views.GameControls.Pages
 
         public ICommand SendAnInvitationCommand { get; }
         public ICommand SendAnInvitationEveryoneCommand { get; }
+        public ICommand GoBackCommand { get; }
 
         /// <inheritdoc />
         public override void OnNavigatedTo(NavigationContext navigationContext)
@@ -117,9 +119,13 @@ namespace Game.Ui.Views.GameControls.Pages
             userModel.IsInvited = await _gameSender.SendAnInvitation(userModel.User.Id);
         }
 
+        private void OnGoBack()
+        {
+            RegionManager.Regions[GameRegionNameService.GameTopLayerRegionName].RemoveAll();
+        }
+
         private readonly IUserService _userService;
         private readonly IGameSenderService _gameSender;
-        private readonly IGameManager _gameManager;
         private ObservableCollection<InvitationModelExtended> _users;
     }
 }

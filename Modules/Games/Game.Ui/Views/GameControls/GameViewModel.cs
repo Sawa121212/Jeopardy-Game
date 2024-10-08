@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using Common.Core.Prism;
+﻿using System.Collections.ObjectModel;
 using Common.Core.Views;
 using Confirmation.Module.Services;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
-using DataDomain.Rooms.Rounds.Enums;
-using Game.Domain.Data;
 using Game.Domain.Events.Questions;
 using Game.Infrastructure.Interfaces.Mangers;
 using GameSender.Infrastructure.Interfaces;
@@ -44,26 +38,17 @@ namespace Game.Ui.Views.GameControls
 
             MoveBackButtonCommand = new DelegateCommand(async () => await GoBackOrderAsync());
 
-            ShowGameTopicsCommand = new DelegateCommand(OnShowAllTopicsView);
+            StartGameCommand = new DelegateCommand(OnShowAllTopicsView);
             ShowTopicsCarouselCommand = new DelegateCommand(OnShowTopicsCarouselView);
             SelectQuestionAnswerCommand = new DelegateCommand<QuestionModel?>(async (q) => await OnSelectAndShowQuestionAnswer(q));
             AnsweredQuestionCommand = new DelegateCommand<bool?>(async (b) => await OnAnsweredQuestion(b));
-            NoAnsweredQuestionCommand = new DelegateCommand(OnNoAnsweredQuestionCommand);
+            NoAnsweredQuestionCommand = new DelegateCommand(async() => OnNoAnsweredQuestion());
             CloseQuestionCommand = new DelegateCommand(async () => await OnCloseQuestion());
 
             // Final round
             RemoveTopicFromFinalRoundCommand = new DelegateCommand<TopicModel>(async (t) => await OnRemoveTopicFromFinalRound(t));
             SetPlayerBetsCommand = new DelegateCommand(OnSetPlayerBets);
             EndPlaceBetsCommand = new DelegateCommand(async () => await OnEndPlaceBets());
-        }
-
-        /// <summary>
-        /// Начата ли игра
-        /// </summary>
-        public bool IsGameStarted
-        {
-            get => _isGameStarted;
-            private set => this.RaiseAndSetIfChanged(ref _isGameStarted, value);
         }
 
         /// <summary>
@@ -152,140 +137,22 @@ namespace Game.Ui.Views.GameControls
             set => this.RaiseAndSetIfChanged(ref _message, value);
         }
 
-        /// <inheritdoc />
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        /// <summary>
+        /// Начата ли игра
+        /// </summary>
+        public bool IsGameStarted
         {
-            base.OnNavigatedTo(navigationContext);
-
-            // result parameter
-            object resultParameter = navigationContext.Parameters[NavigationParameterService.ResultParameter];
-
-            if (resultParameter is GameStatusEnum gameStatus)
-            {
-                switch (gameStatus)
-                {
-                    case GameStatusEnum.Continue:
-                        return;
-                    case GameStatusEnum.ShowRoundLevel:
-                        OnShowRoundLevelNameView();
-
-                        return;
-                    case GameStatusEnum.ShowCurrentRound:
-                        IsShowedTopics = true;
-                        OnShowCurrentRoundView();
-                        SetPlayerFirstChoosingTopic();
-
-                        return;
-                    case GameStatusEnum.GoNextRound:
-                        OnGoNextRound();
-
-                        return;
-                    case GameStatusEnum.SetPlayerBets:
-                        OnSetPlayerBets();
-
-                        return;
-                    case GameStatusEnum.EndGame_ShowWinner:
-                        OnGoNextRound();
-
-                        return;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            // Initialize parameter
-            object parameter = navigationContext.Parameters[NavigationParameterService.InitializeParameter];
-            string? value = parameter?.ToString();
-
-            if (string.IsNullOrEmpty(value))
-            {
-                return;
-            }
-
-            ClearAllParameters();
-
-            Rounds = new ObservableCollection<RoundModel?>();
-
-            _game = _gameManager.GetGame();
-
-            if (_game is null)
-            {
-                Message = "Ошибка. Игра не найдена";
-
-                return;
-            }
-
-            if (_game?.Rounds is null || _game.Rounds.Count == 0)
-            {
-                Message = "Ошибка. Не удалось собрать раунд";
-
-                return;
-            }
-
-            Rounds = new ObservableCollection<RoundModel?>(_game.Rounds);
-            Players = new ObservableCollection<PlayerModel?>(_gameManager.GetPlayersFromRoom());
-            Host = _gameManager.GetHostPlayerFromRoom();
-
-            // ToDo: Test. Remove
-            //_game.CurrentRoundLevel = RoundsLevelEnum.Final;
-
-            OnChangeRound();
+            get => _isGameStarted;
+            private set => this.RaiseAndSetIfChanged(ref _isGameStarted, value);
         }
 
         /// <summary>
-        /// Получить игрока, который будет выбирать вопрос первым
+        /// Игра готова принимать ответы
         /// </summary>
-        /// <param name="players"></param>
-        /// <returns></returns>
-        private void SetPlayerFirstChoosingTopic(List<PlayerModel?> players = null)
+        public bool IsReadyGameToReceiveAnswers
         {
-            if (_players == null || !_players.Any())
-            {
-                return;
-            }
-
-            if (_currentRound == null)
-            {
-                return;
-            }
-
-            switch (_currentRound.Level)
-            {
-                case RoundsLevelEnum.Round1:
-                    // выбор темы и стоимости вопроса первым осуществляет игрок за центральным столом
-                    if (_players.Count is 1 or 2)
-                    {
-                        ActivePlayer = _players[0];
-                        ActivePlayerBackup = ActivePlayer;
-
-                        return;
-                    }
-
-                    int ceiling = (int) Math.Ceiling((double) _players.Count / 2) - 1;
-                    PlayerModel? playerModel = _players[ceiling];
-
-                    Message = $"Выбор темы и стоимости вопроса первым осуществляет игрок {playerModel?.Name}";
-                    ActivePlayer = playerModel;
-                    ActivePlayerBackup = ActivePlayer;
-
-                    break;
-                case RoundsLevelEnum.Round2:
-                case RoundsLevelEnum.Round3:
-                case RoundsLevelEnum.Final:
-                    // раунд начинает игрок с наименьшим количеством очков
-                    if (_currentRound is {Level: not RoundsLevelEnum.Round1})
-                    {
-                        ActivePlayer = GetPlayerWithMinPoint(players);
-                        ActivePlayerBackup = ActivePlayer;
-                    }
-
-                    break;
-                case RoundsLevelEnum.Shootout:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            get => _isReadyGameToReceiveAnswers;
+            private set => this.RaiseAndSetIfChanged(ref _isReadyGameToReceiveAnswers, value);
         }
 
         /// <summary>

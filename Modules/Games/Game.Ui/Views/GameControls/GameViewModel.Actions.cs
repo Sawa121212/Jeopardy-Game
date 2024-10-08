@@ -1,181 +1,93 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using Common.Extensions;
 using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
 using DataDomain.Rooms.Rounds.Enums;
 using DataDomain.Rooms.Rounds.Helpers;
 using Game.Domain.Events.Questions;
-using ReactiveUI;
-using TelegramAPI.Domain.Models;
-using TopicDb.Domain.Models;
-using TopicsDB.Infrastructure.Interfaces.Services;
 
 namespace Game.Ui.Views.GameControls
 {
     public partial class GameViewModel
     {
         /// <summary>
-        /// Игра готова принимать ответы
+        /// Выбрать игрока, который будет выбирать вопрос первым
         /// </summary>
-        public bool IsReadyGameToReceiveAnswers
-        {
-            get => _isReadyGameToReceiveAnswers;
-            private set => this.RaiseAndSetIfChanged(ref _isReadyGameToReceiveAnswers, value);
-        }
-
-        public ICommand SelectQuestionAnswerCommand { get; }
-        public ICommand AnsweredQuestionCommand { get; }
-        public ICommand NoAnsweredQuestionCommand { get; }
-        public ICommand CloseQuestionCommand { get; }
-
-        /// <summary>
-        /// Выбрать вопрос и отобразить на экране
-        /// </summary>
-        /// <param name="questionModel"></param>
+        /// <param name="players"></param>
         /// <returns></returns>
-        private async Task OnSelectAndShowQuestionAnswer(QuestionModel? questionModel)
+        private void SetPlayerFirstChoosingTopic(List<PlayerModel?> players = null)
         {
-            if (questionModel is null)
-            {
-                Message = "Ошибка. Не удалось получить вопрос";
-                return;
-            }
-
-            if (questionModel.IsAsked)
-            {
-                Message = "Ошибка. Вопрос уже был задан";
-                return;
-            }
-
-            Question? questionById = _questionService.GetQuestionById(questionModel.Id);
-
-            if (questionById is null)
-            {
-                Message = "Ошибка. Не удалось найти вопрос в БД";
-                return;
-            }
-
-            DisplayedQuestion = questionModel;
-
-            // backup
-            ActivePlayerBackup = _activePlayer;
-            ActivePlayer = null;
-
-            await OnSendQuestion(questionById);
-        }
-
-        /// <summary>
-        /// Отправить сообщением выбранный вопрос игрокам и ведущему
-        /// </summary>
-        /// <param name="question">Выбранный вопрос</param>
-        /// <returns></returns>
-        private async Task OnSendQuestion(Question question)
-        {
-            if (_players != null && (!_players.Any() || _host is null))
+            if (_players == null || !_players.Any())
             {
                 return;
             }
 
-            // ToDo: выполнить проверку на "специальные вопросы"
-            MessageModel? sentMessage = await OnSendMessage(question);
-            _eventAggregator.GetEvent<QuestionsIsSentEvent>().Publish();
-
-            if (sentMessage != null)
-            {
-                DisplayedQuestion.Picture = sentMessage.Bitmap;
-            }
-
-            // Показать вопрос для ответа во вью
-            OnShowQuestionForAnswerView();
-        }
-
-        /// <summary>
-        /// На вопрос был дан ответ
-        /// </summary>
-        /// <param name="isCorrectAnswer">Правильный ли ответ</param>
-        /// <returns></returns>
-        private async Task OnAnsweredQuestion(bool? isCorrectAnswer)
-        {
-            if (ActivePlayer == null || _displayedQuestion == null)
+            if (_currentRound == null)
             {
                 return;
             }
 
-            switch (isCorrectAnswer)
+            switch (_currentRound.Level)
             {
-                case true:
-                    ActivePlayer.AddPoint(_displayedQuestion.Price);
+                case RoundsLevelEnum.Round1:
+                    // выбор темы и стоимости вопроса первым осуществляет игрок за центральным столом
+                    if (_players.Count is 1 or 2)
+                    {
+                        ActivePlayer = _players[0];
+                        ActivePlayerBackup = ActivePlayer;
+
+                        return;
+                    }
+
+                    int ceiling = (int) Math.Ceiling((double) _players.Count / 2) - 1;
+                    PlayerModel? playerModel = _players[ceiling];
+
+                    Message = $"Выбор темы и стоимости вопроса первым осуществляет игрок {playerModel?.Name}";
+                    ActivePlayer = playerModel;
                     ActivePlayerBackup = ActivePlayer;
 
-                    // Показать сразу ответ
-                    OnShowCorrectAnswerView();
+                    break;
+                case RoundsLevelEnum.Round2:
+                case RoundsLevelEnum.Round3:
+                case RoundsLevelEnum.Final:
+                    // раунд начинает игрок с наименьшим количеством очков
+                    if (_currentRound is {Level: not RoundsLevelEnum.Round1})
+                    {
+                        ActivePlayer = GetPlayerWithMinPoint(players);
+                        ActivePlayerBackup = ActivePlayer;
+                    }
 
                     break;
-                case false:
-                    // Неправильный ответ. Ждем еще ответ.
-                    ActivePlayer.AddPoint(_displayedQuestion.Price * -1);
-
-                    // очищаем
-                    ActivePlayer = null;
-
+                case RoundsLevelEnum.Shootout:
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+
+            Task.Run(async () => await SendActivePlayerNameMove());
         }
 
         /// <summary>
-        /// На вопрос не был дан ответ
+        /// Игра готова принимать ответы.
         /// </summary>
-        private void OnNoAnsweredQuestionCommand()
-        {
-            Message = "На вопрос не был дан ответ";
-            OnShowCorrectAnswerView();
-
-            // восстановить активного игрока
-            ActivePlayer = ActivePlayerBackup;
-        }
-
-        /// <summary>
-        /// Закрыть вопрос
-        /// </summary>
-        /// <returns></returns>
-        private async Task OnCloseQuestion()
-        {
-            if (_currentRound?.Level == RoundsLevelEnum.Final)
-            {
-                // если Финальный раунд, покажем ставки и ответы
-                OnShowPlayersBetView();
-
-                return;
-            }
-
-            if (DisplayedQuestion == null)
-            {
-                return;
-            }
-
-            DisplayedQuestion.IsAsked = true;
-            DisplayedQuestion = null;
-
-            GameIsReadyToReceiveAnswers(false);
-            Message = $"Вопрос выбирает игрок {_activePlayer?.Name}";
-
-            CheckRoundIsOver();
-            OnShowCurrentRoundView();
-        }
-
-        /// <inheritdoc cref="GameIsReadyToReceiveAnswersEvent"/>
-        private void GameIsReadyToReceiveAnswers(bool isReady)
+        /// <param name="isReady"></param>
+        private async Task GameIsReadyToReceiveAnswers(bool isReady)
         {
             IsReadyGameToReceiveAnswers = isReady;
 
-            if (isReady)
+            if (!isReady)
             {
-                Message = $"Ответы принимаются";
-                _eventAggregator.GetEvent<GameIsReadyToReceiveAnswersEvent>().Publish();
+                return;
+            }
+
+            Message = $"Ответы принимаются";
+
+            foreach (PlayerModel player in Players)
+            {
+                await _gameSenderService.SendRedButton(player.Id);
             }
         }
 
@@ -199,87 +111,6 @@ namespace Game.Ui.Views.GameControls
             Message = $"Отвечает на вопрос игрок {_activePlayer}";
             ActivePlayer = player;
         }
-
-        #region [RoundActions]
-
-        /// <summary>
-        /// Проверить не закончился ли раунд
-        /// </summary>
-        private void CheckRoundIsOver()
-        {
-            // найдем хоть одну тему, где есть не отвеченный вопрос
-            if (CurrentRound?.Topics != null &&
-                CurrentRound?.Topics.FirstOrDefault(t => t.Questions.Exists(q => q.IsAsked == false)) == null)
-            {
-                // если все вопросы заданы, переходим в следующий раунд
-                OnGoNextRound();
-            }
-        }
-
-        /// <summary>
-        /// Перейти к следующему раунду
-        /// </summary>
-        private void OnGoNextRound()
-        {
-            if (_game is null)
-            {
-                return;
-            }
-
-            // если этот раунд был Финальным
-            if (_game.CurrentRoundLevel is RoundsLevelEnum.Final)
-            {
-                if (_players != null)
-                {
-                    int maxPoint = _players.Max(p => p.Points);
-                    List<PlayerModel?> playerModels = _players.Where(p => p.Points == maxPoint).ToList();
-
-                    if (playerModels.Count == 1)
-                    {
-                        // Показать победителя игры
-                        OnShowGameWinnerView();
-
-                        return;
-                    }
-                }
-            }
-
-            // Установить следующий раунд
-            _game.CurrentRoundLevel = RoundHelper.GetNextRoundLevel(_game.CurrentRoundLevel);
-
-            SetPlayerFirstChoosingTopic();
-            OnChangeRound();
-        }
-
-        /// <summary>
-        /// Поменять раунд
-        /// </summary>
-        private void OnChangeRound()
-        {
-            if (_game is null)
-            {
-                return;
-            }
-
-            // выставим флаг
-            IsShowedTopics = false;
-
-            CurrentRound = Rounds.FirstOrDefault(r => r != null && r.Level == _game.CurrentRoundLevel);
-
-            IList<TopicModel>? topicModels = CurrentRound?.Topics;
-
-            if (topicModels != null)
-            {
-                Topics = new ObservableCollection<TopicModel>(topicModels);
-            }
-
-            if (IsGameStarted)
-            {
-                OnShowRoundLevelNameView();
-            }
-        }
-
-        #endregion
 
         /// <summary>
         /// Получить игрока с минимальным количеством очков
@@ -330,7 +161,6 @@ namespace Game.Ui.Views.GameControls
             _game = null;
         }
 
-        private readonly IQuestionService _questionService;
         private bool _isReadyGameToReceiveAnswers;
     }
 }

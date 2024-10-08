@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Common.Core.Components;
 using Common.Extensions;
 using Common.Extensions.Collections;
 
@@ -174,7 +175,7 @@ namespace Common.Core.IO
         /// <summary>
         /// Удалить устаревшие файлы с диска.
         /// </summary>
-        /// <returns>Результат удаления в виде объекта <see cref="Components.Result{T}"/>.</returns>
+        /// <returns>Результат удаления в виде объекта <see cref="Result{T}"/>.</returns>
         public Components.Result<bool> RemoveOldFiles()
         {
             try

@@ -8,9 +8,9 @@ using Common.Core.Views;
 using Confirmation.Module.Enums;
 using Confirmation.Module.Services;
 using DataDomain.Rooms;
+using Game.Domain.Data;
 using Game.Domain.Events.Games;
 using Game.Domain.Events.Players;
-using Game.Domain.Events.Players.Host;
 using Game.Domain.Events.Rooms;
 using Game.Infrastructure.Interfaces.Mangers;
 using Game.Ui.Views.GameControls;
@@ -53,16 +53,16 @@ namespace Game.Ui.Views
                 .ObservesProperty(() => Host)
                 .ObservesProperty(() => Players);
 
-            _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Subscribe(OnUpdatePlayerList);
-            _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(OnUpdateHostPlayer);
-            _eventAggregator.GetEvent<PlayerKickedOutEvent>().Subscribe(e => OnUpdateAllPlayers());
-            _eventAggregator.GetEvent<GameIsStartedEvent>().Subscribe(OnUpdateGameStartingView);
+            _eventAggregator.GetEvent<NumberOfPlayersInRoomIsUpdatedEvent>().Subscribe(OnUpdateAllPlayer);
+            _eventAggregator.GetEvent<HostPlayerUpdatedEvent>().Subscribe(OnUpdateAllPlayer);
+            _eventAggregator.GetEvent<IsKickedOutPlayerEvent>().Subscribe(OnUpdateAllPlayer);
+            _eventAggregator.GetEvent<IsStartedGameEvent>().Subscribe(OnUpdateGameStartingView);
         }
 
         /// <summary>
         /// Игроки
         /// </summary>
-        public ObservableCollection<PlayerModel?> Players
+        public ObservableCollection<PlayerModel> Players
         {
             get => _players;
             set => this.RaiseAndSetIfChanged(ref _players, value);
@@ -78,7 +78,7 @@ namespace Game.Ui.Views
         }
 
         /// <summary>
-        /// Ведущий
+        /// Игра создана
         /// </summary>
         public bool IsCreated
         {
@@ -112,16 +112,16 @@ namespace Game.Ui.Views
 
                 if (IsCreated)
                 {
-                    Players = new ObservableCollection<PlayerModel?>();
+                    Players = new ObservableCollection<PlayerModel>();
                 }
                 else
                 {
-                    await _confirmationService.ShowInfoAsync("Ошибка", $"Не удалось создать комнату!");
+                    await _confirmationService.ShowErrorAsync("Ошибка", $"Не удалось создать комнату!");
                 }
             }
             else
             {
-                await _confirmationService.ShowInfoAsync("Ошибка", $"TelegramBotClient не запущен!");
+                await _confirmationService.ShowErrorAsync("Ошибка", $"TelegramBotClient не запущен!");
             }
         }
 
@@ -156,7 +156,7 @@ namespace Game.Ui.Views
         {
             if (Players.Contains(player))
             {
-                _eventAggregator.GetEvent<SetPlayerToHostEvent>().Publish(player.Id);
+                _gameManager.SetPlayerToHost(player.Id);
             }
         }
 
@@ -164,34 +164,22 @@ namespace Game.Ui.Views
         {
             if (Host is not null)
             {
-                _eventAggregator.GetEvent<GetOutHostPlayerEvent>().Publish();
+                _gameManager.GetOutHostPlayer();
             }
         }
 
-        private void OnUpdateAllPlayers()
+        private void OnUpdateAllPlayer()
         {
-            OnUpdatePlayerList();
-            OnUpdateHostPlayer();
-        }
-
-        private void OnUpdatePlayerList()
-        {
-            // если обновилась наша комната
+            // если обновилась наша комната`
             Players.Clear();
             Players.AddRange(_gameManager.GetPlayersFromRoom());
-            this.RaisePropertyChanged(nameof(Players));
-        }
 
-        private void OnUpdateHostPlayer()
-        {
             Host = _gameManager.GetHostPlayerFromRoom();
-            OnUpdatePlayerList();
         }
 
         /// <summary>
         /// Перейти в игру
         /// </summary>
-        /// <param name=""></param>
         private void OnUpdateGameStartingView()
         {
             NavigationParameters parameter = new()
@@ -201,7 +189,22 @@ namespace Game.Ui.Views
                 }
             };
 
-            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(GameView), parameter);
+            RegionManager.RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(GameView), parameter);
+
+            // send buttons
+            Task.Run(async () => await SendEmptyButtonsForPlayers());
+        }
+
+        private async Task SendEmptyButtonsForPlayers()
+        {
+            string message = "Игра началась!";
+
+            foreach (PlayerModel playerModel in Players)
+            {
+                await _gameSenderService.SendBaseGameButton(playerModel.Id, message);
+            }
+
+            await _gameSenderService.SendBaseGameButton(Host.Id, message);
         }
 
         /// <summary>
@@ -216,7 +219,7 @@ namespace Game.Ui.Views
                 }
             };
 
-            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(SendAnInvitationControlView), parameter);
+            RegionManager.RequestNavigate(GameRegionNameService.GameTopLayerRegionName, nameof(SendAnInvitationControlView), parameter);
         }
 
         private async void OnMoveGoBack()
@@ -242,7 +245,7 @@ namespace Game.Ui.Views
         private readonly IGameManager _gameManager;
         private readonly IGameSenderService _gameSenderService;
         private string _;
-        private ObservableCollection<PlayerModel?> _players;
+        private ObservableCollection<PlayerModel> _players;
         private PlayerModel? _host;
         private bool _isCreated;
     }

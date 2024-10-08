@@ -3,9 +3,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Common.Core.Prism;
-using Common.Core.Prism.Regions;
 using Common.Core.Views;
 using DataDomain.Rooms;
+using Game.Domain.Data;
 using Prism.Commands;
 using Prism.Regions;
 using ReactiveUI;
@@ -18,7 +18,8 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages
         private ObservableCollection<PlayerModel>? _players;
 
         /// <inheritdoc />
-        public GameWinnerViewModel(IRegionManager regionManager) : base(regionManager)
+        public GameWinnerViewModel(IRegionManager regionManager)
+            : base(regionManager)
         {
             EndGameCommand = new DelegateCommand(OnEndGame);
         }
@@ -44,6 +45,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages
 
             // result parameter
             object resultParameter = navigationContext.Parameters[NavigationParameterService.InitializeParameter];
+
             if (resultParameter is not IList<PlayerModel> playerModels)
             {
                 return;
@@ -69,6 +71,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages
 
             int maxPoint = _players.Max(p => p.Points);
             List<PlayerModel> playerModels = _players.Where(p => p.Points == maxPoint).ToList();
+
             if (playerModels.Count == 1)
             {
                 PlayerWinner = playerModels.First();
@@ -77,7 +80,7 @@ namespace Game.Ui.Views.GameControls.Pages.GamePages
 
         private void OnEndGame()
         {
-            RegionManager.RequestNavigate(RegionNameService.ShellRegionName, nameof(RoomView));
+            RegionManager.RequestNavigate(GameRegionNameService.GameMainLayerRegionName, nameof(RoomView));
         }
     }
 }
