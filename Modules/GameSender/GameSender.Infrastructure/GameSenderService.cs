@@ -34,7 +34,7 @@ public class GameSenderService : IGameSenderService
     }
 
     /// <inheritdoc />
-    public async Task<bool> SendBaseGameButton(long playerId, string text)
+    public async Task<bool> SendEmptyGameButton(long playerId, string text)
     {
         if (!IsReady())
         {

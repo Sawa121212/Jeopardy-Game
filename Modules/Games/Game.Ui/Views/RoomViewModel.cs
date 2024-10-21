@@ -95,12 +95,6 @@ namespace Game.Ui.Views
         public ICommand MoveGoBackCommand { get; }
         public ICommand SendAnInvitationCommand { get; }
 
-        /// <inheritdoc />
-        public override void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            base.OnNavigatedTo(navigationContext);
-        }
-
         /// <summary>
         /// Создать комнату
         /// </summary>
@@ -170,10 +164,8 @@ namespace Game.Ui.Views
 
         private void OnUpdateAllPlayer()
         {
-            // если обновилась наша комната`
-            Players.Clear();
-            Players.AddRange(_gameManager.GetPlayersFromRoom());
-
+            // если обновилась наша комната
+            Players = new ObservableCollection<PlayerModel>(_gameManager.GetPlayersFromRoom());
             Host = _gameManager.GetHostPlayerFromRoom();
         }
 
@@ -201,10 +193,10 @@ namespace Game.Ui.Views
 
             foreach (PlayerModel playerModel in Players)
             {
-                await _gameSenderService.SendBaseGameButton(playerModel.Id, message);
+                await _gameSenderService.SendEmptyGameButton(playerModel.Id, message);
             }
 
-            await _gameSenderService.SendBaseGameButton(Host.Id, message);
+            await _gameSenderService.SendEmptyGameButton(Host.Id, message);
         }
 
         /// <summary>

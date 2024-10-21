@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AppModules\Infrastructure\Infrastructure.Interfaces\Infrastructure.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Games\Game.Domain\Game.Domain.csproj" />
     <ProjectReference Include="..\..\Games\Game.Infrastructure.Interfaces\Game.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\GameSender.Infrastructure.Interfaces\GameSender.Infrastructure.Interfaces.csproj" />
     <ProjectReference Include="..\GameSender.Infrastructure\GameSender.Infrastructure.csproj" />

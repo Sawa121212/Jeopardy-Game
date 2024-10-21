@@ -1,12 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using DataDomain.Rooms;
 using DataDomain.Rooms.Rounds;
 using DataDomain.Rooms.Rounds.Enums;
 using Game.Domain.Events.Questions;
 using TelegramAPI.Domain.Models;
 using TopicDb.Domain.Models;
 using TopicsDB.Infrastructure.Interfaces.Services;
+using Users.Domain.Models;
 
 namespace Game.Ui.Views.GameControls
 {
@@ -49,6 +51,7 @@ namespace Game.Ui.Views.GameControls
             // backup
             ActivePlayerBackup = _activePlayer;
             ActivePlayer = null;
+            IsVisibleGongButton = true;
 
             await OnSendQuestion(questionById);
         }
@@ -60,17 +63,17 @@ namespace Game.Ui.Views.GameControls
         /// <returns></returns>
         private async Task OnSendQuestion(Question question)
         {
-            if (_players != null && (!_players.Any() || _host is null))
+            if (!_players.Any() || _host is null)
             {
                 return;
             }
 
             // ToDo: выполнить проверку на "специальные вопросы"
-            MessageModel? sentMessage = await OnSendMessage(question);
+            MessageModel? sendMessage = await OnSendQuestionMessage(question);
 
-            if (sentMessage != null)
+            if (sendMessage != null)
             {
-                DisplayedQuestion.Picture = sentMessage.Bitmap;
+                DisplayedQuestion.Picture = sendMessage.Bitmap;
             }
 
             // Показать вопрос для ответа во вью
@@ -84,7 +87,7 @@ namespace Game.Ui.Views.GameControls
         /// <returns></returns>
         private async Task OnAnsweredQuestion(bool? isCorrectAnswer)
         {
-            if (ActivePlayer == null || _displayedQuestion == null)
+            if (ActivePlayer == null || DisplayedQuestion == null)
             {
                 return;
             }
@@ -93,13 +96,13 @@ namespace Game.Ui.Views.GameControls
             {
                 case true:
                     // Завершить прием ответов
-                    await GameIsReadyToReceiveAnswers(false);
-                    await SendEmptyButtonsForPlayers("Жаль... На вопрос не был дан ответ");
+                    await GameIsReadyToReceiveAnswersAsync(false);
+                    await SendEmptyButtonsForPlayers("На вопрос был дан правильный ответ");
 
                     // Сообщить об активном игроке
                     await SendActivePlayerNameMove();
 
-                    ActivePlayer.AddPoint(_displayedQuestion.Price);
+                    ActivePlayer.AddPoint(DisplayedQuestion.Price);
                     ActivePlayerBackup = ActivePlayer;
 
                     // Показать сразу ответ
@@ -107,10 +110,11 @@ namespace Game.Ui.Views.GameControls
 
                     break;
                 case false:
-                    await GameIsReadyToReceiveAnswers(true);
+                    await SendMessage("На вопрос был дан неправильный ответ");
+                    await GameIsReadyToReceiveAnswersAsync(true);
 
                     // Неправильный ответ. Ждем еще ответ.
-                    ActivePlayer.AddPoint(_displayedQuestion.Price * -1);
+                    ActivePlayer.AddPoint(DisplayedQuestion.Price * -1);
 
                     // очищаем
                     ActivePlayer = null;
@@ -124,7 +128,7 @@ namespace Game.Ui.Views.GameControls
         /// </summary>
         private async Task OnNoAnsweredQuestion()
         {
-            await GameIsReadyToReceiveAnswers(false);
+            await GameIsReadyToReceiveAnswersAsync(false);
             await SendEmptyButtonsForPlayers("Жаль... На вопрос не был дан ответ");
 
             Message = "На вопрос не был дан ответ";
@@ -156,8 +160,13 @@ namespace Game.Ui.Views.GameControls
             DisplayedQuestion.IsAsked = true;
             DisplayedQuestion = null;
 
-            GameIsReadyToReceiveAnswers(false);
-            Message = $"Вопрос выбирает игрок {_activePlayer?.Name}";
+            foreach (PlayerModel playerModel in Players)
+            {
+                _userService.SetStatus(playerModel.Id, StateUserEnum.Playing);
+            }
+
+            // Сообщить об активном игроке
+            await SendActivePlayerNameMove();
 
             CheckRoundIsOver();
             OnShowCurrentRoundView();

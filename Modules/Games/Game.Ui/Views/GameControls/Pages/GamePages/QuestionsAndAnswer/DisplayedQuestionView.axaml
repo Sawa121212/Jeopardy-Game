@@ -7,7 +7,9 @@
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
              xmlns:gameControls="clr-namespace:Game.Ui.Views.GameControls"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
              x:Class="Game.Ui.Views.GameControls.Pages.GamePages.QuestionsAndAnswer.DisplayedQuestionView"
              x:DataType="gameControls:GameViewModel"
              x:Name="BaseRoundControl">
@@ -51,5 +53,14 @@
                     Grid.Column="2"
                     Margin="5,3,3,3" />
         </Grid>
+
+        <Button x:Name="GongButton"
+                Content="Гонг"
+                Command="{Binding GongButtonClickedCommand}"
+                IsVisible="{Binding IsVisibleGongButton}"
+                Background="{DynamicResource SuccessColorBrush}"
+                Margin="3"
+                Grid.Row="2" />
+
     </Grid>
 </UserControl>

@@ -11,7 +11,7 @@ public interface IGameSenderService
     // Task<bool> SendConnectedPlayerActions(long playerId);
     Task<bool> SendKickedMessage(long playerId);
     Task<bool> SendLoseGameInFinalRound(long playerId);
-    Task<bool> SendBaseGameButton(long playerId, string text);
+    Task<bool> SendEmptyGameButton(long playerId, string text);
     Task<bool> SendRedButton(long playerId);
 
     Task<Message?> SendMessageAsync(long playerId, string text);
