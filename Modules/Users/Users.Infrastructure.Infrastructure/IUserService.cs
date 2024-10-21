@@ -66,5 +66,7 @@ namespace Users.Infrastructure.Interfaces
         /// Выставить всех пользователей статус по умолчанию
         /// </summary>
         void ResetUsersStatus();
+
+        void SetStatus(long userId, StateUserEnum status);
     }
 }

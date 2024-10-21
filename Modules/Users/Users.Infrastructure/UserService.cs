@@ -103,6 +103,15 @@ namespace Users.Infrastructure
             }
         }
 
+        /// <inheritdoc />
+        public void SetStatus(long userId, StateUserEnum status)
+        {
+            if (TryGetUserById(userId, out User user))
+            {
+                user.State = status;
+            }
+        }
+
         public Result<Tuple<StateUserEnum, string>> UpdateUsername(Update update)
         {
             Message message = update?.Message;

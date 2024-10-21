@@ -1,10 +1,13 @@
 ﻿using Common.Core.Components;
 using Common.Extensions;
+using DataDomain.Rooms;
+using Game.Domain.Events.Questions;
 using Game.Infrastructure.Interfaces.Mangers;
 using GameSender.Domain;
 using GameSender.Infrastructure;
 using GameSender.Infrastructure.Interfaces;
 using Infrastructure.Interfaces.Managers;
+using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
 using Telegram.Bot.Types;
@@ -32,6 +35,7 @@ namespace GameSender.Module
             //containerProvider.Resolve<ILocalizer>().AddResourceManager(new ResourceManager(typeof(Language)));
 
             ITelegramHandlerService telegramHandlerService = containerProvider.Resolve<ITelegramHandlerService>();
+            IEventAggregator eventAggregator = containerProvider.Resolve<IEventAggregator>();
 
             IGameManager gameManager = containerProvider.Resolve<IGameManager>();
             IAdminManager adminManager = containerProvider.Resolve<IAdminManager>();
@@ -83,7 +87,7 @@ namespace GameSender.Module
                             if (result)
                             {
                                 //Task.Run(async () => await _gameSenderService.SendConnectedPlayerActions(user.Id));
-                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Player, "Вы в игровой комнате"));
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom, "Вы в игровой комнате"));
                             }
                             else
                             {
@@ -99,9 +103,9 @@ namespace GameSender.Module
 
             #region InRoom
 
-            // Player
+            // InRoom
             telegramHandlerService.RegisterHandler(
-                stateUser: StateUserEnum.Player,
+                stateUser: StateUserEnum.InRoom,
                 handler: (update) =>
                 {
                     Message message = update?.Message;
@@ -185,7 +189,7 @@ namespace GameSender.Module
 
                             if (result)
                             {
-                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.Player,
+                                return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.InRoom,
                                     EmojiExtension.EmojiMessageFormat(MessageEmoji.Success, "Вы стали игроком")));
                             }
                             else
@@ -219,6 +223,46 @@ namespace GameSender.Module
                 replyKeyboardMarkupGenerator: (_) => Result<ReplyKeyboardMarkup>.Done(GameSenderButtons.HostButtons));
 
             #endregion InRoom
+
+            #region InGame
+
+            // IsReadyReceiveAnswer
+            telegramHandlerService.RegisterHandler(
+                stateUser: StateUserEnum.IsReadyReceiveAnswer,
+                handler: (update) =>
+                {
+                    Message message = update?.Message;
+
+                    if (IsValidMessage(message, out Result<Tuple<StateUserEnum, string>> validateResult))
+                    {
+                        return validateResult;
+                    }
+
+                    User user = message.From;
+
+                    if (user == null)
+                    {
+                        return Result<Tuple<StateUserEnum, string>>.Fail("Нет юзера");
+                    }
+
+                    switch (message.Text)
+                    {
+                        // To Answer
+                        case GameMessages.ToAnswer:
+                            eventAggregator.GetEvent<PlayerIsReadyAnswerQuestionEvent>().Publish(user.Id);
+
+                            return Result<Tuple<StateUserEnum, string>>.Done(new Tuple<StateUserEnum, string>(StateUserEnum.IsReadyReceiveAnswer,
+                                EmojiExtension.EmojiMessageFormat(MessageEmoji.Success, "Вы нажали по кнопке")));
+
+                            break;
+
+                        default:
+                            return Result<Tuple<StateUserEnum, string>>.Fail(EmojiExtension.EmojiMessageFormat(MessageEmoji.Error, "Я вас не понял"));
+                    }
+                },
+                replyKeyboardMarkupGenerator: (_) => Result<ReplyKeyboardMarkup>.Done(GameSenderButtons.RedButton));
+
+            #endregion
         }
 
         private static bool IsValidMessage(Message? message, out Result<Tuple<StateUserEnum, string>> validationResult)

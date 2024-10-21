@@ -20,9 +20,7 @@ namespace Game.Ui.Views.GameControls
     public partial class GameViewModel
     {
         public ICommand StartGameCommand { get; }
-
         public ICommand ShowTopicsCarouselCommand { get; }
-
         public ICommand MoveBackButtonCommand { get; }
 
         /// <inheritdoc />
@@ -31,13 +29,18 @@ namespace Game.Ui.Views.GameControls
             base.OnNavigatedTo(navigationContext);
 
             // result parameter
-            object resultParameter = navigationContext.Parameters[NavigationParameterService.ResultParameter];
+            object resultParameter = navigationContext.Parameters[NavigationParameterService.ResultParameter] ?? GameStatusEnum.Continue;
 
             if (resultParameter is GameStatusEnum gameStatus)
             {
                 switch (gameStatus)
                 {
                     case GameStatusEnum.Continue:
+                        if (_game == null)
+                        {
+                            break;
+                        }
+
                         return;
                     case GameStatusEnum.ShowRoundLevel:
                         OnShowRoundLevelNameView();
@@ -46,7 +49,7 @@ namespace Game.Ui.Views.GameControls
                     case GameStatusEnum.ShowCurrentRound:
                         IsShowedTopics = true;
                         OnShowCurrentRoundView();
-                        SetPlayerFirstChoosingTopic();
+                        SetPlayerFirstChoosingTopic(Players);
 
                         return;
                     case GameStatusEnum.GoNextRound:
@@ -78,7 +81,7 @@ namespace Game.Ui.Views.GameControls
 
             ClearAllParameters();
 
-            Rounds = new ObservableCollection<RoundModel?>();
+            Rounds = new ObservableCollection<RoundModel>();
 
             _game = _gameManager.GetGame();
 
@@ -96,8 +99,8 @@ namespace Game.Ui.Views.GameControls
                 return;
             }
 
-            Rounds = new ObservableCollection<RoundModel?>(_game.Rounds);
-            Players = new ObservableCollection<PlayerModel?>(_gameManager.GetPlayersFromRoom());
+            Rounds = new ObservableCollection<RoundModel>(_game.Rounds);
+            Players = new ObservableCollection<PlayerModel>(_gameManager.GetPlayersFromRoom());
             Host = _gameManager.GetHostPlayerFromRoom();
 
             // ToDo: Test. Remove
@@ -176,8 +179,9 @@ namespace Game.Ui.Views.GameControls
             RegionManager.RequestNavigate(GameRegionNameService.GameTopLayerRegionName, nameof(TopicsNameCarouselControlView), parameter);
 
             IsShowedTopics = true;
+
             OnShowCurrentRoundView();
-            SetPlayerFirstChoosingTopic();
+            SetPlayerFirstChoosingTopic(Players);
         }
 
         /// <summary>
@@ -204,7 +208,7 @@ namespace Game.Ui.Views.GameControls
         }
 
         /// <summary>
-        /// Показать вопрос для ответа
+        /// Показать выбранный вопрос игрокам
         /// </summary>
         private void OnShowQuestionForAnswerView()
         {
@@ -220,11 +224,9 @@ namespace Game.Ui.Views.GameControls
                 return;
             }
 
-            // ToDo: move to button click action
-            // Игра готова принимать ответы
-            // GameIsReadyToReceiveAnswers(true);
-
             RegionManager.RequestNavigate(GameRegionNameService.ContentRegionName, nameof(DisplayedQuestionView));
+
+            Message = "Ожидайте сигнала \"Гонг\"";
         }
 
         /// <summary>

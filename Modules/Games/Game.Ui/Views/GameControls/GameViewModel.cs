@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Common.Core.Views;
 using Confirmation.Module.Services;
 using DataDomain.Rooms;
@@ -11,6 +12,7 @@ using Prism.Events;
 using Prism.Regions;
 using ReactiveUI;
 using TopicsDB.Infrastructure.Interfaces.Services;
+using Users.Infrastructure.Interfaces;
 
 namespace Game.Ui.Views.GameControls
 {
@@ -25,24 +27,31 @@ namespace Game.Ui.Views.GameControls
             IGameManager gameManager,
             IQuestionService questionService,
             IConfirmationService confirmationService,
-            IGameSenderService gameSenderService)
+            IGameSenderService gameSenderService,
+            IUserService userService)
             : base(regionManager)
         {
             _gameManager = gameManager;
             _confirmationService = confirmationService;
             _gameSenderService = gameSenderService;
-            _eventAggregator = eventAggregator;
+            _userService = userService;
             _questionService = questionService;
 
-            _eventAggregator.GetEvent<PlayerIsReadyAnswerQuestionEvent>().Subscribe(playerId => OnPlayerIsReadyAnswerQuestion(playerId));
+            eventAggregator.GetEvent<PlayerIsReadyAnswerQuestionEvent>().Subscribe(OnPlayerIsReadyAnswerQuestion);
 
             MoveBackButtonCommand = new DelegateCommand(async () => await GoBackOrderAsync());
 
             StartGameCommand = new DelegateCommand(OnShowAllTopicsView);
             ShowTopicsCarouselCommand = new DelegateCommand(OnShowTopicsCarouselView);
+
+            // Question
             SelectQuestionAnswerCommand = new DelegateCommand<QuestionModel?>(async (q) => await OnSelectAndShowQuestionAnswer(q));
-            AnsweredQuestionCommand = new DelegateCommand<bool?>(async (b) => await OnAnsweredQuestion(b));
-            NoAnsweredQuestionCommand = new DelegateCommand(async() => OnNoAnsweredQuestion());
+            GongButtonClickedCommand = new DelegateCommand(async () => await GongButtonClickedAsync());
+
+            // Answered
+            AnsweredQuestionCommand = new DelegateCommand<bool?>(async (value) => await OnAnsweredQuestion(value), _ => ActivePlayer != null)
+                .ObservesProperty(() => ActivePlayer);
+            NoAnsweredQuestionCommand = new DelegateCommand(async () => await OnNoAnsweredQuestion());
             CloseQuestionCommand = new DelegateCommand(async () => await OnCloseQuestion());
 
             // Final round
@@ -54,7 +63,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Раунды
         /// </summary>
-        public ObservableCollection<RoundModel?>? Rounds
+        public ObservableCollection<RoundModel>? Rounds
         {
             get => _rounds;
             set => this.RaiseAndSetIfChanged(ref _rounds, value);
@@ -72,7 +81,7 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Игроки
         /// </summary>
-        public ObservableCollection<PlayerModel?>? Players
+        public ObservableCollection<PlayerModel> Players
         {
             get => _players;
             private set => this.RaiseAndSetIfChanged(ref _players, value);
@@ -134,7 +143,7 @@ namespace Game.Ui.Views.GameControls
         public string Message
         {
             get => _message;
-            set => this.RaiseAndSetIfChanged(ref _message, value);
+            private set => this.RaiseAndSetIfChanged(ref _message, value);
         }
 
         /// <summary>
@@ -149,10 +158,19 @@ namespace Game.Ui.Views.GameControls
         /// <summary>
         /// Игра готова принимать ответы
         /// </summary>
-        public bool IsReadyGameToReceiveAnswers
+        private bool IsReadyGameToReceiveAnswers
         {
             get => _isReadyGameToReceiveAnswers;
-            private set => this.RaiseAndSetIfChanged(ref _isReadyGameToReceiveAnswers, value);
+            set => this.RaiseAndSetIfChanged(ref _isReadyGameToReceiveAnswers, value);
+        }
+        
+        /// <summary>
+        /// Гонг
+        /// </summary>
+        private bool IsVisibleGongButton
+        {
+            get => _isVisibleGongButton;
+            set => this.RaiseAndSetIfChanged(ref _isVisibleGongButton, value);
         }
 
         /// <summary>
@@ -163,11 +181,11 @@ namespace Game.Ui.Views.GameControls
         private readonly IGameManager _gameManager;
         private readonly IConfirmationService _confirmationService;
         private readonly IGameSenderService _gameSenderService;
-        private readonly IEventAggregator _eventAggregator;
+        private readonly IUserService _userService;
 
-        private ObservableCollection<RoundModel?>? _rounds;
-        private ObservableCollection<PlayerModel?>? _players;
-        private ObservableCollection<TopicModel>? _topics;
+        private ObservableCollection<RoundModel> _rounds;
+        private ObservableCollection<PlayerModel> _players;
+        private ObservableCollection<TopicModel> _topics;
         private bool _isShowingTopics;
         private bool _isGameStarted;
         private RoundModel? _currentRound;
@@ -175,5 +193,6 @@ namespace Game.Ui.Views.GameControls
         private PlayerModel? _host;
         private QuestionModel? _displayedQuestion;
         private string _message;
+        private bool _isVisibleGongButton;
     }
 }

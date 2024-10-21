@@ -8,9 +8,11 @@
         CheckAddedAdmin,
 
         // Room
-        Player,
+        InRoom,
         Host,
 
         // Game
+        Playing,
+        IsReadyReceiveAnswer
     }
 }

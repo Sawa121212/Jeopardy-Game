@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Common.Extensions;
 using DataDomain.Rooms;
 using GameSender.Infrastructure.Interfaces;
 using Telegram.Bot.Types;
 using TelegramAPI.Domain.Models;
 using TopicDb.Domain.Models;
+using Users.Domain.Models;
 
 namespace Game.Ui.Views.GameControls
 {
@@ -17,7 +19,8 @@ namespace Game.Ui.Views.GameControls
         {
             if (ActivePlayer is not null)
             {
-                await SendEmptyButtonsForPlayers($"Выбор темы и стоимости вопроса осуществляет игрок {ActivePlayer?.Name}");
+                Message = $"Выбор темы и стоимости вопроса осуществляет игрок {ActivePlayer?.Name}";
+                await SendEmptyButtonsForPlayers(Message);
             }
         }
 
@@ -25,12 +28,14 @@ namespace Game.Ui.Views.GameControls
         {
             foreach (PlayerModel playerModel in Players)
             {
-                await _gameSenderService.SendBaseGameButton(playerModel.Id, text);
+                _userService.SetStatus(playerModel.Id, StateUserEnum.InRoom);
+
+                await _gameSenderService.SendEmptyGameButton(playerModel.Id, text);
             }
 
             if (sendForHost)
             {
-                await _gameSenderService.SendBaseGameButton(Host.Id, text);
+                await _gameSenderService.SendEmptyGameButton(Host.Id, text);
             }
         }
 
@@ -39,19 +44,19 @@ namespace Game.Ui.Views.GameControls
         /// </summary>
         /// <param name="question"></param>
         /// <returns></returns>
-        private async Task<MessageModel?> OnSendMessage(Question question)
+        private async Task<MessageModel?> OnSendQuestionMessage(Question question)
         {
             // Picture
             if (question?.Picture is {ChatId: > 0})
             {
-                foreach (PlayerModel? playerModel in Players)
+                foreach (PlayerModel playerModel in Players)
                 {
                     await _gameSenderService.ForwardMessageAsync(playerModel.Id, question.Picture.ChatId, question.Picture.MessageId);
                 }
 
                 // send to host
                 Message? message = await _gameSenderService.ForwardMessageAsync(
-                    _host.Id,
+                    Host.Id,
                     question.Picture.ChatId,
                     question.Picture.MessageId);
 
@@ -72,6 +77,27 @@ namespace Game.Ui.Views.GameControls
             }
 
             return null;
+        }
+
+        private async Task<MessageModel?> SendMessage(string text)
+        {
+            Message sentMessage = null;
+
+            if (!text.IsNullOrEmpty())
+            {
+                // base message
+                foreach (PlayerModel? playerModel in Players)
+                {
+                    await _gameSenderService.SendMessageAsync(playerModel.Id, text);
+                }
+
+                // send to host
+                sentMessage = await _gameSenderService.SendMessageAsync(_host.Id, text);
+            }
+
+            return sentMessage == null ? null : new MessageModel(sentMessage.Text);
+
+            ;
         }
     }
 }

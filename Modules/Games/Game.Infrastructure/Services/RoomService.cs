@@ -217,19 +217,12 @@ namespace Game.Infrastructure.Services
         /// <returns></returns>
         public async Task<Result> KickPlayer(long playerId)
         {
-            Result resulTask = LeaveTheRoom(playerId);
+            Result resultTask = LeaveTheRoom(playerId);
 
-            if (!resulTask)
-            {
-                return Result.Fail(resulTask.ErrorMessage);
-            }
-
-            await _gameSenderService.SendKickedMessage(playerId);
-            return Result.Done();
+            return !resultTask ? Result.Fail(resultTask.ErrorMessage) : Result.Done();
         }
 
         private readonly IUserService _userService;
-        private readonly IGameSenderService _gameSenderService;
         private RoomModel _room;
     }
 }

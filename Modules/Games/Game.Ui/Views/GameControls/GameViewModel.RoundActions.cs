@@ -41,25 +41,21 @@ namespace Game.Ui.Views.GameControls
             // если этот раунд был Финальным
             if (_game.CurrentRoundLevel is RoundsLevelEnum.Final)
             {
-                if (_players != null)
+                int maxPoint = _players.Max(p => p.Points);
+                List<PlayerModel> playerModels = _players.Where(p => p.Points == maxPoint).ToList();
+
+                if (playerModels.Count == 1)
                 {
-                    int maxPoint = _players.Max(p => p.Points);
-                    List<PlayerModel?> playerModels = _players.Where(p => p.Points == maxPoint).ToList();
-
-                    if (playerModels.Count == 1)
-                    {
-                        // Показать победителя игры
-                        OnShowGameWinnerView();
-
-                        return;
-                    }
+                    // Показать победителя игры
+                    OnShowGameWinnerView();
+                    return;
                 }
             }
 
             // Установить следующий раунд
             _game.CurrentRoundLevel = RoundHelper.GetNextRoundLevel(_game.CurrentRoundLevel);
 
-            SetPlayerFirstChoosingTopic();
+            SetPlayerFirstChoosingTopic(Players);
             OnChangeRound();
         }
 
@@ -76,7 +72,7 @@ namespace Game.Ui.Views.GameControls
             // выставим флаг
             IsShowedTopics = false;
 
-            CurrentRound = Rounds.FirstOrDefault(r => r != null && r.Level == _game.CurrentRoundLevel);
+            CurrentRound = Rounds.FirstOrDefault(r => r.Level == _game.CurrentRoundLevel);
 
             IList<TopicModel>? topicModels = CurrentRound?.Topics;
 
