@@ -48,7 +48,7 @@
                                                TextAlignment="Center"
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Center"
-                                               Width="400" />
+                                               Margin="32,0"/>
                                 </Viewbox>
                             </ContentControl.Content>
                         </ContentControl>

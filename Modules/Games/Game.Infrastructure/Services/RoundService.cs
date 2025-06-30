@@ -23,7 +23,10 @@ namespace Game.Infrastructure.Services
             _notificationService = notificationService;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Создать раунды для игры.
+        /// </summary>
+        /// <returns></returns>
         public List<RoundModel?>? CreateGameRounds()
         {
             List<RoundModel?>? rounds = CollectRounds();
@@ -41,12 +44,12 @@ namespace Game.Infrastructure.Services
         }
 
         /// <summary>
-        /// Собрать раунд
+        /// Собрать раунды.
         /// </summary>
         /// <returns></returns>
         private List<RoundModel?>? CollectRounds()
         {
-            List<RoundModel?>? generatedRounds = new();
+            List<RoundModel> generatedRounds = new();
 
             // выбранные темы
             List<TopicModel> selectedTopics = new();
@@ -59,19 +62,18 @@ namespace Game.Infrastructure.Services
                 + GameParameterConstants.FinalRoundTopicsCount
                 + GameParameterConstants.ShootoutRoundTopicsCount;
 
-            // Test. Uncomment.
             // Проверяем, есть ли вообще нужное количество тем для генерации игры
-            /*if (topicsCount < gameTopicsCount)
+            if (GameParameterConstants.TopicQuestionsCount > gameTopicsCount)
             {
                 _notificationService.Show("Error", "The required number of topics was not found.", NotificationType.Error);
                 return null;
-            }*/
+            }
 
             RoundsLevelEnum levelEnum = RoundsLevelEnum.Round1;
 
             for (int i = 0; i < levelEnum.NamesLength(); i++)
             {
-                int topicsMaxCount = default;
+                int topicsMaxCount = 0;
 
                 switch (levelEnum)
                 {
@@ -80,9 +82,13 @@ namespace Game.Infrastructure.Services
                     case RoundsLevelEnum.Round3:
                         topicsMaxCount = GameParameterConstants.BaseRoundTopicsCount;
                         break;
+
+                    // Перестрелка
                     case RoundsLevelEnum.Shootout:
                         topicsMaxCount = GameParameterConstants.ShootoutRoundTopicsCount;
                         break;
+
+                    // Финальный раунд
                     case RoundsLevelEnum.Final:
                         topicsMaxCount = GameParameterConstants.FinalRoundTopicsCount;
                         break;
@@ -93,7 +99,7 @@ namespace Game.Infrastructure.Services
                 // Получить множитель очков в раунде
                 int topicLevelMultiplier = RoundHelper.GetRoundLevelMultiplier(levelEnum);
 
-                RoundModel? round = new(levelEnum)
+                RoundModel round = new(levelEnum)
                 {
                     Topics = new List<TopicModel>(topicsMaxCount)
                 };
@@ -113,14 +119,7 @@ namespace Game.Infrastructure.Services
                         break;
                     }
 
-                    // Если вдруг тему мы уже используем. (Возможно надо удалить!)
-                    /*while (selectedTopics.FirstOrDefault(t => t.Id == topic.Id) != null)
-                    {
-                        // тема уже используется
-                        allTopics.Remove(topic);
-                        topic = GetRandomFullTopic(allTopics);
-                    }*/
-
+                    // Собрать тему
                     TopicModel? collectedTopic = CreateTopicModel(topic, topicLevelMultiplier);
 
                     if (collectedTopic is null)
@@ -130,6 +129,9 @@ namespace Game.Infrastructure.Services
 
                     round.Topics.Add(collectedTopic);
                     selectedTopics.Add(collectedTopic);
+
+                    // удаляем из списка тем
+                    allTopics.Remove(topic);
                 }
 
                 if (round.Topics.Count != topicsMaxCount)
@@ -138,6 +140,7 @@ namespace Game.Infrastructure.Services
                 }
 
                 generatedRounds.Add(round);
+
                 levelEnum = RoundHelper.GetNextRoundLevel(levelEnum);
             }
 
@@ -157,7 +160,7 @@ namespace Game.Infrastructure.Services
                 return null;
             }
 
-            TopicModel? topicModel = new()
+            TopicModel topicModel = new()
             {
                 Id = topic.Id,
                 Name = topic.Name,

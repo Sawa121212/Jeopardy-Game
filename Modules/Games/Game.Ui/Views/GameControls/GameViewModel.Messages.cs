@@ -72,6 +72,8 @@ namespace Game.Ui.Views.GameControls
 
                 // send to host
                 Message sentMessage = await _gameSenderService.SendMessageAsync(_host.Id, question.Text);
+                
+                await _gameSenderService.SendMessageAsync(_host.Id, $"Правильный ответ: {question.CorrectAnswer}");
 
                 return sentMessage == null ? null : new MessageModel(sentMessage.Text);
             }

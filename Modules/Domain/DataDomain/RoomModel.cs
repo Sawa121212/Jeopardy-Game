@@ -14,18 +14,27 @@ namespace DataDomain
             Players = new List<PlayerModel?>();
         }
 
+        /// <summary>
+        /// Игроки
+        /// </summary>
         public List<PlayerModel?> Players
         {
             get => _players;
             private set => this.RaiseAndSetIfChanged(ref _players, value);
         }
 
+        /// <summary>
+        /// Ведущий
+        /// </summary>
         public PlayerModel? Host
         {
             get => _host;
             set => this.RaiseAndSetIfChanged(ref _host, value);
         }
 
+        /// <summary>
+        /// Игра
+        /// </summary>
         public GameModel? Game
         {
             get => _game;
